@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullmainui.theme
+package com.cases.carefull.features.carefullcommon.theme
 
 import androidx.compose.ui.graphics.Color
 

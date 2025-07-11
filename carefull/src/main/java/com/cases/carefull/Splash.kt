@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullmainui.screen
+package com.cases.carefull
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cases.carefull.features.carefullcommon.R
-import com.cases.carefull.features.carefullmainui.theme.CarefullTheme
+import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 import kotlinx.coroutines.delay
 
 

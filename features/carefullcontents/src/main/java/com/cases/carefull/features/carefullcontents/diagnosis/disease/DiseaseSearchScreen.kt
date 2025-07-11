@@ -41,7 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.cases.carefull.features.carefullmainui.theme.CarefullTheme
+import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 
 private val sampleDiseaseData = listOf(
     DiseaseInfo("고혈압", "고혈압은 혈압이 높은 상태입니다."),

@@ -27,10 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cases.carefull.data.model.Post
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.components.BottomNavigationBar
 import com.cases.carefull.features.carefullcommon.components.RowLine
-import com.cases.carefull.features.carefullmainui.theme.CarefullTheme
+import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 
 @Composable
 fun PostWrittenManagement() {
@@ -59,14 +60,7 @@ fun PostWrittenManagement() {
 
 
 // 더미데이터 카테고리 추가할것
-data class Post(
-    val postNumber: Int, // 글번호
-    val title: String, // 글 제목
-    val content: String, // 글 내용
-    val createdAt: String, // 작성일 (예: "2024.05.21")
-    val commentCount: Int, // 댓글 수
-    val likeCount: Int, // 좋아요 수
-)
+
 
 object DummyData {
     fun getDummyPosts(): List<Post> {

@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullmainui.screen.feed
+package com.cases.carefull.features.carefullcontents.feed
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

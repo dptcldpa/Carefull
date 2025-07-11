@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullmainui.screen.feed
+package com.cases.carefull.features.carefullcontents.feed
 
 import android.net.Uri
 import androidx.compose.foundation.background

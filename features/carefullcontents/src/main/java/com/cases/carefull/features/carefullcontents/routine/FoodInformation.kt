@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullmainui.screen.routine
+package com.cases.carefull.features.carefullcontents.routine
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background

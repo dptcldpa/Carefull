@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cases.carefull.features.carefullcommon.R
-import com.cases.carefull.features.carefullmainui.theme.CarefullTheme
+import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 import com.cases.carefull.features.carefullcommon.components.MenuButton
 import com.cases.carefull.features.carefullcommon.components.RowLine
 import com.cases.carefull.features.carefullcommon.components.SwitchMenuButton

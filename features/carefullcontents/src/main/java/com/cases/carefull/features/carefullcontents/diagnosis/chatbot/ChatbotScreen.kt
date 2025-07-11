@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullmainui.screen.chatbot
+package com.cases.carefull.features.carefullcontents.diagnosis.chatbot
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cases.carefull.chatbot.ChatMessage
 import com.cases.carefull.chatbot.ChatViewModel
-import com.cases.carefull.features.carefullmainui.theme.CarefullTheme
+import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 
 @Composable
 fun ChatBotScreen(viewModel: ChatViewModel = ChatViewModel(), modifier: Modifier = Modifier) {

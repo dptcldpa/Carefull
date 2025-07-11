@@ -41,9 +41,8 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation("androidx.compose.ui:ui:1.8.3")
     implementation(libs.material)
-
-    implementation("androidx.compose.ui:ui:1.2.0")
 
     // firebase
     implementation(platform(libs.firebase.bom))

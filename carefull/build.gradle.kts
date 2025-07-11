@@ -71,6 +71,8 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.extended)
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.android)
@@ -79,15 +81,10 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore.ktx)
 
-    implementation(libs.androidx.material3)
-
-    implementation(libs.androidx.material.icons.extended)
-
     implementation(libs.kotlin.reflect)
 
     // 네이버 지도
     implementation("com.naver.maps:map-sdk:3.22.0")
-
     implementation(libs.play.services.maps)
 
     testImplementation(libs.junit)
@@ -97,5 +94,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
 }

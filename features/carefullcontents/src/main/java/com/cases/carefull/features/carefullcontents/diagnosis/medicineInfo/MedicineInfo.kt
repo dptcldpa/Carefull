@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullmainui.screen.medicineInfo
+package com.cases.carefull.features.carefullcontents.diagnosis.medicineInfo
 
 data class MedicineInfo(
     val name: String,

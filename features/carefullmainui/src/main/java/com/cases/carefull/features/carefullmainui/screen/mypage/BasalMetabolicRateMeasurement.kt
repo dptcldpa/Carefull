@@ -32,7 +32,7 @@ import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.components.BottomNavigationBar
 import com.cases.carefull.features.carefullcommon.components.MenuButton
 import com.cases.carefull.features.carefullcommon.components.RowLine
-import com.cases.carefull.features.carefullmainui.theme.CarefullTheme
+import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 
 @Composable
 fun BasalMetabolicRateMeasurement() {

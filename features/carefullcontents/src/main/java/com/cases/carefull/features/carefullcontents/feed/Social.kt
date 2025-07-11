@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullmainui.screen.feed
+package com.cases.carefull.features.carefullcontents.feed
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -44,7 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.cases.carefull.features.carefullcommon.R
-import com.cases.carefull.features.carefullmainui.screen.mypage.Post
+import com.cases.carefull.data.model.Post
 
 @Composable
 fun Social() {

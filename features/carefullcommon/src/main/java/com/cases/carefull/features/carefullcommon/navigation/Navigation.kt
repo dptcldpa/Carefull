@@ -41,7 +41,7 @@
 //import com.cases.carefull.features.carefullmainui.screen.routine.Exercise
 //import com.cases.carefull.features.carefullmainui.screen.routine.FoodInformation
 //import com.cases.carefull.features.carefullmainui.screen.routine.SearchFood
-//import com.cases.carefull.features.carefullmainui.theme.CarefullTheme
+//import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 //import kotlinx.coroutines.delay
 //import kotlinx.coroutines.launch
 //import kotlinx.serialization.Serializable
