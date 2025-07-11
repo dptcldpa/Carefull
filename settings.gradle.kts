@@ -16,6 +16,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://repository.map.naver.com/archive/maven")
     }
 }
 
@@ -25,3 +26,5 @@ include(":data")
 include(":domain")
 include(":feature")
 include(":feature:carefullui")
+include(":feature:carefullnavigation")
+include(":feature:carefullviewmodel")

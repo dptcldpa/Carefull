@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Carefull</string>
+    <string name="email">이메일</string>
+    <string name="email_input">이메일을 입력하세요.</string>
+    <string name="password">비밀번호</string>
+    <string name="password_input">비밀번호를 입력하세요.</string>
+    <string name="password_repeat">비밀번호 재입력</string>
+    <string name="password_repeat_input">비밀번호를 한 번 더 입력하세요.</string>
+    <string name="signin">로그인</string>
+    <string name="find_id">아이디 찾기</string>
+    <string name="find_password">비밀번호 찾기</string>
+    <string name="signup">회원가입</string>
+    <string name="signin_kakao">카카오로 로그인</string>
+    <string name="nickname">닉네임</string>
+    <string name="nickname_input">닉네임을 입력하세요.</string>
+    <string name="home">홈</string>
+    <string name="mypage">마이페이지</string>"
+    <string name="account_management">계정 관리</string>
+    <string name="basal_metabolic_rate_measurement">기초(활동)대사량 측정</string>
+    <string name="gender">성별</string>
+    <string name="weight">체중</string>
+    <string name="height">신장</string>
+    <string name="age">나이(만)</string>
+    <string name="basal_metabolic_rate">기초대사량</string>
+    <string name="activity_setting">활동량 설정</string>
+    <string name="total_daily_energy">일일대사량</string>
+    <string name="kcal">kcal</string>
+    <string name="notification_setting">알림 설정</string>
+    <string name="writing_management">작성 글 관리</string>
+    <string name="profile_management">프로필 관리</string>
+    <string name="delete_account">계정 탈퇴</string>
+    <string name="change_profile">프로필 변경</string>
+    <string name="change_nickname">닉네임 변경</string>
+    <string name="change_password">비밀번호 변경</string>
+    <string name="save">저장하기</string>
+    <string name="exercise_and_diet">운동/식단</string>
+    <string name="exercise">운동</string>
+    <string name="diet">식단</string>
+    <string name="feed">피드</string>
+    <string name="social">소셜</string>
+    <string name="ranking">랭킹</string>
+
+    <string-array name="bottom_nav_items">
+        <item>홈</item>
+        <item>운동/식단</item>
+        <item>진단/검색</item>
+        <item>커뮤니티</item>
+        <item>My</item>
+    </string-array>
+
+    <string-array name="exercise_and_diet">
+        <item>운동</item>
+        <item>식단</item>
+    </string-array>
+
+    <string-array name="feed">
+        <item>소셜</item>
+        <item>랭킹</item>
+    </string-array>
+</resources>
