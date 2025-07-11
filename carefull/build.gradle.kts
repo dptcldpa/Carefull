@@ -58,11 +58,11 @@ kotlin {
 
 dependencies {
     implementation(project(":data"))
-    implementation(project(":feature"))
-    implementation(project(":feature:carefullui"))
-    implementation(project(":feature:carefullnavigation"))
-    implementation(project(":feature:carefullviewmodel"))
     implementation(project(":domain"))
+    implementation(project(":features"))
+    implementation(project(":features:carefullcommon"))
+    implementation(project(":features:carefullcontents"))
+    implementation(project(":features:carefullmainui"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

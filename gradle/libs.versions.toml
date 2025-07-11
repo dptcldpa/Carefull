@@ -24,6 +24,8 @@ googleGmsServices = "4.4.3"
 kotlinSerialization = "2.2.0"
 playServicesMaps = "19.2.0"
 
+coilCompose = "2.6.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
@@ -46,6 +48,8 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 
 # navigation
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
