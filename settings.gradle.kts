@@ -16,6 +16,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://repository.map.naver.com/archive/maven")
     }
 }
 
@@ -23,5 +24,7 @@ rootProject.name = "carefull"
 include(":carefull")
 include(":data")
 include(":domain")
-include(":feature")
-include(":feature:carefullui")
+include(":features")
+include(":features:carefullcommon")
+include(":features:carefullcontents")
+include(":features:carefullmainui")

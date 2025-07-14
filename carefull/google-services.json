@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "527043261784",
+    "project_id": "carefull-7cfe2",
+    "storage_bucket": "carefull-7cfe2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527043261784:android:a1c4b77aedaba14f6ca12d",
+        "android_client_info": {
+          "package_name": "com.cases.carefull"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwhMi94xWyWOBLNJSInyikkIHplApeEMg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
