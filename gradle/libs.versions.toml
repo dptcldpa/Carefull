@@ -26,6 +26,7 @@ googleGmsServices = "4.4.3"
 playServicesMaps = "19.2.0"
 
 kotlinSerialization = "2.2.0"
+kotlinxSerializationJson = "1.9.0"
 
 coilCompose = "2.7.0"
 
@@ -56,7 +57,7 @@ androidx-material-icons-extended = { module = "androidx.compose.material:materia
 # navigation
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-runtime-android = { group = "androidx.navigation", name = "navigation-runtime-android", version.ref = "navigationRuntimeAndroid" }
-
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 #firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }

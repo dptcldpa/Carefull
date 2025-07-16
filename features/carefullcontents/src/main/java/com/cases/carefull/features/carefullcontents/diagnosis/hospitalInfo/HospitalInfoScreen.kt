@@ -1,4 +1,6 @@
-package com.cases.carefull.hospitalInfo
+package com.cases.carefull.features.carefullcontents.diagnosis.hospitalInfo
+
+import androidx.compose.runtime.Composable
 
 //import androidx.compose.foundation.layout.Column
 //import androidx.compose.foundation.layout.Spacer
@@ -25,7 +27,7 @@ package com.cases.carefull.hospitalInfo
 //import com.naver.maps.map.MapView
 //import com.cases.carefull.feature.carefullmainui.theme.CarefullTheme
 
-//@Composable
+@Composable
 fun HospitalInfoScreen() {
 
 }

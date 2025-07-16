@@ -29,8 +29,6 @@ import com.cases.carefull.features.carefullcommon.components.SwitchMenuButton
 
 @Composable
 fun MyPage() {
-
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,7 +64,6 @@ fun MyPage() {
         RowLine()
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

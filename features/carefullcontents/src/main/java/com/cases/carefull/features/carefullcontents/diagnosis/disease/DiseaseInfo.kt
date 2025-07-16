@@ -1,4 +1,4 @@
-package com.cases.carefull.disease
+package com.cases.carefull.features.carefullcontents.diagnosis.disease
 
 data class DiseaseInfo(
     val name: String,

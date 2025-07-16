@@ -1,4 +1,4 @@
-package com.cases.carefull.screen
+package com.cases.carefull.features.carefullmainui.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cases.carefull.features.carefullcommon.components.RowLine
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
-
 
 @Composable
 fun Home() {

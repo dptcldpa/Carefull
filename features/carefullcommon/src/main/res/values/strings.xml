@@ -41,11 +41,11 @@
     <string name="ranking">랭킹</string>
 
     <string-array name="bottom_nav_items">
-        <item>홈</item>
-        <item>운동/식단</item>
-        <item>진단/검색</item>
-        <item>커뮤니티</item>
-        <item>My</item>
+        <item>홈,HomeScreen,Home</item>
+        <item>루틴,ExerciseScreen,AreaChart</item>
+        <item>진단,ChatBotScreen,LocalHospital</item>
+        <item>피드,SocialScreen,ChatBubbleOutline</item>
+        <item>My,MyPageScreen,Person</item>
     </string-array>
 
     <string-array name="exercise_and_diet">
