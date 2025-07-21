@@ -1,4 +1,4 @@
-package com.cases.carefull.chatbot
+package com.cases.carefull.features.carefullcontents.diagnosis.chatbot
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel

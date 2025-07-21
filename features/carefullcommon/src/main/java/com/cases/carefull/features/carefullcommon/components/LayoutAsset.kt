@@ -1,0 +1,118 @@
+package com.cases.carefull.features.carefullcommon.components
+
+import com.cases.carefull.domain.model.NavType
+import com.cases.carefull.domain.model.ScreenConfig
+import com.cases.carefull.features.carefullcommon.model.NavItem
+import com.cases.carefull.features.carefullcommon.navigation.DiagnosisRoute
+import com.cases.carefull.features.carefullcommon.navigation.FeedRoute
+import com.cases.carefull.features.carefullcommon.navigation.MainRoute
+import com.cases.carefull.features.carefullcommon.navigation.MyPageRoute
+import com.cases.carefull.features.carefullcommon.navigation.Route
+import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
+
+object LayoutAsset {
+	private val navItemConfig = mapOf(
+		NavType.TOP_ROUTINE to listOf(
+			NavItem("운동", RoutineRoute.Exercise),
+			NavItem("식단", RoutineRoute.Diet)
+		),
+		NavType.TOP_DIAGNOSIS to listOf(
+			NavItem("챗봇", DiagnosisRoute.ChatBotScreen),
+			NavItem("검색", DiagnosisRoute.DiseaseSearchScreen)
+		),
+		NavType.TOP_FEED to listOf(
+			NavItem("소셜", FeedRoute.Social),
+			NavItem("랭킹", FeedRoute.Ranking)
+		),
+		NavType.SUB_DIAGNOSIS to listOf(
+			NavItem("챗봇", DiagnosisRoute.ChatBotScreen),
+			NavItem("병원정보", DiagnosisRoute.HospitalInfo)
+		),
+		NavType.SUB_SEARCH to listOf(
+			NavItem("질환검색", DiagnosisRoute.DiseaseSearchScreen),
+			NavItem("약검색", DiagnosisRoute.MedicineInfoScreen)
+		),
+		NavType.BOTTOM_MAIN to listOf(
+			NavItem("홈", MainRoute.Home, "home"),
+			NavItem("루틴", RoutineRoute.Exercise, "routine"),
+			NavItem("진단", DiagnosisRoute.ChatBotScreen, "diagnosis"),
+			NavItem("피드", FeedRoute.Social, "feed"),
+			NavItem("마이페이지", MyPageRoute.MyPage, "mypage")
+		)
+	)
+	private val screenConfig = mapOf(
+		MainRoute.Home to ScreenConfig(
+			showBottomBar = true),
+		MyPageRoute.MyPage to ScreenConfig(
+			showBottomBar = true),
+		
+		//루틴
+		RoutineRoute.Exercise to ScreenConfig(
+			topBarType = NavType.TOP_ROUTINE,
+			showBottomBar = true
+		),
+		RoutineRoute.Diet to ScreenConfig(
+			topBarType = NavType.TOP_ROUTINE,
+			showBottomBar = true),
+		RoutineRoute.SearchFood to ScreenConfig(
+			topBarType = NavType.TOP_ROUTINE,
+			showBottomBar = true
+		),
+		RoutineRoute.FoodInformation to ScreenConfig(
+			topBarType = NavType.TOP_ROUTINE,
+			showBottomBar = true
+		),
+		
+		//진단
+		DiagnosisRoute.ChatBotScreen to ScreenConfig(
+			topBarType = NavType.TOP_DIAGNOSIS,
+			subTopBarType = NavType.SUB_DIAGNOSIS,
+			showBottomBar = true
+		),
+		DiagnosisRoute.HospitalInfo to ScreenConfig(
+			topBarType = NavType.TOP_DIAGNOSIS,
+			subTopBarType = NavType.SUB_DIAGNOSIS,
+			showBottomBar = true
+		),
+		DiagnosisRoute.MedicineInfoScreen to ScreenConfig(
+			topBarType = NavType.TOP_DIAGNOSIS,
+			subTopBarType = NavType.SUB_DIAGNOSIS,
+			showBottomBar = true
+		),
+		DiagnosisRoute.DiseaseSearchScreen to ScreenConfig(
+			topBarType = NavType.TOP_DIAGNOSIS,
+			subTopBarType = NavType.SUB_SEARCH,
+			showBottomBar = true
+		),
+		
+		//피드
+		FeedRoute.Social to ScreenConfig(
+			topBarType = NavType.TOP_FEED,
+			showBottomBar = true),
+		FeedRoute.Ranking to ScreenConfig(
+			topBarType = NavType.TOP_FEED,
+			showBottomBar = true),
+		
+		MyPageRoute.AccountManagement to ScreenConfig()
+	)
+	
+	val allRoutes: List<Route> by lazy {
+		MainRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +
+				RoutineRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +
+				DiagnosisRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +
+				FeedRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +
+				MyPageRoute::class.sealedSubclasses.mapNotNull { it.objectInstance }
+	}
+	
+	private val routeMap: Map<String, Route> by lazy {
+		allRoutes.associateBy { it::class.qualifiedName!! }
+	}
+	
+	fun findRouteByString(routeString: String?): Route? {
+		if (routeString == null) return null
+		return routeMap[routeString]
+	}
+	
+	fun getNavItems(type: NavType) = navItemConfig[type] ?: emptyList()
+	fun getScreenConfig(route: Route) = screenConfig[route]
+}

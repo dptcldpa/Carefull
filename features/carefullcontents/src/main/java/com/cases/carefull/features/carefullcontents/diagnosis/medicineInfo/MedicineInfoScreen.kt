@@ -1,4 +1,6 @@
-package com.cases.carefull.medicineInfo
+package com.cases.carefull.features.carefullcontents.diagnosis.medicineInfo
+
+import androidx.compose.runtime.Composable
 
 //import androidx.compose.foundation.background
 //import androidx.compose.foundation.layout.Box
@@ -26,7 +28,7 @@ package com.cases.carefull.medicineInfo
 //import androidx.compose.ui.unit.dp
 //import com.cases.carefull.feature.carefullmainui.theme.CarefullTheme
 
-//@Composable
+@Composable
 fun MedicineInfoScreen() {
 
 }
