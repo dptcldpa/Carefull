@@ -149,7 +149,7 @@ fun DiseaseSearchScreen() {
                             Icon(imageVector = Icons.Default.Close, contentDescription = "삭제")
                         }
                     }
-                    Divider()
+//                    Divider()
                 }
             }
         }
