@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,16 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.secrets.gradle.plugin)
 }
-
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localProperties.load(localPropertiesFile.inputStream())
-}
-
-val naverMapClientId = localProperties.getProperty("NAVER_MAP_CLIENT_ID")
-
 
 android {
     namespace = "com.cases.carefull"
@@ -30,9 +20,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-//        manifestPlaceholders["NAVER_MAP_CLIENT_ID"] = naverMapClientId
-
     }
 
     buildTypes {
@@ -50,8 +37,14 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
+
+secrets {
+    propertiesFileName = "secret.properties"
+}
+
 kotlin {
     jvmToolchain(21)
 }
@@ -83,10 +76,6 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
 
     implementation(libs.kotlin.reflect)
-
-    // 네이버 지도
-    implementation("com.naver.maps:map-sdk:3.22.0")
-    implementation(libs.play.services.maps)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
