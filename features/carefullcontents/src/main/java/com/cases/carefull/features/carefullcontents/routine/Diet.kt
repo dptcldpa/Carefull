@@ -141,12 +141,6 @@ fun MealSection(
     }
 }
 
-enum class MealType(val time: String) {
-    BREAKFAST("아침"),
-    LUNCH("점심"),
-    DINNER("저녁"),
-    SNACK("간식")
-}
 
 data class AddedFood(
     val uniqueId: Long = System.currentTimeMillis(),
