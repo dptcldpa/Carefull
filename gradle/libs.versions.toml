@@ -1,8 +1,8 @@
 [versions]
-agp = "8.11.0"
+agp = "8.11.1"
 kotlin = "2.2.0"
 coreKtx = "1.16.0"
-lifecycleRuntimeKtx = "2.9.1"
+lifecycleRuntimeKtx = "2.9.2"
 appcompat = "1.7.1"
 jetbrainsKotlinJvm = "2.2.0"
 
@@ -11,17 +11,18 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 
 activityCompose = "1.10.1"
-composeBom = "2025.06.01"
+composeBom = "2025.07.00"
 
 material = "1.12.0"
 material3Android = "1.3.2"
 
-navigationCompose = "2.9.1"
-navigationRuntimeAndroid = "2.9.1"
+navigationCompose = "2.9.2"
+navigationRuntimeAndroid = "2.9.2"
 
 firebaseBom = "33.16.0"
 firebaseFirestoreKtx = "25.1.4"
 
+naverMap = "3.22.0"
 googleGmsServices = "4.4.3"
 playServicesMaps = "19.2.0"
 
@@ -29,6 +30,16 @@ kotlinSerialization = "2.2.0"
 kotlinxSerializationJson = "1.9.0"
 
 coilCompose = "2.7.0"
+
+retrofit = "3.0.0"
+gson = "3.0.0"
+
+viewmodel = "2.9.2"
+activity = "1.10.1"
+
+kotlinxCoroutinesCore = "1.10.2"
+
+loggingInterceptor = "5.1.0"
 
 # serect
 secretsGradlePlugin = "2.0.1"
@@ -58,18 +69,34 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 
 # navigation
-androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-runtime-android = { group = "androidx.navigation", name = "navigation-runtime-android", version.ref = "navigationRuntimeAndroid" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
 #firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 
 # map
+naver-map = { group = "com.naver.maps", name = "map-sdk", version.ref = "naverMap" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+
+# retrofit
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "gson" }
 
 # coil
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+
+# viewModel
+lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "viewmodel" }
+activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
+
+# coroutines
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+
+# Logging
+logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
