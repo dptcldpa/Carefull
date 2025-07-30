@@ -8,12 +8,12 @@ import com.cases.carefull.data.mapper.toDomain
 import com.cases.carefull.domain.repository.MedicineRepository
 //import com.cases.carefull.BuildConfig
 
-class ApiMedicineRepository(
+class MedicineRepositoryImpl(
     private val apiService: MedicineApiService
 ) : MedicineRepository {
 
-    private val serviceKey=""
-
+    private val serviceKey
+    
     override suspend fun searchMedicines(query: String): Result<List<MedicineItem>> {
         if (query.isBlank()) {
             return Result.success(emptyList())
@@ -25,7 +25,7 @@ class ApiMedicineRepository(
 //                serviceKey = BuildConfig.medicine_api_key,
                 itemName = query
             )
-
+            Log.d("API_TEST", "Repository: API 호출 시도, ${response.header.resultCode}")
             if (response.header.resultCode == "00") {
                 val dtoList: List<MedicineItemDto> = response.body?.items ?: emptyList()
 
