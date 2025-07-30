@@ -28,6 +28,7 @@ import com.cases.carefull.common.CarefullApplication
 import com.cases.carefull.common.MainViewModel
 import com.cases.carefull.di.MainViewModelFactory
 import com.cases.carefull.features.carefullcommon.components.LayoutAsset
+import com.cases.carefull.features.carefullcommon.components.NavigationRepositoryImpl
 import com.cases.carefull.features.carefullcommon.navigation.DiagnosisRoute
 import com.cases.carefull.features.carefullcommon.navigation.FeedRoute
 import com.cases.carefull.features.carefullcommon.navigation.MainRoute
@@ -45,9 +46,18 @@ import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineV
 import com.cases.carefull.features.carefullcontents.feed.Ranking
 import com.cases.carefull.features.carefullcontents.feed.Social
 import com.cases.carefull.features.carefullcontents.routine.Diet
+import com.cases.carefull.features.carefullcontents.routine.DietRepositoryImpl
+import com.cases.carefull.features.carefullcontents.routine.DietRetrofitClient
+import com.cases.carefull.features.carefullcontents.routine.DietScreen
+import com.cases.carefull.features.carefullcontents.routine.DietSearchScreen
+import com.cases.carefull.features.carefullcontents.routine.DietViewModel
+import com.cases.carefull.features.carefullcontents.routine.DietViewModelFactory
 import com.cases.carefull.features.carefullcontents.routine.Exercise
 import com.cases.carefull.features.carefullcontents.routine.FoodInformation
+import com.cases.carefull.features.carefullcontents.routine.FoodSearchViewModel
+import com.cases.carefull.features.carefullcontents.routine.FoodSearchViewModelFactory
 import com.cases.carefull.features.carefullcontents.routine.SearchFood
+import com.cases.carefull.features.carefullcontents.routine.SharedViewModel
 import com.cases.carefull.features.carefullmainui.screen.Home
 import com.cases.carefull.features.carefullmainui.screen.auth.Signin
 import com.cases.carefull.features.carefullmainui.screen.mypage.AccountManagement
@@ -61,26 +71,25 @@ import kotlinx.coroutines.launch
 fun MainNavigation() {
     val application = LocalContext.current.applicationContext as CarefullApplication
     val container = application.container
-
     val navigationRepository = container.navigationRepository
     val medicineRepository = container.medicineRepository
-
     val mainViewModelFactory = MainViewModelFactory(
         navigationRepository = navigationRepository,
         medicineRepository = medicineRepository
     )
-
+    val viewModel: MainViewModel = viewModel(factory = mainViewModelFactory)
+    val uiState by viewModel.uiState.collectAsState()
+    val foodRepository = remember { DietRepositoryImpl() }
+    
+    val navController = rememberNavController()
+    
+    
+//    val repository = remember { NavigationRepositoryImpl() }
 //	val viewModel: MainViewModel = viewModel(factory = MainViewModelFactory(navigationRepository, medicineRepository))
     val medicineViewModel: MedicineViewModel = viewModel(factory = mainViewModelFactory)
-
-    val viewModel: MainViewModel = viewModel(factory = mainViewModelFactory)
-
-    val navController = rememberNavController()
-
-    val uiState by viewModel.uiState.collectAsState()
-
+    
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-
+    
     val currentRoute: Route? by remember(navBackStackEntry) {
         derivedStateOf {
             val routeString = navBackStackEntry?.destination?.route
@@ -118,7 +127,8 @@ fun MainNavigation() {
             navController.popBackStack()
         }
     }
-
+    val createDietViewModelFactory = { DietViewModelFactory(foodRepository) }
+    val createSearchViewModelFactory = { FoodSearchViewModelFactory(DietRetrofitClient.api) }
     MainScaffold(
         viewModel = viewModel,
         navController = navController
@@ -156,11 +166,32 @@ fun MainNavigation() {
             composable<RoutineRoute.Exercise> {
                 Exercise()
             }
-            composable<RoutineRoute.Diet> {
-                Diet()
+            composable<RoutineRoute.DietScreen> { navBackStackEntry ->
+                val sharedViewModel: SharedViewModel = viewModel(navBackStackEntry)
+                
+                val dietViewModel: DietViewModel = viewModel(
+                    factory = createDietViewModelFactory()
+                )
+                DietScreen(
+                    viewModel = dietViewModel,
+                    sharedViewModel = sharedViewModel,
+                    navController = navController
+                )
             }
-            composable<RoutineRoute.SearchFood> {
-                SearchFood()
+            composable<RoutineRoute.DietSearchScreen> { navBackStackEntry ->
+                
+                val dietBackStackEntry = remember(navBackStackEntry) {
+                    navController.getBackStackEntry(RoutineRoute.DietScreen)
+                }
+                val sharedViewModel: SharedViewModel = viewModel(dietBackStackEntry)
+                val searchViewModel: FoodSearchViewModel = viewModel(
+                    factory = createSearchViewModelFactory()
+                )
+                DietSearchScreen(
+                    navController = navController,
+                    sharedViewModel = sharedViewModel,
+                    searchViewModel = searchViewModel
+                )
             }
             composable<RoutineRoute.FoodInformation> {
                 FoodInformation()

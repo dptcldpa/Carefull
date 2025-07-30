@@ -1,7 +1,9 @@
 package com.cases.carefull.features.carefullcontents.routine
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -44,5 +46,17 @@ class DietViewModel(
 		viewModelScope.launch {
 			dietRepository.removeMeal(mealRecord)
 		}
+	}
+}
+
+class DietViewModelFactory(
+	private val foodRepository: DietRepository
+) : ViewModelProvider.Factory {
+	override fun <T : ViewModel> create(modelClass: Class<T>,extras: CreationExtras): T {
+		if (modelClass.isAssignableFrom(DietViewModel::class.java)) {
+			@Suppress("UNCHECKED_CAST")
+			return DietViewModel(foodRepository) as T
+		}
+		throw IllegalArgumentException("Unknown ViewModel class")
 	}
 }

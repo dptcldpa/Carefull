@@ -1,6 +1,6 @@
 package com.cases.carefull.di
 
-import com.cases.carefull.data.repository.ApiMedicineRepository
+import com.cases.carefull.data.repository.MedicineRepositoryImpl
 import com.cases.carefull.domain.repository.MedicineRepository
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.RetrofitInstance
 import com.cases.carefull.domain.usecase.MedicineSearchUseCase
@@ -20,7 +20,7 @@ class DefaultAppContainer : AppContainer {
     }
 
     override val medicineRepository: MedicineRepository by lazy {
-        ApiMedicineRepository(apiService)
+        MedicineRepositoryImpl(apiService)
     }
 
     override val medicineSearchUseCase: MedicineSearchUseCase by lazy {

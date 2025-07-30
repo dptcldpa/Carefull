@@ -25,10 +25,10 @@ sealed interface RoutineRoute : Route {
 	data object Exercise : RoutineRoute
 	
 	@Serializable
-	data object Diet : RoutineRoute
+	data object DietScreen : RoutineRoute
 	
 	@Serializable
-	data object SearchFood : RoutineRoute
+	data class DietSearchScreen(val mealType: String) : RoutineRoute
 	
 	@Serializable
 	data object FoodInformation : RoutineRoute
