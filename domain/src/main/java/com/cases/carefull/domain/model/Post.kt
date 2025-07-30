@@ -1,4 +1,4 @@
-package com.cases.carefull.data.model
+package com.cases.carefull.domain.model
 
 data class Post(
     val postNumber: Int, // 글번호

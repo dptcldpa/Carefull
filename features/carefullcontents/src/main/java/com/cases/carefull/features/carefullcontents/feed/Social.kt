@@ -44,7 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.cases.carefull.features.carefullcommon.R
-import com.cases.carefull.data.model.Post
+import com.cases.carefull.domain.model.Post
 
 @Composable
 fun Social() {

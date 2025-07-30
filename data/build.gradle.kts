@@ -43,7 +43,9 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation("androidx.compose.ui:ui:1.8.3")
     implementation(libs.material)
-
+    // retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
     // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore.ktx)
@@ -51,4 +53,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }

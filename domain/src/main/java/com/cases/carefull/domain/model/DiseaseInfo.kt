@@ -1,4 +1,4 @@
-package com.cases.carefull.data.model
+package com.cases.carefull.domain.model
 
 data class DiseaseInfo(
     val name: String,
