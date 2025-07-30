@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,19 +24,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
+import com.cases.carefull.chatbot.ChatBotViewModel
+import com.cases.carefull.domain.model.ChatBotInfo
 
 @Composable
-fun ChatBotScreen(viewModel: ChatViewModel = ChatViewModel(), modifier: Modifier = Modifier) {
+fun ChatBotScreen(
+    modifier: Modifier = Modifier,
+    onDepartmentClick: (department: String, diagnosis: String) -> Unit
+) {
+    val viewModel = remember { ChatBotViewModel(onDepartmentClick) }
+
     var userInput by remember { mutableStateOf("") }
-    
     val messages = viewModel.chatMessages.reversed()
 
-    Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         LazyColumn(
-            modifier = Modifier.weight(1f).fillMaxWidth(),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
             reverseLayout = true
         ) {
             items(messages) { message ->
@@ -43,6 +54,8 @@ fun ChatBotScreen(viewModel: ChatViewModel = ChatViewModel(), modifier: Modifier
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         Row(modifier = Modifier.fillMaxWidth()) {
             TextField(
@@ -52,6 +65,7 @@ fun ChatBotScreen(viewModel: ChatViewModel = ChatViewModel(), modifier: Modifier
                 placeholder = { Text("증상을 입력하세요") }
             )
             Spacer(modifier = Modifier.width(8.dp))
+
             Button(onClick = {
                 viewModel.onUserMessage(userInput)
                 userInput = ""
@@ -63,7 +77,7 @@ fun ChatBotScreen(viewModel: ChatViewModel = ChatViewModel(), modifier: Modifier
 }
 
 @Composable
-fun ChatBubble(message: ChatMessage) {
+fun ChatBubble(message: ChatBotInfo) {
     val alignment = if (message.isUser) Alignment.CenterEnd else Alignment.CenterStart
     val bgColor = if (message.isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
     val textColor = if (message.isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
@@ -74,21 +88,38 @@ fun ChatBubble(message: ChatMessage) {
     ) {
         Surface(
             color = bgColor,
-            shape = MaterialTheme.shapes.medium
+            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier.padding(4.dp)
         ) {
-            Text(
-                text = message.message,
-                modifier = Modifier.padding(10.dp),
-                color = textColor
-            )
-        }
-    }
-}
+            Column(modifier = Modifier.padding(10.dp)) {
+                Text(
+                    text = message.message,
+                    color = textColor
+                )
 
-@Preview(showBackground = true)
-@Composable
-fun ChatBottScreenPreview() {
-    CarefullTheme {
-        ChatBotScreen()
+                if (!message.clickableDepartments.isNullOrEmpty()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "추천 진료과:",
+                            color = textColor,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        message.clickableDepartments?.forEach { dept ->
+                            AssistChip(
+                                onClick = { message.onClickDepartment?.invoke(dept) },
+                                label = { Text(dept) },
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }

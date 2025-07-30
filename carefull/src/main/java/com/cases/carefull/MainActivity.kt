@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.navigation.compose.rememberNavController
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 import com.cases.carefull.navigation.MainNavigation
 

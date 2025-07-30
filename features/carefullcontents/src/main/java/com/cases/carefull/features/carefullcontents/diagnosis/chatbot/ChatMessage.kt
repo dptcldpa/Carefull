@@ -1,6 +1,0 @@
-package com.cases.carefull.features.carefullcontents.diagnosis.chatbot
-
-data class ChatMessage(
-    val message: String,
-    val isUser: Boolean
-)

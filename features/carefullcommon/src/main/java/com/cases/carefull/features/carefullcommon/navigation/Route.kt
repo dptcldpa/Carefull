@@ -39,15 +39,25 @@ sealed interface DiagnosisRoute : Route {
 	
 	@Serializable
 	data object ChatBotScreen : DiagnosisRoute
-	
+
 	@Serializable
-	data object HospitalInfo : DiagnosisRoute
-	
-	@Serializable
-	data object DiseaseSearchScreen : DiagnosisRoute
-	
+//	data class HospitalInfoScreen(val department:String,val diagnosis:String): DiagnosisRoute
+	data object HospitalInfoScreen: DiagnosisRoute
+
 	@Serializable
 	data object MedicineInfoScreen : DiagnosisRoute
+
+	@Serializable
+	data object HospitalSearchScreen : DiagnosisRoute
+
+	@Serializable
+	data object DiseaseSearchScreen : DiagnosisRoute
+
+	@Serializable
+	data object MedicineSearchScreen : DiagnosisRoute
+
+	@Serializable
+	data object MedicineDetailScreen : DiagnosisRoute
 }
 
 @Serializable

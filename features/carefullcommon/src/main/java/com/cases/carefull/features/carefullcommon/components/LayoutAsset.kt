@@ -17,8 +17,8 @@ object LayoutAsset {
 			NavItem("식단", RoutineRoute.Diet)
 		),
 		NavType.TOP_DIAGNOSIS to listOf(
-			NavItem("챗봇", DiagnosisRoute.ChatBotScreen),
-			NavItem("검색", DiagnosisRoute.DiseaseSearchScreen)
+			NavItem("진료", DiagnosisRoute.ChatBotScreen),
+			NavItem("검색", DiagnosisRoute.HospitalSearchScreen)
 		),
 		NavType.TOP_FEED to listOf(
 			NavItem("소셜", FeedRoute.Social),
@@ -26,11 +26,13 @@ object LayoutAsset {
 		),
 		NavType.SUB_DIAGNOSIS to listOf(
 			NavItem("챗봇", DiagnosisRoute.ChatBotScreen),
-			NavItem("병원정보", DiagnosisRoute.HospitalInfo)
+			NavItem("병원 정보", DiagnosisRoute.HospitalInfoScreen),
+			NavItem("약 정보", DiagnosisRoute.MedicineInfoScreen)
 		),
 		NavType.SUB_SEARCH to listOf(
-			NavItem("질환검색", DiagnosisRoute.DiseaseSearchScreen),
-			NavItem("약검색", DiagnosisRoute.MedicineInfoScreen)
+			NavItem("병원", DiagnosisRoute.HospitalSearchScreen),
+			NavItem("질환", DiagnosisRoute.DiseaseSearchScreen),
+			NavItem("약", DiagnosisRoute.MedicineSearchScreen)
 		),
 		NavType.BOTTOM_MAIN to listOf(
 			NavItem("홈", MainRoute.Home, "home"),
@@ -69,7 +71,7 @@ object LayoutAsset {
 			subTopBarType = NavType.SUB_DIAGNOSIS,
 			showBottomBar = true
 		),
-		DiagnosisRoute.HospitalInfo to ScreenConfig(
+		DiagnosisRoute.HospitalInfoScreen to ScreenConfig(
 			topBarType = NavType.TOP_DIAGNOSIS,
 			subTopBarType = NavType.SUB_DIAGNOSIS,
 			showBottomBar = true
@@ -79,7 +81,17 @@ object LayoutAsset {
 			subTopBarType = NavType.SUB_DIAGNOSIS,
 			showBottomBar = true
 		),
+		DiagnosisRoute.HospitalSearchScreen to ScreenConfig(
+			topBarType = NavType.TOP_DIAGNOSIS,
+			subTopBarType = NavType.SUB_SEARCH,
+			showBottomBar = true
+		),
 		DiagnosisRoute.DiseaseSearchScreen to ScreenConfig(
+			topBarType = NavType.TOP_DIAGNOSIS,
+			subTopBarType = NavType.SUB_SEARCH,
+			showBottomBar = true
+		),
+		DiagnosisRoute.MedicineSearchScreen to ScreenConfig(
 			topBarType = NavType.TOP_DIAGNOSIS,
 			subTopBarType = NavType.SUB_SEARCH,
 			showBottomBar = true

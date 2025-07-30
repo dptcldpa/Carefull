@@ -1,29 +1,44 @@
-//package com.cases.carefull.data.repository
-//
-//import android.util.Log
-//import com.cases.carefull.data.network.MedicineApiService
-//import com.cases.carefull.data.network.MedicineItem
-//import javax.inject.Inject
-//
-//class MedicineRepository @Inject constructor(
-//    private val api: MedicineApiService,
-//    private val serviceKey: String
-//) {
-//    suspend fun getMedicineByName(name: String): List<MedicineItem> {
-//        return try {
-//            Log.d("API_KEY_CHECK", "API Key: $serviceKey")
-//            val response = api.getDrugInfo(serviceKey, name)
-//            if (response.isSuccessful) {
-//                val items = response.body()?.response?.body?.items ?: emptyList()
-//                Log.d("MedicineRepository", "받아온 아이템 수: ${items.size}")
-//                items
-//            } else {
-//                Log.e("MedicineRepository", "응답 실패: ${response.code()}")
-//                emptyList()
-//            }
-//        } catch (e: Exception) {
-//            Log.e("MedicineRepository", "예외 발생: ${e.message}")
-//            emptyList()
-//        }
-//    }
-//}
+package com.cases.carefull.data.repository
+
+import android.util.Log
+import com.cases.carefull.data.dto.MedicineItemDto
+import com.cases.carefull.data.network.MedicineApiService
+import com.cases.carefull.domain.model.MedicineItem
+import com.cases.carefull.data.mapper.toDomain
+import com.cases.carefull.domain.repository.MedicineRepository
+//import com.cases.carefull.BuildConfig
+
+class ApiMedicineRepository(
+    private val apiService: MedicineApiService
+) : MedicineRepository {
+
+    private val serviceKey=""
+
+    override suspend fun searchMedicines(query: String): Result<List<MedicineItem>> {
+        if (query.isBlank()) {
+            return Result.success(emptyList())
+        }
+        Log.d("API_TEST", "Repository: API 호출 시도, query = $query")
+        return try {
+            val response = apiService.getMedicineList(
+                serviceKey = serviceKey,
+//                serviceKey = BuildConfig.medicine_api_key,
+                itemName = query
+            )
+
+            if (response.header.resultCode == "00") {
+                val dtoList: List<MedicineItemDto> = response.body?.items ?: emptyList()
+
+                Log.d("API_TEST", "Repository: API 호출 성공, ${dtoList.size}개 받음")
+                val domainList = dtoList.map { it.toDomain() }
+                Result.success(domainList)
+            } else {
+                Log.e("API_TEST", "Repository: API 오류 - ${response.header.resultMsg}")
+                Result.failure(Exception("API Error: ${response.header.resultMsg}"))
+            }
+        } catch (e: Exception) {
+            Log.e("API_TEST", "Repository: 네트워크 예외 발생", e)
+            Result.failure(e)
+        }
+    }
+}
