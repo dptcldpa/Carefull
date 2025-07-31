@@ -12,7 +12,7 @@ class MedicineRepositoryImpl(
     private val apiService: MedicineApiService
 ) : MedicineRepository {
 
-    private val serviceKey
+    private val serviceKey = ""
     
     override suspend fun searchMedicines(query: String): Result<List<MedicineItem>> {
         if (query.isBlank()) {
