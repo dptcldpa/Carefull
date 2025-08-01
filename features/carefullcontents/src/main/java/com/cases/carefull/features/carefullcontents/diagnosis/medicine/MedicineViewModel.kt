@@ -5,16 +5,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cases.carefull.domain.model.MedicineItem
 import com.cases.carefull.domain.repository.MedicineRepository
+import com.cases.carefull.domain.usecase.MedicineSearchUseCase
+import com.cases.carefull.features.carefullcontents.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MedicineViewModel(
-    private val repository: MedicineRepository
+    private val medicineSearchUseCase: MedicineSearchUseCase,
+    private val medicineApiKey: String
 ) : ViewModel() {
 
-    private val _medicineList = MutableStateFlow<List<MedicineItem>>(emptyList())
-    val medicineList = _medicineList.asStateFlow()
+    private val _searchResultState = MutableStateFlow<UiState<List<MedicineItem>>>(UiState.Success(emptyList()))
+    val searchResultState = _searchResultState.asStateFlow()
 
     private val _selectedItem = MutableStateFlow<MedicineItem?>(null)
     val selectedItem = _selectedItem.asStateFlow()
@@ -22,17 +26,35 @@ class MedicineViewModel(
     private val _recentSearches = MutableStateFlow<List<String>>(emptyList())
     val recentSearches = _recentSearches.asStateFlow()
 
-    fun searchMedicine(query: String) {
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
+
+    fun onQueryChange(query: String, medicineApiKey: String) {
+        _searchQuery.value = query
+
+        if (query.isNotBlank()) {
+            searchMedicine(medicineApiKey, query)
+        } else {
+            _searchResultState.value = UiState.Success(emptyList())
+        }
+    }
+
+    private fun searchMedicine(medicineApiKey: String, query: String) {
         viewModelScope.launch {
-            Log.d("API_TEST", "ViewModel: Repository에 검색 요청")
-            val result = repository.searchMedicines(query)
+            _searchResultState.value = UiState.Loading
+            Log.d("API_TEST", "ViewModel: Repository에 검색 요청 (쿼리: $query)")
+
+            val result = medicineSearchUseCase(
+                medicineApiKey = medicineApiKey,
+                query = query
+            )
 
             result.onSuccess { items ->
                 Log.d("API_TEST", "ViewModel: Repository로부터 성공 응답 받음, ${items.size}개")
-                _medicineList.value = items
+                _searchResultState.value = UiState.Success(items)
             }.onFailure { throwable ->
                 Log.e("API_TEST", "ViewModel: Repository로부터 실패 응답 받음", throwable)
-                _medicineList.value = emptyList()
+                _searchResultState.value = UiState.Error(throwable.message ?: "알 수 없는 에러")
             }
         }
     }
@@ -46,17 +68,19 @@ class MedicineViewModel(
         val trimmedQuery = query.trim()
         if (trimmedQuery.isBlank()) return
 
-        val currentList = _recentSearches.value.toMutableList()
-        currentList.remove(trimmedQuery)
-        currentList.add(0, trimmedQuery)
-
-        _recentSearches.value = currentList.take(10)
+        _recentSearches.update { currentList ->
+            val newList = currentList.toMutableList().apply {
+                remove(trimmedQuery)
+                add(0, trimmedQuery)
+            }
+            newList.take(10)
+        }
     }
 
     fun removeRecentSearch(query: String) {
-        val currentList = _recentSearches.value.toMutableList()
-        currentList.remove(query)
-        _recentSearches.value = currentList
+        _recentSearches.update { currentList ->
+            currentList.filter { it != query }
+        }
     }
 
     fun clearRecentSearches() {

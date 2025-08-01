@@ -1,7 +1,5 @@
-package com.cases.carefull.data.network
+package com.cases.carefull.data.model
 
-import com.cases.carefull.data.dto.MedicineItemDto
-import com.cases.carefull.domain.model.MedicineItem
 import com.google.gson.annotations.SerializedName
 
 data class MedicineResponse(

@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.cases.carefull.BuildConfig
 import com.cases.carefull.Splash
 import com.cases.carefull.common.CarefullApplication
 import com.cases.carefull.common.MainViewModel
@@ -70,13 +71,19 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainNavigation() {
     val application = LocalContext.current.applicationContext as CarefullApplication
+
     val container = application.container
+
     val navigationRepository = container.navigationRepository
-    val medicineRepository = container.medicineRepository
+    val medicineSearchUseCase = container.medicineSearchUseCase
+    val medicineApiKey = BuildConfig.medicine_api_key
+
     val mainViewModelFactory = MainViewModelFactory(
         navigationRepository = navigationRepository,
-        medicineRepository = medicineRepository
+        medicineSearchUseCase = medicineSearchUseCase,
+        medicineApiKey = medicineApiKey
     )
+
     val viewModel: MainViewModel = viewModel(factory = mainViewModelFactory)
     val uiState by viewModel.uiState.collectAsState()
     val foodRepository = remember { DietRepositoryImpl() }
@@ -246,11 +253,9 @@ fun MainNavigation() {
 
                 MedicineSearchScreen(
                     viewModel = medicineViewModel,
+                    medicineApiKey = medicineApiKey,
                     onNavigateToMedicineInfo = {
-                        Log.d("NAVIGATION_DEBUG", "onNavigateToMedicineDetail 호출됨! 화면 전환을 시도합니다.")
-                        val destination = DiagnosisRoute.MedicineDetailScreen
-                        Log.d("NAVIGATION_DEBUG", "이동할 목적지: $destination")
-                        navController.navigate(destination)
+                        navController.navigate(DiagnosisRoute.MedicineDetailScreen)
 //						navController.navigate(DiagnosisRoute.MedicineDetailScreen)
                     }
                 )

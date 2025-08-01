@@ -1,5 +1,6 @@
 package com.cases.carefull.data.network
 
+import com.cases.carefull.data.model.MedicineResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.LocalHospital
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
+import com.cases.carefull.BuildConfig
 import com.cases.carefull.domain.model.NavType
 import com.cases.carefull.domain.model.ScreenConfig
 import com.cases.carefull.features.carefullcommon.model.MainUiState
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.update
 
 
 class MainViewModel(private val repository: NavigationRepository) : ViewModel() {
+
 	private val _uiState = MutableStateFlow(MainUiState())
 	val uiState: StateFlow<MainUiState> = _uiState
 	

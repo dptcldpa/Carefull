@@ -56,7 +56,7 @@ fun DietSearchScreen(
 	var errorMessage by remember { mutableStateOf<String?>(null) }
 	var isLoading by remember { mutableStateOf(false) }
 	
-	val API_KEY =
+	val API_KEY = ""
 	
 	
 	Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
