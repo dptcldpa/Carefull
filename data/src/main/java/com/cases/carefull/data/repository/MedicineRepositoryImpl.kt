@@ -1,7 +1,7 @@
 package com.cases.carefull.data.repository
 
 import android.util.Log
-import com.cases.carefull.data.dto.MedicineItemDto
+import com.cases.carefull.data.model.MedicineItemDto
 import com.cases.carefull.data.network.MedicineApiService
 import com.cases.carefull.domain.model.MedicineItem
 import com.cases.carefull.data.mapper.toDomain
@@ -12,17 +12,15 @@ class MedicineRepositoryImpl(
     private val apiService: MedicineApiService
 ) : MedicineRepository {
 
-    private val serviceKey
-    
-    override suspend fun searchMedicines(query: String): Result<List<MedicineItem>> {
+
+    override suspend fun searchMedicines(medicineApiKey: String, query: String): Result<List<MedicineItem>> {
         if (query.isBlank()) {
             return Result.success(emptyList())
         }
         Log.d("API_TEST", "Repository: API 호출 시도, query = $query")
         return try {
             val response = apiService.getMedicineList(
-                serviceKey = serviceKey,
-//                serviceKey = BuildConfig.medicine_api_key,
+                serviceKey = medicineApiKey,
                 itemName = query
             )
             Log.d("API_TEST", "Repository: API 호출 시도, ${response.header.resultCode}")

@@ -10,7 +10,8 @@ import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineV
 
 class MainViewModelFactory(
 	private val navigationRepository: NavigationRepository,
-	private val medicineRepository: MedicineRepository
+	private val medicineSearchUseCase: MedicineSearchUseCase,
+	private val medicineApiKey: String
 ) : ViewModelProvider.Factory {
 	override fun <T : ViewModel> create(modelClass: Class<T>): T {
 		if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
@@ -19,7 +20,7 @@ class MainViewModelFactory(
 		}
 		else if (modelClass.isAssignableFrom(MedicineViewModel::class.java)) {
 			@Suppress("UNCHECKED_CAST")
-			return MedicineViewModel(medicineRepository) as T
+			return MedicineViewModel(medicineSearchUseCase = medicineSearchUseCase, medicineApiKey = medicineApiKey) as T
 		}
 		throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
 	}

@@ -1,4 +1,4 @@
-package com.cases.carefull.data.dto
+package com.cases.carefull.data.model
 
 import com.google.gson.annotations.SerializedName
 
