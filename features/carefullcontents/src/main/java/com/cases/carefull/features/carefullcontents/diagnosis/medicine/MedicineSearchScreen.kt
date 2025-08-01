@@ -51,9 +51,8 @@ fun MedicineSearchScreen(
     medicineApiKey: String,
     onNavigateToMedicineInfo: () -> Unit
 ) {
-    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
-    val searchResults by viewModel.searchResultState.collectAsStateWithLifecycle()
-    val recentSearches by viewModel.recentSearches.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
 
     Scaffold { innerPadding ->
         Column(
@@ -79,7 +78,7 @@ fun MedicineSearchScreen(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 TextField(
-                    value = searchQuery,
+                    value = uiState,
                     onValueChange = {newQuery ->
                         viewModel.onQueryChange(newQuery, medicineApiKey)
                     },

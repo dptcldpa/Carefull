@@ -11,8 +11,7 @@ import com.cases.carefull.domain.repository.MedicineRepository
 class MedicineRepositoryImpl(
     private val apiService: MedicineApiService
 ) : MedicineRepository {
-
-
+    
     override suspend fun searchMedicines(medicineApiKey: String, query: String): Result<List<MedicineItem>> {
         if (query.isBlank()) {
             return Result.success(emptyList())

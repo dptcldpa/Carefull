@@ -2,7 +2,6 @@ package com.cases.carefull.navigation
 
 import android.app.Activity
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,7 +28,6 @@ import com.cases.carefull.common.CarefullApplication
 import com.cases.carefull.common.MainViewModel
 import com.cases.carefull.di.MainViewModelFactory
 import com.cases.carefull.features.carefullcommon.components.LayoutAsset
-import com.cases.carefull.features.carefullcommon.components.NavigationRepositoryImpl
 import com.cases.carefull.features.carefullcommon.navigation.DiagnosisRoute
 import com.cases.carefull.features.carefullcommon.navigation.FeedRoute
 import com.cases.carefull.features.carefullcommon.navigation.MainRoute
@@ -46,7 +44,6 @@ import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineS
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineViewModel
 import com.cases.carefull.features.carefullcontents.feed.Ranking
 import com.cases.carefull.features.carefullcontents.feed.Social
-import com.cases.carefull.features.carefullcontents.routine.Diet
 import com.cases.carefull.features.carefullcontents.routine.DietRepositoryImpl
 import com.cases.carefull.features.carefullcontents.routine.DietRetrofitClient
 import com.cases.carefull.features.carefullcontents.routine.DietScreen
@@ -57,7 +54,6 @@ import com.cases.carefull.features.carefullcontents.routine.Exercise
 import com.cases.carefull.features.carefullcontents.routine.FoodInformation
 import com.cases.carefull.features.carefullcontents.routine.FoodSearchViewModel
 import com.cases.carefull.features.carefullcontents.routine.FoodSearchViewModelFactory
-import com.cases.carefull.features.carefullcontents.routine.SearchFood
 import com.cases.carefull.features.carefullcontents.routine.SharedViewModel
 import com.cases.carefull.features.carefullmainui.screen.Home
 import com.cases.carefull.features.carefullmainui.screen.auth.Signin
