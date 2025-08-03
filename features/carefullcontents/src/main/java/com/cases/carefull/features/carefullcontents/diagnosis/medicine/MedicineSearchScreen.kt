@@ -31,11 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,16 +39,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cases.carefull.domain.model.MedicineItem
-import com.cases.carefull.features.carefullcontents.UiState
 
 @Composable
 fun MedicineSearchScreen(
     viewModel: MedicineViewModel,
-    medicineApiKey: String,
     onNavigateToMedicineInfo: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
 
     Scaffold { innerPadding ->
         Column(
@@ -78,9 +71,9 @@ fun MedicineSearchScreen(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 TextField(
-                    value = uiState,
-                    onValueChange = {newQuery ->
-                        viewModel.onQueryChange(newQuery, medicineApiKey)
+                    value = uiState.searchQuery,
+                    onValueChange = { newQuery ->
+                        viewModel.onQueryChange(newQuery)
                     },
                     placeholder = { Text("약 이름을 입력하세요", color = Color.Gray) },
                     singleLine = true,
@@ -97,7 +90,7 @@ fun MedicineSearchScreen(
                 )
                 IconButton(
                     onClick = {
-                        viewModel.addRecentSearch(searchQuery)
+                        viewModel.addRecentSearch(uiState.searchQuery)
                     }) {
                     Icon(
                         imageVector = Icons.Default.Search,
@@ -109,41 +102,43 @@ fun MedicineSearchScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            if (searchQuery.isEmpty()) {
+            if (uiState.searchQuery.isEmpty()) {
                 RecentSearchSection(
-                    recentSearches = recentSearches,
+                    recentSearches = uiState.recentSearches,
                     onSearch = { searchTerm ->
-                        viewModel.onQueryChange(searchTerm, medicineApiKey)
+                        viewModel.onQueryChange(searchTerm)
                     },
                     onRemove = viewModel::removeRecentSearch,
                     onClearAll = viewModel::clearRecentSearches
                 )
             } else {
-                when (val state = searchResults) {
-                    is UiState.Loading -> {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator()
+                if (uiState.isLoading) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                if (uiState.errorMessage != null) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("에러가 발생했습니다: ${uiState.errorMessage}", color = Color.Red)
+                    }
+                } else {
+                    SearchResultSection(
+                        searchResults = uiState.searchResult,
+                        onItemClick = { medicineItem ->
+                            viewModel.setSelectedItem(medicineItem)
+                            onNavigateToMedicineInfo()
                         }
-                    }
-                    is UiState.Success -> {
-                        SearchResultSection(
-                            searchResults = state.data,
-                            onItemClick = { medicineItem ->
-                                viewModel.setSelectedItem(medicineItem)
-                                onNavigateToMedicineInfo()
-                            }
-                        )
-                    }
-                    is UiState.Error -> {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("에러가 발생했습니다: ${state.errorMessage}", color = Color.Red)
-                        }
-                    }
+                    )
                 }
             }
         }
     }
 }
+
 
 @Composable
 private fun RecentSearchSection(

@@ -31,15 +31,17 @@ class DefaultAppContainer : AppContainer {
     }
 
     override val medicineSearchUseCase: MedicineSearchUseCase by lazy {
-        MedicineSearchUseCase(medicineRepository)
+        MedicineSearchUseCase(repository = medicineRepository,
+
+            medicineApiKey = BuildConfig.medicine_api_key
+        )
     }
+
 
     override val medicineViewModelFactory: ViewModelProvider.Factory by lazy {
         MainViewModelFactory(
-            navigationRepository = navigationRepository, // navigationRepository도 AppContainer에 있다고 가정
-            medicineSearchUseCase = medicineSearchUseCase, // AppContainer가 가진 UseCase 전달
-            // AppContainer가 BuildConfig에 직접 접근하여 API 키를 가져옵니다.
-            medicineApiKey = BuildConfig.medicine_api_key
+            navigationRepository = navigationRepository,
+            medicineSearchUseCase = medicineSearchUseCase
         )
     }
 }

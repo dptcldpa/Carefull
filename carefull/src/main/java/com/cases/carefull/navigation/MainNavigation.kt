@@ -16,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -67,32 +68,32 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainNavigation() {
     val application = LocalContext.current.applicationContext as CarefullApplication
-
     val container = application.container
 
-    val navigationRepository = container.navigationRepository
-    val medicineSearchUseCase = container.medicineSearchUseCase
-    val medicineApiKey = BuildConfig.medicine_api_key
-
     val mainViewModelFactory = MainViewModelFactory(
-        navigationRepository = navigationRepository,
-        medicineSearchUseCase = medicineSearchUseCase,
-        medicineApiKey = medicineApiKey
+        navigationRepository = container.navigationRepository,
+        medicineSearchUseCase = container.medicineSearchUseCase
     )
 
+//    val mainViewModel: MainViewModel = viewModel(factory = mainViewModelFactory)
+
+    val medicineViewModel: MedicineViewModel = viewModel(factory = mainViewModelFactory)
     val viewModel: MainViewModel = viewModel(factory = mainViewModelFactory)
+
+//    val navigationRepository = container.navigationRepository
+//    val medicineSearchUseCase = container.medicineSearchUseCase
+//    val medicineApiKey = BuildConfig.medicine_api_key
+
+    val navController = rememberNavController()
+
     val uiState by viewModel.uiState.collectAsState()
     val foodRepository = remember { DietRepositoryImpl() }
-    
-    val navController = rememberNavController()
-    
-    
 //    val repository = remember { NavigationRepositoryImpl() }
 //	val viewModel: MainViewModel = viewModel(factory = MainViewModelFactory(navigationRepository, medicineRepository))
-    val medicineViewModel: MedicineViewModel = viewModel(factory = mainViewModelFactory)
-    
+//    val medicineViewModel: MedicineViewModel = viewModel(factory = mainViewModelFactory)
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    
+
     val currentRoute: Route? by remember(navBackStackEntry) {
         derivedStateOf {
             val routeString = navBackStackEntry?.destination?.route
@@ -227,8 +228,11 @@ fun MainNavigation() {
             // 진료 - 약
             composable<DiagnosisRoute.MedicineInfoScreen> {
 //				val medicineViewModel: MedicineViewModel = viewModel(factory = mainViewModelFactory)
-                val selectedItem by medicineViewModel.selectedItem.collectAsState()
-                selectedItem?.let { item ->
+//              val selectedItem by medicineViewModel.setSelectedItem().collectAsState()
+
+                val uiState by medicineViewModel.uiState.collectAsStateWithLifecycle()
+
+                uiState.selectedItem?.let { item ->
                     MedicineInfoScreen(medicineItem = item)
                 }
             }
@@ -249,10 +253,8 @@ fun MainNavigation() {
 
                 MedicineSearchScreen(
                     viewModel = medicineViewModel,
-                    medicineApiKey = medicineApiKey,
                     onNavigateToMedicineInfo = {
                         navController.navigate(DiagnosisRoute.MedicineDetailScreen)
-//						navController.navigate(DiagnosisRoute.MedicineDetailScreen)
                     }
                 )
             }
@@ -260,8 +262,10 @@ fun MainNavigation() {
             // 약 상세 페이지
             composable<DiagnosisRoute.MedicineDetailScreen> {
 //				val medicineViewModel: MedicineViewModel = viewModel(factory = mainViewModelFactory)
-                val selectedItem by medicineViewModel.selectedItem.collectAsState()
-                selectedItem?.let { item ->
+//              val selectedItem by medicineViewModel.setSelectedItem(item = ).collectAsStateWithLifecycle()
+                val uiState by medicineViewModel.uiState.collectAsStateWithLifecycle()
+
+                uiState.selectedItem?.let { item ->
                     MedicineDetailScreen(medicineItem = item)
                 }
             }
