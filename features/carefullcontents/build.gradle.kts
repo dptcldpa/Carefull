@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -51,19 +50,23 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.material)
+
     // map
     implementation(libs.naver.map)
     implementation(libs.play.services.maps)
+
+    //Coil
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.coil.compose)
+
     // retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    // coil
-    implementation(libs.coil.compose)
+
     // ViewModel
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.activity.ktx)
-    // Coroutines
-    implementation(libs.kotlinx.coroutines.core)
+
     // 로그 확인용
     implementation(libs.logging.interceptor)
     testImplementation(libs.junit)
