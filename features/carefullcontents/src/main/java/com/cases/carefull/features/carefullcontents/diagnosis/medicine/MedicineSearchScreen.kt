@@ -220,7 +220,7 @@ private fun SearchResultSection(
                     }
                 }
             }
-        }
+        };
     } else {
         Text("검색 결과가 없습니다.", color = Color.Gray, modifier = Modifier.padding(top = 16.dp))
     }

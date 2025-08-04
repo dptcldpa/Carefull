@@ -10,30 +10,27 @@ import com.cases.carefull.domain.repository.MedicineRepository
 class MedicineRepositoryImpl(
     private val apiService: MedicineApiService
 ) : MedicineRepository {
-    
-    override suspend fun searchMedicines(medicineApiKey: String, query: String): List<MedicineItem> {
-        if (query.isBlank()) {
-            return emptyList()
-        }
+    override suspend fun searchMedicines(
+        medicineApiKey: String,
+        query: String
+    ) = runCatching {
         Log.d("API_TEST", "Repository: API 호출 시도, query = $query")
-        try {
-            val response = apiService.getMedicineList(
-                serviceKey = medicineApiKey,
-                itemName = query
-            )
-            Log.d("API_TEST", "Repository: API 호출 시도, ${response.header.resultCode}")
-            if (response.header.resultCode == "00") {
-                val dtoList: List<MedicineItemDto> = response.body?.items ?: emptyList()
-
-                Log.d("API_TEST", "Repository: API 호출 성공, ${dtoList.size}개 받음")
-                return dtoList.map { it.toDomain() }
-            } else {
-                Log.e("API_TEST", "Repository: API 오류 - ${response.header.resultMsg}")
-                throw Exception("API Error: ${response.header.resultMsg}")
-            }
-        } catch (e: Exception) {
-            Log.e("API_TEST", "Repository: 네트워크 예외 발생", e)
-            throw e
+        val response = apiService.getMedicineList(
+            serviceKey = medicineApiKey,
+            itemName = query
+        )
+        Log.d("API_TEST", "Repository: API 호출 시도, ${response.header.resultCode}")
+        val result = if (response.header.resultCode == "00") {
+            val dtoList: List<MedicineItemDto> = response.body.items
+            Log.d("API_TEST", "Repository: API 호출 성공, ${dtoList.size}개 받음")
+            dtoList.map {
+                it.toDomain()
+            }.toList()
+        } else {
+            emptyList()
         }
+        result
+    }.getOrElse {
+        emptyList()
     }
 }
