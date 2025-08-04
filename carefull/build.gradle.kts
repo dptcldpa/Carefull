@@ -70,12 +70,13 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.android)
     implementation(libs.kotlinx.serialization.json)
-    
+
     // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore.ktx)
 
     implementation(libs.kotlin.reflect)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -84,6 +85,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    
+
     api(libs.androidx.navigation.compose)
 }
