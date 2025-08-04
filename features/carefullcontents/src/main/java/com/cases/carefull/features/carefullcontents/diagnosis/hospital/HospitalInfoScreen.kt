@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -104,7 +104,7 @@ fun HospitalInfoScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = if (showBestHospitals) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowRight,
+                imageVector = if (showBestHospitals) Icons.Filled.KeyboardArrowDown else Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null
             )
             Text(
@@ -130,7 +130,7 @@ fun HospitalInfoScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = if (showAllHospitals) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowRight,
+                imageVector = if (showAllHospitals) Icons.Filled.KeyboardArrowDown else Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null
             )
             Text(
