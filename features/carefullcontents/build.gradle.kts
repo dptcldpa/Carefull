@@ -59,9 +59,9 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation(libs.coil.compose)
 
-    // retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+//    // retrofit
+//    implementation(libs.retrofit)
+//    implementation(libs.converter.gson)
 
     // ViewModel
     implementation(libs.lifecycle.viewmodel.ktx)

@@ -211,7 +211,6 @@ fun FoodSearchResultItem(
         }
     }
 }
-// 영양 정보를 보여주는 작은 헬퍼 컴포저블
 @Composable
 fun NutritionInfo(label: String, value: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {

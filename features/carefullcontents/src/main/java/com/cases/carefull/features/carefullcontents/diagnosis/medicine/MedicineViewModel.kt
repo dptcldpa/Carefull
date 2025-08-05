@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cases.carefull.domain.model.MedicineItem
 import com.cases.carefull.domain.usecase.MedicineSearchUseCase
-import com.cases.carefull.features.carefullcontents.UiState
+import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 class MedicineViewModel(
     private val medicineSearchUseCase: MedicineSearchUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(UiState())
+    private val _uiState = MutableStateFlow(MedicineUiState())
     val uiState = _uiState.asStateFlow()
     fun onQueryChange(query: String) {
         _uiState.update { it.copy(searchQuery = query) }

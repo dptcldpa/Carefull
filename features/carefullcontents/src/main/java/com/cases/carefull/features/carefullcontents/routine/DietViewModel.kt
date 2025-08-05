@@ -1,62 +1,56 @@
 package com.cases.carefull.features.carefullcontents.routine
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import com.cases.carefull.domain.model.DietInfo
+import com.cases.carefull.domain.model.MealType
+import com.cases.carefull.domain.repository.DietRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-// UI에 보여줄 상태를 정의하는 데이터 클래스
-data class DietUiState(
-	val mealsByTime: Map<MealType, List<MealRecord>> = emptyMap(),
-	val totalCalories: Int = 0,
-	val isLoading: Boolean = true // 초기 로딩 상태를 표시
-)
-
 
 class DietViewModel(
 	private val dietRepository: DietRepository
 ) : ViewModel() {
 	
-	val uiState: StateFlow<DietUiState> = dietRepository.getAllMeals()
-		.map { meals ->
-			DietUiState(
-				mealsByTime = meals.groupBy { it.mealType },
-				totalCalories = meals.sumOf { it.calories },
-				isLoading = false
-			)
-		}
-		.stateIn(
-			scope = viewModelScope,
-			started = SharingStarted.WhileSubscribed(5_000),
-			initialValue = DietUiState()
-		)
+	private val _uiState = MutableStateFlow(DietUiState())
+	val uiState = _uiState.asStateFlow()
 	
-	fun onAddMeal(mealRecord: MealRecord) {
+	init {
 		viewModelScope.launch {
-			dietRepository.addMeal(mealRecord)
+			dietRepository.getAllMeals().collect { meals ->
+				_uiState.value = DietUiState(
+					mealsByTime = meals.groupBy { it.mealType },
+					totalCalories = meals.sumOf { it.calories ?: 0 },
+					totalCarbs = meals.sumOf { it.carbs ?: 0 },
+					totalProteins = meals.sumOf { it.proteins ?: 0 },
+					totalFats = meals.sumOf { it.fats ?: 0 },
+					isLoading = false
+				)
+			}
 		}
 	}
 	
-	fun onRemoveFood(mealRecord: MealRecord) {
+	fun onAddMeal(dietInfo: DietInfo, mealType: MealType = MealType.SNACK, newWeight: Int? = null) {
 		viewModelScope.launch {
-			dietRepository.removeMeal(mealRecord)
+			val updatedDietInfo = newWeight?.let { dietInfo.recalculateFor(it) } ?: dietInfo
+			val newDietInfo = updatedDietInfo.copy(mealType = mealType)
+			dietRepository.addMeal(newDietInfo)
 		}
 	}
-}
-
-class DietViewModelFactory(
-	private val foodRepository: DietRepository
-) : ViewModelProvider.Factory {
-	override fun <T : ViewModel> create(modelClass: Class<T>,extras: CreationExtras): T {
-		if (modelClass.isAssignableFrom(DietViewModel::class.java)) {
-			@Suppress("UNCHECKED_CAST")
-			return DietViewModel(foodRepository) as T
+	
+	fun onRemoveFood(dietInfo: DietInfo) {
+		viewModelScope.launch {
+			dietRepository.removeMeal(dietInfo)
 		}
-		throw IllegalArgumentException("Unknown ViewModel class")
+	}
+	
+	fun onSearch(query: String) {
+		viewModelScope.launch {
+			_uiState.update { it.copy(isLoading = true, searchResults = emptyList()) }
+			val result = dietRepository.searchMeals(query = query)
+			_uiState.update { it.copy(isLoading = false, searchResults = result) }
+		}
 	}
 }
