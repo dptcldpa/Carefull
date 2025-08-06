@@ -13,46 +13,46 @@ import com.cases.carefull.features.carefullcommon.components.NavigationRepositor
 import com.cases.carefull.features.carefullcommon.model.NavigationRepository
 
 interface AppContainer {
-	val navigationRepository: NavigationRepository
-	val medicineRepository: MedicineRepository
-	val medicineSearchUseCase: MedicineSearchUseCase
-	val medicineViewModelFactory: ViewModelProvider.Factory
-	val dietRepository: DietRepository
+    val navigationRepository: NavigationRepository
+    val medicineRepository: MedicineRepository
+    val medicineSearchUseCase: MedicineSearchUseCase
+    val medicineViewModelFactory: ViewModelProvider.Factory
+    val dietRepository: DietRepository
 }
 
 class DefaultAppContainer : AppContainer {
-	
-	override val navigationRepository: NavigationRepository by lazy {
-		NavigationRepositoryImpl()
-	}
-	
-	private val medicineApiService by lazy {
-		RetrofitInstance.medicineApi
-	}
-	
-	override val medicineRepository: MedicineRepository by lazy {
-		MedicineRepositoryImpl(medicineApiService)
-	}
-	
-	override val medicineSearchUseCase: MedicineSearchUseCase by lazy {
-		MedicineSearchUseCase(
-			repository = medicineRepository,
-			medicineApiKey = BuildConfig.medicine_api_key
-		)
-	}
-	override val dietRepository: DietRepository by lazy {
-		DietRepositoryImpl(
-			apiService = DietRetrofitClient.api,
-			dietApiKey = BuildConfig.diet_api_key
-		)
-	}
-	
-	override val medicineViewModelFactory: ViewModelProvider.Factory by lazy {
-		ViewModelFactory(
-			navigationRepository = navigationRepository,
-			medicineSearchUseCase = medicineSearchUseCase,
-			dietRepository = dietRepository
-		
-		)
-	}
+
+    override val navigationRepository: NavigationRepository by lazy {
+        NavigationRepositoryImpl()
+    }
+
+    private val medicineApiService by lazy {
+        RetrofitInstance.medicineApi
+    }
+
+    override val medicineRepository: MedicineRepository by lazy {
+        MedicineRepositoryImpl(medicineApiService)
+    }
+
+    override val medicineSearchUseCase: MedicineSearchUseCase by lazy {
+        MedicineSearchUseCase(
+            repository = medicineRepository,
+            medicineApiKey = BuildConfig.medicine_api_key
+        )
+    }
+    override val dietRepository: DietRepository by lazy {
+        DietRepositoryImpl(
+            apiService = DietRetrofitClient.api,
+            dietApiKey = BuildConfig.diet_api_key
+        )
+    }
+
+    override val medicineViewModelFactory: ViewModelProvider.Factory by lazy {
+        ViewModelFactory(
+            navigationRepository = navigationRepository,
+            medicineSearchUseCase = medicineSearchUseCase,
+            dietRepository = dietRepository
+
+        )
+    }
 }
