@@ -22,7 +22,7 @@ data class FoodHeader(
 data class FoodBody(
 	// items 키 안에는 FoodData 객체들의 배열이 들어갑니다.
 	@SerializedName("items")
-	val items: List<DietItemDto>,
+	val items: List<DietItemDtoTwo>,
 	@SerializedName("numOfRows")
 	val numOfRows: Int,
 	@SerializedName("pageNo")

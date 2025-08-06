@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.cases.carefull.Splash
 import com.cases.carefull.common.CarefullApplication
 import com.cases.carefull.common.MainViewModel
+import com.cases.carefull.data.firestore.UserViewModel
 import com.cases.carefull.di.ViewModelFactory
 import com.cases.carefull.features.carefullcommon.components.LayoutAsset
 import com.cases.carefull.features.carefullcommon.navigation.DiagnosisRoute
@@ -44,6 +45,7 @@ import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineS
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineViewModel
 import com.cases.carefull.features.carefullcontents.feed.Ranking
 import com.cases.carefull.features.carefullcontents.feed.Social
+import com.cases.carefull.features.carefullcontents.firestore.UserScreen
 import com.cases.carefull.features.carefullcontents.routine.DietScreen
 import com.cases.carefull.features.carefullcontents.routine.DietSearchScreen
 import com.cases.carefull.features.carefullcontents.routine.DietViewModel

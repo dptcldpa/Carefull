@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.toRoute
-import com.cases.carefull.domain.model.DietInfo
+import com.cases.carefull.domain.model.DietCollection
 import com.cases.carefull.domain.model.MealType
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 
@@ -40,7 +40,7 @@ fun DietSearchScreen(
 	viewModel: DietViewModel,
 	navController: NavController
 ) {
-	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+	val uiStateTwo by viewModel.uiState.collectAsStateWithLifecycle()
 	var foodNameInput by remember { mutableStateOf("새우") }
 	
 	val route = navController.currentBackStackEntry?.toRoute<RoutineRoute.DietSearchScreen>()
@@ -51,16 +51,16 @@ fun DietSearchScreen(
 		return
 	}
 	
-	var foodToEdit by remember { mutableStateOf<DietInfo?>(null) }
+	var foodToEdit by remember { mutableStateOf<DietCollection?>(null) }
 	
 	foodToEdit?.let { food ->
 		EditWeightDialog(
 			item = food,
 			onConfirm = { newWeight ->
-				viewModel.onAddMeal(
-					dietInfo = food,
+				viewModel.onAddMealToFirestore(
+					dietCollection = food,
 					mealType = MealType.valueOf(mealType),
-					newWeight = newWeight
+					updateWeight = newWeight
 				)
 				foodToEdit = null
 				navController.popBackStack()
@@ -86,7 +86,7 @@ fun DietSearchScreen(
 			Spacer(Modifier.height(8.dp))
 			Button(
 				onClick = { viewModel.onSearch(foodNameInput) },
-				enabled = !uiState.isLoading,
+				enabled = !uiStateTwo.isLoading,
 				modifier = Modifier.fillMaxWidth()
 			) {
 				Text("검색")
@@ -94,11 +94,11 @@ fun DietSearchScreen(
 			Spacer(Modifier.height(16.dp))
 			
 			// 결과 표시 영역
-			if (uiState.isLoading) {
+			if (uiStateTwo.isLoading) {
 				CircularProgressIndicator()
 			} else {
 				LazyColumn(modifier = Modifier.fillMaxSize()) {
-					items(uiState.searchResults) { foodItem ->
+					items(uiStateTwo.searchResults) { foodItem ->
 						FoodItemCard(
 							item = foodItem,
 							onClick = {
@@ -114,7 +114,7 @@ fun DietSearchScreen(
 
 @Composable
 fun FoodItemCard(
-	item: DietInfo,
+	item: DietCollection,
 	onClick: () -> Unit,
 ) {
 	Card(
@@ -126,20 +126,20 @@ fun FoodItemCard(
 	) {
 		Column(modifier = Modifier.padding(16.dp)) {
 			Row(modifier = Modifier.fillMaxSize()) {
-				Text(text = item.name ?: "이름 없음", style = MaterialTheme.typography.titleMedium)
+				Text(text = item.mealName, style = MaterialTheme.typography.titleMedium)
 				
 				Column(
 					modifier = Modifier.fillMaxSize(),
 					horizontalAlignment = Alignment.End
 				) {
-					Text("1회 제공량: ${item.weight ?: "정보없음"}g")
-					Text("칼로리: ${item.calories ?: "정보 없음"} kcal")
+					Text("1회 제공량: ${item.weight}g")
+					Text("칼로리: ${item.kcal} kcal")
 				}
 			}
 			Row(modifier = Modifier.fillMaxSize()) {
-				Text("탄수화물: ${item.carbs ?: "정보 없음"}g ")
-				Text("단백질: ${item.proteins ?: "정보 없음"}g ")
-				Text("지방: ${item.fats ?: "정보 없음"}g")
+				Text("탄수화물: ${item.carbohydrate}g ")
+				Text("단백질: ${item.protein}g ")
+				Text("지방: ${item.fat}g")
 			}
 		}
 	}
@@ -147,15 +147,15 @@ fun FoodItemCard(
 
 @Composable
 fun EditWeightDialog(
-	item: DietInfo,
+	item: DietCollection,
 	onConfirm: (Int) -> Unit, // "확인" 버튼 눌렀을 때 호출, 새 중량을 전달
 	onDismiss: () -> Unit      // "취소" 또는 바깥 영역 클릭 시 호출
 ) {
-	var weight by remember { mutableStateOf(item.weight?.toString() ?: "") }
+	var weight by remember { mutableStateOf(item.weight.toString()) }
 	
 	AlertDialog(
 		onDismissRequest = onDismiss,
-		title = { Text(text = "${item.name} 중량 수정") },
+		title = { Text(text = "${item.mealName} 중량 수정") },
 		text = {
 			OutlinedTextField(
 				value = weight,

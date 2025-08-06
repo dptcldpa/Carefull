@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,7 +23,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,10 +31,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.cases.carefull.domain.model.DietInfo
+import com.cases.carefull.domain.model.DietCollection
 import com.cases.carefull.domain.model.MealType
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
-import java.nio.file.WatchEvent
 
 
 @Composable
@@ -44,7 +41,7 @@ fun DietScreen(
 	viewModel: DietViewModel,
 	navController: NavController
 ) {
-	val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+	val uiStateTwo = viewModel.uiState.collectAsStateWithLifecycle()
 	
 //	LaunchedEffect(key1 = navController.currentBackStackEntry) {
 //		val result =
@@ -55,13 +52,13 @@ fun DietScreen(
 //		}
 //	}
 	Column {
-		if (uiState.value.isLoading) {
+		if (uiStateTwo.value.isLoading) {
 			Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 				CircularProgressIndicator()
 			}
 		}
 		Text(
-			text = "${uiState.value.totalCalories} kcal",
+			text = "${uiStateTwo.value.totalCalories} kcal",
 			style = MaterialTheme.typography.bodyLarge,
 			modifier = Modifier
 				.fillMaxWidth()
@@ -69,7 +66,7 @@ fun DietScreen(
 			textAlign = TextAlign.Center
 		)
 		Text(
-			text = "탄수화물 : ${uiState.value.totalCarbs}g",
+			text = "탄수화물 : ${uiStateTwo.value.totalCarbs}g",
 			style = MaterialTheme.typography.bodySmall,
 			modifier = Modifier
 				.fillMaxWidth()
@@ -77,7 +74,7 @@ fun DietScreen(
 			textAlign = TextAlign.Center
 		)
 		Text(
-			text = "단백질 : ${uiState.value.totalProteins}g",
+			text = "단백질 : ${uiStateTwo.value.totalProteins}g",
 			style = MaterialTheme.typography.bodySmall,
 			modifier = Modifier
 				.fillMaxWidth()
@@ -85,7 +82,7 @@ fun DietScreen(
 			textAlign = TextAlign.Center
 		)
 		Text(
-			text = "지방 : ${uiState.value.totalFats}g",
+			text = "지방 : ${uiStateTwo.value.totalFats}g",
 			style = MaterialTheme.typography.bodySmall,
 			modifier = Modifier
 				.fillMaxWidth()
@@ -102,13 +99,13 @@ fun DietScreen(
 				MealType.entries.forEach { mealType ->
 					MealSection(
 						mealType = mealType,
-						addedFoods = uiState.value.mealsByTime[mealType] ?: emptyList(),
+						addedFoods = uiStateTwo.value.mealsByTime[mealType] ?: emptyList(),
 						onCameraClick = {},
 						onAddClick = {
 							navController.navigate(RoutineRoute.DietSearchScreen(mealType = mealType.name))
 						},
 						onRemoveClick = { mealRecordToRemove ->
-							viewModel.onRemoveFood(mealRecordToRemove)
+							viewModel.onRemoveFoodFromFirestore(mealRecordToRemove)
 						}
 					
 					)
@@ -121,10 +118,10 @@ fun DietScreen(
 @Composable
 fun MealSection(
 	mealType: MealType,
-	addedFoods: List<DietInfo>,
+	addedFoods: List<DietCollection>,
 	onCameraClick: () -> Unit,
 	onAddClick: () -> Unit,
-	onRemoveClick: (DietInfo) -> Unit
+	onRemoveClick: (DietCollection) -> Unit
 ) {
 	Card(
 		modifier = Modifier
@@ -194,7 +191,7 @@ fun MealSection(
 }
 
 @Composable
-fun FoodItemRow(food: DietInfo, onRemove: () -> Unit) {
+fun FoodItemRow(food: DietCollection, onRemove: () -> Unit) {
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
@@ -202,7 +199,7 @@ fun FoodItemRow(food: DietInfo, onRemove: () -> Unit) {
 		verticalAlignment = Alignment.CenterVertically
 	) {
 		Text(
-			text = "${food.name} ${food.weight}g (${food.calories} kcal)",
+			text = "${food.mealName} ${food.weight}g (${food.kcal} kcal)",
 			modifier = Modifier.weight(1f)
 		)
 		IconButton(onClick = onRemove, modifier = Modifier.size(20.dp)) {
