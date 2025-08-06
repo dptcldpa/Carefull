@@ -1,6 +1,6 @@
 package com.cases.carefull.data.network
 
-import retrofit2.Response
+import com.cases.carefull.data.model.DietResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -12,5 +12,5 @@ interface DietApiService {
 		@Query("numOfRows") numOfRows: Int = 10,
 		@Query("type") type: String = "json",
 		@Query("FOOD_NM_KR") foodName: String
-	): Response<DietResponse>
+	): DietResponse
 }

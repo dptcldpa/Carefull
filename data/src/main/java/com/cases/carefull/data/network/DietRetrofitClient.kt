@@ -1,6 +1,5 @@
-package com.cases.carefull.features.carefullcontents.routine
+package com.cases.carefull.data.network
 
-import com.cases.carefull.data.network.DietApiService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

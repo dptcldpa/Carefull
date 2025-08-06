@@ -2,6 +2,7 @@ package com.cases.carefull.features.carefullcontents.routine
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,8 +18,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -152,3 +156,79 @@ fun FoodInformation() {
         }
     }
 }
+
+@Composable
+fun FoodSearchResultItem(
+    food: Food, // 표시할 Food 데이터
+    onAddClick: () -> Unit // '추가' 버튼 클릭 이벤트 콜백
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // 1. 음식 이름과 추가 버튼
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = food.name,
+                    style = MaterialTheme.typography.bodyLarge,// "치즈 햄버거"
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(onClick = { }) {
+                    Icon(
+                        imageVector = Icons.Default.AddCircle,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
+            
+            // 2. 구분선
+            HorizontalDivider()
+            
+            // 3. 나머지 추가 정보 나열
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround // 공간을 균등하게 분배
+            ) {
+                NutritionInfo(label = "칼로리", value = "${food.calories} kcal")
+                NutritionInfo(label = "탄수화물", value = "${food.carbs} g")
+                NutritionInfo(label = "단백질", value = "${food.protein} g")
+                NutritionInfo(label = "지방", value = "${food.fat} g")
+            }
+        }
+    }
+}
+@Composable
+fun NutritionInfo(label: String, value: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.labelLarge
+        )
+    }
+}
+data class Food(
+    val id: Int,
+    val name: String,
+    val calories: Int,
+    val carbs: Int,
+    val protein: Int,
+    val fat: Int
+)
