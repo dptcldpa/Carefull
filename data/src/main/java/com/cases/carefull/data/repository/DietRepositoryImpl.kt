@@ -5,7 +5,7 @@ import com.cases.carefull.data.firestore.DietCollectionDTO
 import com.cases.carefull.data.firestore.toDomainDietCollectionList
 import com.cases.carefull.data.firestore.toFirestoreDietCollectionDTO
 import com.cases.carefull.data.mapper.toDomainTwo
-import com.cases.carefull.data.model.DietItemDtoTwo
+import com.cases.carefull.data.model.DietItemDto
 import com.cases.carefull.data.network.DietApiService
 import com.cases.carefull.domain.model.DietCollection
 import com.cases.carefull.domain.repository.DietRepository
@@ -54,7 +54,7 @@ class DietRepositoryImpl(
 			foodName = query
 		)
 		if (response.header.resultCode == "00" && response.body.items.isNotEmpty()) {
-			val dtoList: List<DietItemDtoTwo> = response.body.items
+			val dtoList: List<DietItemDto> = response.body.items
 			dtoList.map { it.toDomainTwo() }
 		} else {
 			emptyList()
