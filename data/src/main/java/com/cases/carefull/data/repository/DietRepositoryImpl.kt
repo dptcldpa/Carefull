@@ -1,65 +1,69 @@
 package com.cases.carefull.data.repository
 
-import com.cases.carefull.data.mapper.toDomain
+import android.util.Log
+import com.cases.carefull.data.firestore.DietCollectionDTO
+import com.cases.carefull.data.firestore.toDomainDietCollectionList
+import com.cases.carefull.data.firestore.toFirestoreDietCollectionDTO
+import com.cases.carefull.data.mapper.toDomainTwo
 import com.cases.carefull.data.model.DietItemDto
 import com.cases.carefull.data.network.DietApiService
-import com.cases.carefull.domain.model.DietInfo
-import com.cases.carefull.domain.model.MealType
+import com.cases.carefull.domain.model.DietCollection
 import com.cases.carefull.domain.repository.DietRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
+import com.cases.carefull.domain.util.DataResult
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.tasks.await
 
 class DietRepositoryImpl(
 	private val apiService: DietApiService,
 	private val dietApiKey: String
 ) : DietRepository {
 	
-	override fun getAllMeals(): Flow<List<DietInfo>> {
-		return fakeMealDatabase
-	}
+	private val db = Firebase.firestore
 	
-	override suspend fun addMeal(dietInfo: DietInfo) {
-		fakeMealDatabase.update { currentList ->
-			currentList + dietInfo
+	override suspend fun getAllMeal(): DataResult<List<DietCollection>> =
+		runCatching {
+			val snapshot = db.collection("diet_collection").get().await()
+			val dtoList = snapshot.toObjects(DietCollectionDTO::class.java)
+			
+			dtoList.toDomainDietCollectionList()
+		}.map { dietList ->
+			DataResult.Success(dietList)
+			
+		}.getOrElse { exception ->
+			Log.e("FirestoreError", "Error in getAllMealsFromFirestore", exception)
+			DataResult.Error(exception)
 		}
-	}
 	
-	override suspend fun removeMeal(dietInfo: DietInfo) {
-		fakeMealDatabase.update { currentList ->
-			currentList.filterNot { it.id == dietInfo.id }
+	override suspend fun addMeal(mealData: DietCollection): DataResult<Unit> {
+		return try {
+			val dto = mealData.toFirestoreDietCollectionDTO()
+			Log.d("MEAL_TYPE_TEST", "Repository: DTO로 변환된 meal_type: ${dto.meal_type}")
+			db.collection("diet_collection").add(dto).await()
+			DataResult.Success(Unit)
+		} catch (e: Exception) {
+			DataResult.Error(e)
 		}
 	}
 	
 	override suspend fun searchMeals(
 		query: String
-	) = runCatching {
+	):List<DietCollection> = runCatching {
 		val response = apiService.getFoodList(
 			apiKey = dietApiKey,
 			foodName = query
 		)
-		val result = if (response.header.resultCode == "00") {
+		if (response.header.resultCode == "00" && response.body.items.isNotEmpty()) {
 			val dtoList: List<DietItemDto> = response.body.items
-			dtoList.map { it.toDomain() }
+			dtoList.map { it.toDomainTwo() }
 		} else {
 			emptyList()
 		}
-		result
 	}.getOrElse {
 		emptyList()
 	}
-	
-	// 더미데이터
-	private val fakeMealDatabase = MutableStateFlow(
-		listOf(
-			DietInfo(1L, "삶은 계란", 155, 100, 100, 100, 100, MealType.BREAKFAST),
-			DietInfo(2L, "아몬드", 100, 155, 100, 100, 100, MealType.SNACK),
-			DietInfo(3L, "우유", 50, 155, 100, 100, 100, MealType.LUNCH),
-			DietInfo(4L, "바나나", 100, 155, 100, 100, 100, MealType.DINNER),
-			DietInfo(5L, "김치", 50, 100, 100, 100, 100, MealType.SNACK),
-			DietInfo(6L, "라면", 100, 155, 100, 100, 100, MealType.BREAKFAST),
-			DietInfo(7L, "피자", 200, 155, 100, 100, 100, MealType.LUNCH),
-			DietInfo(8L, "햄버거", 150, 155, 100, 100, 100, MealType.DINNER)
-		)
-	)
+
+	override suspend fun removeMeal(mealData: DietCollection) {
+		TODO("Not yet implemented")
+	}
 }
