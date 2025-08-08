@@ -2,8 +2,10 @@ package com.cases.carefull.navigation
 
 import android.app.Activity
 import android.net.Uri
+import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -49,6 +51,7 @@ import com.cases.carefull.features.carefullcontents.routine.DietSearchScreen
 import com.cases.carefull.features.carefullcontents.routine.DietViewModel
 import com.cases.carefull.features.carefullcontents.routine.Exercise
 import com.cases.carefull.features.carefullcontents.routine.FoodInformation
+import com.cases.carefull.features.carefullmainui.screen.CalendarScreen
 import com.cases.carefull.features.carefullmainui.screen.Home
 import com.cases.carefull.features.carefullmainui.screen.auth.Signin
 import com.cases.carefull.features.carefullmainui.screen.mypage.AccountManagement
@@ -58,6 +61,7 @@ import com.cases.carefull.features.carefullmainui.screen.mypage.PostWrittenManag
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainNavigation() {
     val application = LocalContext.current.applicationContext as CarefullApplication
@@ -140,6 +144,11 @@ fun MainNavigation() {
                             }
                         }
                     }
+                )
+            }
+            composable<MainRoute.CalendarScreen> {
+                CalendarScreen(
+                    modifier = Modifier
                 )
             }
             composable<MainRoute.Home> {

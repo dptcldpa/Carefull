@@ -36,7 +36,6 @@ fun MyPage() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-
         Text(
             text = stringResource(R.string.mypage),
             style = MaterialTheme.typography.titleLarge

@@ -58,7 +58,6 @@ fun RowLine() {
     )
 }
 
-// 스위치 버튼 여부에 따른 사이즈 통일을 위해 최소 사이즈가 설정된 메뉴 컨테이너
 @Composable
 private fun MenuContainer(
     modifier: Modifier = Modifier,
