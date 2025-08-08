@@ -1,9 +1,8 @@
-package com.cases.carefull.data.firestore
+package com.cases.carefull.data.model
 
 import com.cases.carefull.domain.model.DietCollection
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ServerTimestamp
-import java.util.Date
 
 data class DietCollectionDTO(
 	val user_id: String = "",

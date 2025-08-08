@@ -8,12 +8,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 object DietRetrofitClient {
 	private const val BASE_URL = "https://apis.data.go.kr/1471000/FoodNtrCpntDbInfo02/"
 	
-	// 통신 로그를 확인하기 위한 Interceptor
 	private val loggingInterceptor = HttpLoggingInterceptor().apply {
 		level = HttpLoggingInterceptor.Level.BODY
 	}
 	
-	// OkHttpClient에 Interceptor 추가
 	private val okHttpClient = OkHttpClient.Builder()
 		.addInterceptor(loggingInterceptor)
 		.build()

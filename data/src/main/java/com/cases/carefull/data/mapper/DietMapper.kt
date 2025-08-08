@@ -4,7 +4,7 @@ import com.cases.carefull.data.model.DietItemDto
 import com.cases.carefull.domain.model.DietCollection
 import com.cases.carefull.domain.model.MealType
 
-fun DietItemDto.toDomainTwo(): DietCollection {
+fun DietItemDto.toDomain(): DietCollection {
 	
 	val kcalValue = this.kcal?.toDoubleOrNull()?.toInt()?:0
 	val carbohydrateValue = this.carbohydrate?.toDoubleOrNull()?.toInt()?:0

@@ -1,10 +1,9 @@
 package com.cases.carefull.data.repository
 
-import android.util.Log
-import com.cases.carefull.data.firestore.DietCollectionDTO
-import com.cases.carefull.data.firestore.toDomainDietCollectionList
-import com.cases.carefull.data.firestore.toFirestoreDietCollectionDTO
-import com.cases.carefull.data.mapper.toDomainTwo
+import com.cases.carefull.data.model.DietCollectionDTO
+import com.cases.carefull.data.model.toDomainDietCollectionList
+import com.cases.carefull.data.model.toFirestoreDietCollectionDTO
+import com.cases.carefull.data.mapper.toDomain
 import com.cases.carefull.data.model.DietItemDto
 import com.cases.carefull.data.network.DietApiService
 import com.cases.carefull.domain.model.DietCollection
@@ -31,14 +30,12 @@ class DietRepositoryImpl(
 			DataResult.Success(dietList)
 			
 		}.getOrElse { exception ->
-			Log.e("FirestoreError", "Error in getAllMealsFromFirestore", exception)
 			DataResult.Error(exception)
 		}
 	
 	override suspend fun addMeal(mealData: DietCollection): DataResult<Unit> {
 		return try {
 			val dto = mealData.toFirestoreDietCollectionDTO()
-			Log.d("MEAL_TYPE_TEST", "Repository: DTO로 변환된 meal_type: ${dto.meal_type}")
 			db.collection("diet_collection").add(dto).await()
 			DataResult.Success(Unit)
 		} catch (e: Exception) {
@@ -55,7 +52,7 @@ class DietRepositoryImpl(
 		)
 		if (response.header.resultCode == "00" && response.body.items.isNotEmpty()) {
 			val dtoList: List<DietItemDto> = response.body.items
-			dtoList.map { it.toDomainTwo() }
+			dtoList.map { it.toDomain() }
 		} else {
 			emptyList()
 		}
