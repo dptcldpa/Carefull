@@ -1,10 +1,9 @@
-package com.cases.carefull.features.carefullcontents.routine
+package com.cases.carefull.features.carefullcontents.routine.diet
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cases.carefull.domain.model.DietCollection
-import com.cases.carefull.domain.model.MealType
+import com.cases.carefull.domain.model.diet.DietCollection
+import com.cases.carefull.domain.model.diet.MealType
 import com.cases.carefull.domain.repository.DietRepository
 import com.cases.carefull.domain.util.DataResult
 import kotlinx.coroutines.flow.MutableStateFlow

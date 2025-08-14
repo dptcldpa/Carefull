@@ -14,22 +14,22 @@ const val COIL_MEMORY_CACHE_SIZE_PERCENT = 0.3
 const val COIL_DISK_CACHE_DIR_NAME = "coil_file_cache"
 const val COIL_DISK_CACHE_MAX_SIZE = 1024 * 1024 * 100
 
-class CarefullApplication : Application(){
-
-    lateinit var container: AppContainer
-
-    override fun onCreate() {
-        super.onCreate()
-        container = DefaultAppContainer()
-        setUpFirestoreLocalSinkCache()
-    }
-    
-    fun setUpFirestoreLocalSinkCache() {
-        val settings = firestoreSettings {
-            setLocalCacheSettings(persistentCacheSettings {
-                setSizeBytes(1024 * 1024 * 1024)
-            })
-        }
-        Firebase.firestore.firestoreSettings = settings
-    }
+class CarefullApplication : Application() {
+	
+	lateinit var container: AppContainer
+	
+	override fun onCreate() {
+		super.onCreate()
+		container = DefaultAppContainer()
+		setUpFirestoreLocalSinkCache()
+	}
+	
+	fun setUpFirestoreLocalSinkCache() {
+		val settings = firestoreSettings {
+			setLocalCacheSettings(persistentCacheSettings {
+				setSizeBytes(1024 * 1024 * 1024)
+			})
+		}
+		Firebase.firestore.firestoreSettings = settings
+	}
 }

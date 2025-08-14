@@ -6,7 +6,7 @@ import com.cases.carefull.data.model.toFirestoreDietCollectionDTO
 import com.cases.carefull.data.mapper.toDomain
 import com.cases.carefull.data.model.DietItemDto
 import com.cases.carefull.data.network.DietApiService
-import com.cases.carefull.domain.model.DietCollection
+import com.cases.carefull.domain.model.diet.DietCollection
 import com.cases.carefull.domain.repository.DietRepository
 import com.cases.carefull.domain.util.DataResult
 import com.google.firebase.Firebase

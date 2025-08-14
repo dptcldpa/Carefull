@@ -1,6 +1,6 @@
 package com.cases.carefull.domain.repository
 
-import com.cases.carefull.domain.model.DietCollection
+import com.cases.carefull.domain.model.diet.DietCollection
 import com.cases.carefull.domain.util.DataResult
 
 interface DietRepository {

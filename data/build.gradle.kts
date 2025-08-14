@@ -30,6 +30,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 }
 kotlin {
@@ -38,10 +39,10 @@ kotlin {
 
 dependencies {
     implementation(project(":domain"))
-
+    
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation("androidx.compose.ui:ui:1.8.3")
+    implementation(libs.ui)
     implementation(libs.material)
     // retrofit
     implementation(libs.retrofit)
@@ -60,4 +61,20 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.coil.compose)
+    
+    //ML Kit Pose Detection
+    implementation(libs.pose.detection)
+    implementation(libs.pose.detection.accurate)
+    
+    //camera
+    implementation (libs.androidx.camera.core)
+    implementation (libs.androidx.camera.camera2)
+    implementation (libs.androidx.camera.lifecycle)
+    implementation (libs.androidx.camera.view)
+    implementation (libs.androidx.camera.video)
+    
+    implementation(libs.androidx.camera.mlkit.vision)
+    implementation (libs.androidx.camera.extensions)
+    
+    implementation(libs.kotlinx.coroutines.play.services)
 }

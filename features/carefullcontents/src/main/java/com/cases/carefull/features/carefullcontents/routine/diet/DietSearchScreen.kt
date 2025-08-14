@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullcontents.routine
+package com.cases.carefull.features.carefullcontents.routine.diet
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.toRoute
-import com.cases.carefull.domain.model.DietCollection
-import com.cases.carefull.domain.model.MealType
+import com.cases.carefull.domain.model.diet.DietCollection
+import com.cases.carefull.domain.model.diet.MealType
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 
 @Composable

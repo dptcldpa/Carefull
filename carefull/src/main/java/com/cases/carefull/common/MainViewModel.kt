@@ -17,18 +17,20 @@ import com.cases.carefull.features.carefullcommon.model.NavItemUiModel
 import com.cases.carefull.features.carefullcommon.model.NavigationRepository
 import com.cases.carefull.features.carefullcommon.navigation.DiagnosisRoute
 import com.cases.carefull.features.carefullcommon.navigation.FeedRoute
+import com.cases.carefull.features.carefullcommon.navigation.MainRoute
 import com.cases.carefull.features.carefullcommon.navigation.MyPageRoute
 import com.cases.carefull.features.carefullcommon.navigation.Route
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 
 class MainViewModel(private val repository: NavigationRepository) : ViewModel() {
 
 	private val _uiState = MutableStateFlow(MainUiState())
-	val uiState: StateFlow<MainUiState> = _uiState
+	val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 	
 	fun onRouteChanged(currentRoute: Route?) {
 		if (currentRoute == null) return
@@ -58,11 +60,12 @@ class MainViewModel(private val repository: NavigationRepository) : ViewModel() 
 		val specRoute = spec.route
 		if (spec.iconName != null) {
 			return when (specRoute) {
+				is MainRoute.Home -> currentRoute is MainRoute
 				is RoutineRoute -> currentRoute is RoutineRoute
 				is DiagnosisRoute -> currentRoute is DiagnosisRoute
 				is FeedRoute -> currentRoute is FeedRoute
 				is MyPageRoute -> currentRoute is MyPageRoute
-				else -> specRoute == currentRoute
+				else -> false
 			}
 		}
 		return specRoute == currentRoute

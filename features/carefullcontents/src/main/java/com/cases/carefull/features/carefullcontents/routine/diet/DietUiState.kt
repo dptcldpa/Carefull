@@ -1,7 +1,7 @@
-package com.cases.carefull.features.carefullcontents.routine
+package com.cases.carefull.features.carefullcontents.routine.diet
 
-import com.cases.carefull.domain.model.DietCollection
-import com.cases.carefull.domain.model.MealType
+import com.cases.carefull.domain.model.diet.DietCollection
+import com.cases.carefull.domain.model.diet.MealType
 
 data class DietUiState(
     val mealsByTime: Map<MealType, List<DietCollection>> = emptyMap(),

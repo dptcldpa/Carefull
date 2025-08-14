@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullcontents.routine
+package com.cases.carefull.features.carefullcontents.routine.diet
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background

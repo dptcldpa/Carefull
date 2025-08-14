@@ -1,8 +1,8 @@
 package com.cases.carefull.data.mapper
 
 import com.cases.carefull.data.model.DietItemDto
-import com.cases.carefull.domain.model.DietCollection
-import com.cases.carefull.domain.model.MealType
+import com.cases.carefull.domain.model.diet.DietCollection
+import com.cases.carefull.domain.model.diet.MealType
 
 fun DietItemDto.toDomain(): DietCollection {
 	
