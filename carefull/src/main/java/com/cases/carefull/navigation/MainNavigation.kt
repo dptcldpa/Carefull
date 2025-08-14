@@ -38,7 +38,6 @@ import com.cases.carefull.features.carefullcontents.diagnosis.chatbot.ChatBotScr
 import com.cases.carefull.features.carefullcontents.diagnosis.disease.DiseaseSearchScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalInfoScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalSearchScreen
-import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineDetailScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineInfoScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineSearchScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineViewModel
@@ -211,18 +210,9 @@ fun MainNavigation() {
                 MedicineSearchScreen(
                     viewModel = medicineViewModel,
                     onNavigateToMedicineInfo = {
-                        navController.navigate(DiagnosisRoute.MedicineDetailScreen)
+                        navController.navigate(DiagnosisRoute.MedicineInfoScreen)
                     }
                 )
-            }
-
-            // 약 상세 페이지
-            composable<DiagnosisRoute.MedicineDetailScreen> {
-                val uiState by medicineViewModel.uiState.collectAsStateWithLifecycle()
-
-                uiState.selectedItem?.let { item ->
-                    MedicineDetailScreen(medicineItem = item)
-                }
             }
 
             //피드
