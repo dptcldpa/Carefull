@@ -20,8 +20,10 @@ class CarefullApplication : Application(){
 
     override fun onCreate() {
         super.onCreate()
-        container = DefaultAppContainer()
-        setUpFirestoreLocalSinkCache()
+        container = DefaultAppContainer(this)
+        KakaoSdk.init(this, "816cce424892459eff0c0988017b65f2")
+
+//        setUpFirestoreLocalSinkCache()
     }
     
     fun setUpFirestoreLocalSinkCache() {
@@ -31,5 +33,9 @@ class CarefullApplication : Application(){
             })
         }
         Firebase.firestore.firestoreSettings = settings
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     }
 }

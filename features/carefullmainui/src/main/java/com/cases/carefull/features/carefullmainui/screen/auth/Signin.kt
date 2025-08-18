@@ -36,7 +36,20 @@ import com.cases.carefull.features.carefullcommon.R
 
 
 @Composable
+<<<<<<< Updated upstream:features/carefullmainui/src/main/java/com/cases/carefull/features/carefullmainui/screen/auth/Signin.kt
 fun Signin( onLoginClick: () -> Unit,) {
+=======
+fun Signin(
+    onLoginClick: () -> Unit,
+    oauthViewModel: OAuthViewModel = viewModel()
+    ) {
+    val context = LocalContext.current
+
+    val uiState by oauthViewModel.uiState.collectAsStateWithLifecycle()
+//    val loginStatus by authViewModel.loginStatus.collectAsStateWithLifecycle()
+//    val backendResponse by authViewModel.backendResponse.collectAsStateWithLifecycle()
+
+>>>>>>> Stashed changes:features/carefullmainui/src/main/java/com/cases/carefull/features/carefullmainui/screen/auth/SigninScreen.kt
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -178,7 +191,18 @@ fun Signin( onLoginClick: () -> Unit,) {
             Button(
                 onClick = {
 
+<<<<<<< Updated upstream:features/carefullmainui/src/main/java/com/cases/carefull/features/carefullmainui/screen/auth/Signin.kt
                 }, modifier = Modifier
+=======
+
+            Image(
+                painter = painterResource(id = R.drawable.kakao_login_large_wide),
+                contentDescription = "Kakao Login",
+                modifier = Modifier
+                    .clickable {
+                        oauthViewModel.handleKakaoLogin(context)
+                }
+>>>>>>> Stashed changes:features/carefullmainui/src/main/java/com/cases/carefull/features/carefullmainui/screen/auth/SigninScreen.kt
                     .fillMaxWidth(0.7f)
                     .height(56.dp),
                 shape = RoundedCornerShape(12.dp),

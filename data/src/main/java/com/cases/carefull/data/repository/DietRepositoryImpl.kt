@@ -8,7 +8,7 @@ import com.cases.carefull.data.model.DietItemDto
 import com.cases.carefull.data.network.DietApiService
 import com.cases.carefull.domain.model.DietCollection
 import com.cases.carefull.domain.repository.DietRepository
-import com.cases.carefull.domain.util.DataResult
+import com.cases.carefull.domain.util.DataResourceResult
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
@@ -20,26 +20,26 @@ class DietRepositoryImpl(
 	
 	private val db = Firebase.firestore
 	
-	override suspend fun getAllMeal(): DataResult<List<DietCollection>> =
+	override suspend fun getAllMeal(): DataResourceResult<List<DietCollection>> =
 		runCatching {
 			val snapshot = db.collection("diet_collection").get().await()
 			val dtoList = snapshot.toObjects(DietCollectionDTO::class.java)
 			
 			dtoList.toDomainDietCollectionList()
 		}.map { dietList ->
-			DataResult.Success(dietList)
+			DataResourceResult.Success(dietList)
 			
 		}.getOrElse { exception ->
-			DataResult.Error(exception)
+			DataResourceResult.Error(exception)
 		}
 	
-	override suspend fun addMeal(mealData: DietCollection): DataResult<Unit> {
+	override suspend fun addMeal(mealData: DietCollection): DataResourceResult<Unit> {
 		return try {
 			val dto = mealData.toFirestoreDietCollectionDTO()
 			db.collection("diet_collection").add(dto).await()
-			DataResult.Success(Unit)
+			DataResourceResult.Success(Unit)
 		} catch (e: Exception) {
-			DataResult.Error(e)
+			DataResourceResult.Error(e)
 		}
 	}
 	
