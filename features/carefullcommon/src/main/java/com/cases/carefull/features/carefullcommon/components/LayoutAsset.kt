@@ -70,7 +70,6 @@ object LayoutAsset {
 			topBarType = NavType.NONE,
 			showBottomBar = false
 		),
-		
 		//진단
 		DiagnosisRoute.ChatBotScreen to ScreenConfig(
 			topBarType = NavType.TOP_DIAGNOSIS,

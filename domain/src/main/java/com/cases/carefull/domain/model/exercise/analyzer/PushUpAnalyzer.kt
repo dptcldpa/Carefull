@@ -14,7 +14,7 @@ class PushUpAnalyzer(private val isLeftHand: Boolean) : ExerciseAnalyzer {
 		val elbowAngle = getAngle(shoulder, elbow, wrist)
 		
 		return when {
-			elbowAngle > 160 -> ExerciseState.UP
+			elbowAngle > 130 -> ExerciseState.UP
 			elbowAngle < 90 -> ExerciseState.DOWN
 			else -> ExerciseState.NONE
 		}

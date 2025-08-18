@@ -14,7 +14,7 @@ class SquatAnalyzer: ExerciseAnalyzer {
 		val kneeAngle = getAngle(hip, knee, ankle)
 		
 		return when {
-			kneeAngle > 160 -> ExerciseState.UP
+			kneeAngle > 150 -> ExerciseState.UP
 			kneeAngle < 90 -> ExerciseState.DOWN
 			else -> ExerciseState.NONE
 		}

@@ -14,7 +14,7 @@ class DumbbellCurlAnalyzer(private val isLeftHand: Boolean) : ExerciseAnalyzer {
 		val elbowAngle = getAngle(shoulder, elbow, wrist)
 		
 		return when {
-			elbowAngle > 160 -> ExerciseState.DOWN
+			elbowAngle > 140 -> ExerciseState.DOWN
 			elbowAngle < 50 -> ExerciseState.UP
 			else -> ExerciseState.NONE
 		}

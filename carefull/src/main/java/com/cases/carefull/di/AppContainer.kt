@@ -1,5 +1,6 @@
 package com.cases.carefull.di
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import com.cases.carefull.BuildConfig
 import com.cases.carefull.data.network.DietRetrofitClient
@@ -27,7 +28,7 @@ interface AppContainer {
     val poseDetector: PoseDetector
 }
 
-class DefaultAppContainer() : AppContainer {
+class DefaultAppContainer(private val context: Context) : AppContainer {
 
     override val navigationRepository: NavigationRepository by lazy {
         NavigationRepositoryImpl()
@@ -47,31 +48,34 @@ class DefaultAppContainer() : AppContainer {
             medicineApiKey = BuildConfig.medicine_api_key
         )
     }
-    override val dietRepository: DietRepository by lazy {
-        DietRepositoryImpl(
-            apiService = DietRetrofitClient.api,
-            dietApiKey = BuildConfig.diet_api_key
-        )
-    }
 
-    // 2. PoseDetector 인스턴스 생성
     override val poseDetector: PoseDetector by lazy {
-       val options = PoseDetectorOptions.Builder()
+        val options = PoseDetectorOptions.Builder()
             .setDetectorMode(PoseDetectorOptions.STREAM_MODE)
             .build()
         PoseDetection.getClient(options)
     }
-    
-    override val exerciseRepository: ExerciseRepository by lazy {
-        ExerciseRepositoryImpl(poseDetector)
+
+    override val dietRepository: DietRepository by lazy {
+        DietRepositoryImpl(
+            apiService = DietRetrofitClient.api,
+            dietApiKey = BuildConfig.diet_api_key,
+            poseDetector = poseDetector
+        )
     }
- 
-	override val medicineViewModelFactory: ViewModelProvider.Factory by lazy {
+
+    override val exerciseRepository: ExerciseRepository by lazy {
+        ExerciseRepositoryImpl(
+            context = context
+        )
+    }
+
+    override val medicineViewModelFactory: ViewModelProvider.Factory by lazy {
         ViewModelFactory(
-			navigationRepository = navigationRepository,
-			medicineSearchUseCase = medicineSearchUseCase,
-			dietRepository = dietRepository,
-			exerciseRepository = exerciseRepository
-		)
+            navigationRepository = navigationRepository,
+            medicineSearchUseCase = medicineSearchUseCase,
+            dietRepository = dietRepository,
+            exerciseRepository = exerciseRepository
+        )
     }
 }
