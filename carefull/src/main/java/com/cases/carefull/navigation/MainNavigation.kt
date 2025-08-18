@@ -38,7 +38,6 @@ import com.cases.carefull.features.carefullcontents.diagnosis.chatbot.ChatBotScr
 import com.cases.carefull.features.carefullcontents.diagnosis.disease.DiseaseSearchScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalInfoScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalSearchScreen
-import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineDetailScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineInfoScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineSearchScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineViewModel
@@ -64,7 +63,6 @@ import kotlinx.coroutines.launch
 fun MainNavigation() {
 	val application = LocalContext.current.applicationContext as CarefullApplication
 	val container = application.container
-	
 	val viewModelFactory = ViewModelFactory(
 		navigationRepository = container.navigationRepository,
 		medicineSearchUseCase = container.medicineSearchUseCase,
@@ -78,23 +76,19 @@ fun MainNavigation() {
 	val navController = rememberNavController()
 	val uiState by viewModel.uiState.collectAsState()
 	val navBackStackEntry by navController.currentBackStackEntryAsState()
-	
 	val currentRoute: Route? by remember(navBackStackEntry) {
 		derivedStateOf {
 			val routeString = navBackStackEntry?.destination?.route
 			LayoutAsset.findRouteByString(routeString)
 		}
 	}
-	
 	LaunchedEffect(navBackStackEntry) {
 		viewModel.onRouteChanged(currentRoute)
 	}
-	
 	val context = LocalContext.current
 	val activity = (context as? Activity)
 	val scope = rememberCoroutineScope()
 	var backPressedOnce by remember { mutableStateOf(false) }
-	
 	BackHandler(enabled = true) {
 		if (uiState.showBottomBar && currentRoute != null) {
 			if (currentRoute !is MainRoute.Home) {
@@ -116,7 +110,6 @@ fun MainNavigation() {
 			navController.popBackStack()
 		}
 	}
-	
 	MainScaffold(
 		viewModel = viewModel,
 		navController = navController
@@ -149,7 +142,6 @@ fun MainNavigation() {
 			composable<MainRoute.Home> {
 				Home()
 			}
-			
 			//루틴
 			composable<RoutineRoute.ExerciseScreen> { navBackStackEntry ->
 				ExerciseScreen(
@@ -157,14 +149,12 @@ fun MainNavigation() {
 					navController = navController
 				)
 			}
-			
 			composable<RoutineRoute.WorkOutScreen> { navBackStackEntry ->
 				WorkOutScreen(
 					viewModel = exerciseViewModel,
 					navController = navController
 				)
 			}
-			
 			composable<RoutineRoute.DietScreen> { navBackStackEntry ->
 				DietScreen(
 					viewModel = dietViewModel,
@@ -180,7 +170,6 @@ fun MainNavigation() {
 			composable<RoutineRoute.FoodInformation> {
 				FoodInformation()
 			}
-			
 			//진단
 			// 진료 - 챗봇
 			composable<DiagnosisRoute.ChatBotScreen> {
@@ -193,13 +182,11 @@ fun MainNavigation() {
 //						navController.navigate(DiagnosisRoute.HospitalInfoScreen)
 				)
 			}
-			
 			// 진료 - 병원
 			composable<DiagnosisRoute.HospitalInfoScreen> {
 				val args = it.arguments
 				val department = args?.getString("department") ?: ""
 				val diagnosis = args?.getString("diagnosis") ?: ""
-				
 				HospitalInfoScreen(
 					department = department,
 					diagnosis = diagnosis
@@ -208,7 +195,6 @@ fun MainNavigation() {
 			// 진료 - 약
 			composable<DiagnosisRoute.MedicineInfoScreen> {
 				val uiState by medicineViewModel.uiState.collectAsStateWithLifecycle()
-				
 				uiState.selectedItem?.let { item ->
 					MedicineInfoScreen(medicineItem = item)
 				}
@@ -230,16 +216,6 @@ fun MainNavigation() {
 					}
 				)
 			}
-			
-			// 약 상세 페이지
-			composable<DiagnosisRoute.MedicineDetailScreen> {
-				val uiState by medicineViewModel.uiState.collectAsStateWithLifecycle()
-				
-				uiState.selectedItem?.let { item ->
-					MedicineDetailScreen(medicineItem = item)
-				}
-			}
-			
 			//피드
 			composable<FeedRoute.Social> {
 				Social()
@@ -247,7 +223,6 @@ fun MainNavigation() {
 			composable<FeedRoute.Ranking> {
 				Ranking()
 			}
-			
 			//마이페이지
 			composable<MyPageRoute.MyPage> {
 				MyPage()

@@ -1,6 +1,7 @@
 package com.cases.carefull.features.carefullcontents.diagnosis.medicine
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -23,9 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.cases.carefull.domain.model.MedicineItem
+import com.cases.carefull.features.carefullcommon.R
 
 
 @Composable
@@ -41,14 +45,14 @@ fun MedicineInfoScreen(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .padding(16.dp)
+            .padding(20.dp)
     ) {
         Text(
             text = medicineItem.itemName ?: "정보 없음",
             style = MaterialTheme.typography.titleLarge
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(13.dp))
 
         AsyncImage(
             model = medicineItem.itemImage,
@@ -58,17 +62,40 @@ fun MedicineInfoScreen(
                 .clip(RoundedCornerShape(12.dp))
                 .background(Color.LightGray),
             contentScale = ContentScale.FillWidth,
-//            error = painterResource(id = R.drawable.ic_launcher_background)
+            error = painterResource(id = R.drawable.ic_launcher_background)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TabRow(selectedTabIndex = selectedTab) {
+        ScrollableTabRow(
+            selectedTabIndex = selectedTab,
+            edgePadding = 0.dp,
+            containerColor = Color.Transparent,
+            contentColor = Color.Transparent,
+            indicator = {},
+            divider = {}
+        ) {
             tabs.forEachIndexed { index, title ->
                 Tab(
                     selected = selectedTab == index,
                     onClick = { selectedTab = index },
-                    text = { Text(title) }
+                    selectedContentColor = Color.White,
+                    unselectedContentColor = Color.Black,
+                    text = {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = if (selectedTab == index) Color(0xFF00C73C) else Color(0xFFF5F5F5),
+                                    shape = RoundedCornerShape(50)
+                                )
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = title,
+                                color = if (selectedTab == index) Color.White else Color.Black
+                            )
+                        }
+                    }
                 )
             }
         }
@@ -76,29 +103,17 @@ fun MedicineInfoScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         when (selectedTab) {
-            0 -> {
-                InfoBlock(label = "사용 방법", value = medicineItem.useMethodQesitm)
-            }
+            0 -> { InfoBlock(label = "사용 방법", value = medicineItem.useMethodQesitm) }
 
-            1 -> {
-                InfoBlock(label = "주의 사항", value = medicineItem.atpnQesitm)
-            }
+            1 -> { InfoBlock(label = "주의 사항", value = medicineItem.atpnQesitm) }
 
-            2 -> {
-                InfoBlock(label = "상호작용", value = medicineItem.intrcQesitm)
-            }
+            2 -> { InfoBlock(label = "상호작용", value = medicineItem.intrcQesitm) }
 
-            3 -> {
-                InfoBlock(label = "부작용", value = medicineItem.seQesitm)
-            }
+            3 -> { InfoBlock(label = "부작용", value = medicineItem.seQesitm) }
 
-            4 -> {
-                InfoBlock(label = "보관 방법", value = medicineItem.depositMethodQesitm)
-            }
+            4 -> { InfoBlock(label = "보관 방법", value = medicineItem.depositMethodQesitm) }
 
-            5 -> {
-                InfoBlock(label = "효능효과", value = medicineItem.efcyQesitm)
-            }
+            5 -> { InfoBlock(label = "효능효과", value = medicineItem.efcyQesitm) }
         }
     }
 }
@@ -108,13 +123,17 @@ private fun InfoBlock(label: String, value: String?) {
     Column(modifier = Modifier.padding(vertical = 4.dp)) {
         Text(
             text = label,
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
         Text(
             text = value ?: "정보 없음",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(start = 8.dp, top = 2.dp, bottom = 8.dp)
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .padding(
+                    start = 8.dp,
+                    top = 8.dp,
+                    bottom = 8.dp)
         )
     }
 }

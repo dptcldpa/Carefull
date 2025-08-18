@@ -46,99 +46,99 @@ fun MedicineSearchScreen(
 	onNavigateToMedicineInfo: () -> Unit
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-	
-	Scaffold { innerPadding ->
-		Column(
+
+	Column(
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(
+				top = 16.dp,
+				start = 16.dp,
+				end = 16.dp
+			)
+	) {
+		Row(
+			verticalAlignment = Alignment.CenterVertically,
 			modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
+				.fillMaxWidth()
+				.padding(horizontal = 8.dp)
 		) {
-			Row(
-				verticalAlignment = Alignment.CenterVertically,
-				modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-			) {
-				// 왼쪽 카메라 아이콘
-				IconButton(onClick = { /* TODO: 카메라 기능 */ }) {
-					Icon(
-						imageVector = Icons.Default.Info,
-						contentDescription = "카메라"
-					)
-				}
-				
-				Spacer(modifier = Modifier.width(8.dp))
-				
-				TextField(
-					value = uiState.searchQuery,
-					onValueChange = { newQuery ->
-						viewModel.onQueryChange(newQuery)
-					},
-					placeholder = { Text("약 이름을 입력하세요", color = Color.Gray) },
-					singleLine = true,
-					modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 8.dp)
-                        .background(Color(0xFFF0F0F0), RoundedCornerShape(20.dp)),
-					colors = TextFieldDefaults.colors(
-						unfocusedContainerColor = Color.Transparent,
-						focusedContainerColor = Color.Transparent,
-						unfocusedIndicatorColor = Color.Transparent,
-						focusedIndicatorColor = Color.Transparent
-					)
+			// 왼쪽 카메라 아이콘
+			IconButton(onClick = { /* TODO: 카메라 기능 */ }) {
+				Icon(
+					imageVector = Icons.Default.Info,
+					contentDescription = "카메라"
 				)
-				IconButton(
-					onClick = {
-						viewModel.addRecentSearch(uiState.searchQuery)
-					}) {
-					Icon(
-						imageVector = Icons.Default.Search,
-						contentDescription = "검색",
-						tint = Color.Gray
-					)
+			}
+
+			Spacer(modifier = Modifier.width(8.dp))
+
+			TextField(
+				value = uiState.searchQuery,
+				onValueChange = { newQuery ->
+					viewModel.onQueryChange(newQuery)
+				},
+				placeholder = { Text("약 이름을 입력하세요", color = Color.Gray) },
+				singleLine = true,
+				modifier = Modifier
+					.weight(1f)
+					.padding(horizontal = 8.dp)
+					.background(Color(0xFFF0F0F0), RoundedCornerShape(20.dp)),
+				colors = TextFieldDefaults.colors(
+					unfocusedContainerColor = Color.Transparent,
+					focusedContainerColor = Color.Transparent,
+					unfocusedIndicatorColor = Color.Transparent,
+					focusedIndicatorColor = Color.Transparent
+				)
+			)
+			IconButton(
+				onClick = {
+					viewModel.addRecentSearch(uiState.searchQuery)
+				}) {
+				Icon(
+					imageVector = Icons.Default.Search,
+					contentDescription = "검색",
+					tint = Color.Gray
+				)
+			}
+		}
+
+		Spacer(modifier = Modifier.height(24.dp))
+
+		if (uiState.searchQuery.isEmpty()) {
+			RecentSearchSection(
+				recentSearches = uiState.recentSearches,
+				onSearch = { searchTerm ->
+					viewModel.onQueryChange(searchTerm)
+				},
+				onRemove = viewModel::removeRecentSearch,
+				onClearAll = viewModel::clearRecentSearches
+			)
+		} else {
+			if (uiState.isLoading) {
+				Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+					CircularProgressIndicator()
 				}
 			}
-			
-			Spacer(modifier = Modifier.height(24.dp))
-			
-			if (uiState.searchQuery.isEmpty()) {
-				RecentSearchSection(
-					recentSearches = uiState.recentSearches,
-					onSearch = { searchTerm ->
-						viewModel.onQueryChange(searchTerm)
-					},
-					onRemove = viewModel::removeRecentSearch,
-					onClearAll = viewModel::clearRecentSearches
-				)
+
+			if (uiState.errorMessage != null) {
+				Box(
+					modifier = Modifier.fillMaxSize(),
+					contentAlignment = Alignment.Center
+				) {
+					Text("에러가 발생했습니다: ${uiState.errorMessage}", color = Color.Red)
+				}
 			} else {
-				if (uiState.isLoading) {
-					Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-						CircularProgressIndicator()
+				SearchResultSection(
+					searchResults = uiState.searchResult,
+					onItemClick = { medicineItem ->
+						viewModel.setSelectedItem(medicineItem)
+						onNavigateToMedicineInfo()
 					}
-				}
-				
-				if (uiState.errorMessage != null) {
-					Box(
-						modifier = Modifier.fillMaxSize(),
-						contentAlignment = Alignment.Center
-					) {
-						Text("에러가 발생했습니다: ${uiState.errorMessage}", color = Color.Red)
-					}
-				} else {
-					SearchResultSection(
-						searchResults = uiState.searchResult,
-						onItemClick = { medicineItem ->
-							viewModel.setSelectedItem(medicineItem)
-							onNavigateToMedicineInfo()
-						}
-					)
-				}
+				)
 			}
 		}
 	}
 }
-
 
 @Composable
 private fun RecentSearchSection(
@@ -164,7 +164,7 @@ private fun RecentSearchSection(
 			}
 		}
 		Spacer(modifier = Modifier.height(16.dp))
-		
+
 		if (recentSearches.isEmpty()) {
 			Text("검색 기록이 없습니다.", color = Color.Gray)
 		} else {
@@ -172,9 +172,9 @@ private fun RecentSearchSection(
 				items(recentSearches) { term ->
 					Row(
 						modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onSearch(term) }
-                            .padding(vertical = 12.dp),
+							.fillMaxWidth()
+							.clickable { onSearch(term) }
+							.padding(vertical = 12.dp),
 						verticalAlignment = Alignment.CenterVertically
 					) {
 						Text(term, modifier = Modifier.weight(1f), fontSize = 16.sp)
@@ -196,16 +196,16 @@ private fun SearchResultSection(
 	if (searchResults.isNotEmpty()) {
 		Text("검색 결과", style = MaterialTheme.typography.titleMedium)
 		Spacer(modifier = Modifier.height(8.dp))
-		
+
 		LazyColumn(modifier = Modifier.fillMaxSize()) {
 			items(searchResults) { item ->
 				Card(
 					modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                        .clickable {
-                            onItemClick(item)
-                        },
+						.fillMaxWidth()
+						.padding(vertical = 4.dp)
+						.clickable {
+							onItemClick(item)
+						},
 					elevation = CardDefaults.cardElevation(2.dp)
 				) {
 					Column(Modifier.padding(16.dp)) {

@@ -59,9 +59,12 @@ sealed interface DiagnosisRoute : Route {
 	
 	@Serializable
 	data object MedicineSearchScreen : DiagnosisRoute
+<<<<<<< HEAD
 	
 	@Serializable
 	data object MedicineDetailScreen : DiagnosisRoute
+=======
+>>>>>>> develop
 }
 
 @Serializable
