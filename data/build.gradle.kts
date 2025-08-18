@@ -60,21 +60,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    //Coil
     implementation(libs.coil.compose)
-    
+
+    implementation(libs.kotlinx.coroutines.play.services)
+
     //ML Kit Pose Detection
     implementation(libs.pose.detection)
-    implementation(libs.pose.detection.accurate)
-    
-    //camera
-    implementation (libs.androidx.camera.core)
-    implementation (libs.androidx.camera.camera2)
-    implementation (libs.androidx.camera.lifecycle)
-    implementation (libs.androidx.camera.view)
-    implementation (libs.androidx.camera.video)
-    
-    implementation(libs.androidx.camera.mlkit.vision)
-    implementation (libs.androidx.camera.extensions)
-    
-    implementation(libs.kotlinx.coroutines.play.services)
 }
