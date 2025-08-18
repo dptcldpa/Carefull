@@ -4,15 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.cases.carefull.common.MainViewModel
 import com.cases.carefull.domain.repository.DietRepository
+import com.cases.carefull.domain.repository.KakaoSignInRepository
+import com.cases.carefull.domain.repository.UserRepository
 import com.cases.carefull.domain.usecase.MedicineSearchUseCase
 import com.cases.carefull.features.carefullcommon.model.NavigationRepository
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineViewModel
 import com.cases.carefull.features.carefullcontents.routine.DietViewModel
+import com.cases.carefull.features.carefullmainui.screen.auth.OAuthViewModel
 
 class ViewModelFactory(
 	private val navigationRepository: NavigationRepository,
 	private val medicineSearchUseCase: MedicineSearchUseCase,
-	private val dietRepository: DietRepository
+	private val dietRepository: DietRepository,
+	private val kakaoSignInRepository: KakaoSignInRepository,
+	private val userRepository: UserRepository
 ) : ViewModelProvider.Factory {
 	override fun <T : ViewModel> create(modelClass: Class<T>): T {
 		if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
@@ -26,6 +31,10 @@ class ViewModelFactory(
 		if (modelClass.isAssignableFrom(DietViewModel::class.java)) {
 			@Suppress("UNCHECKED_CAST")
 			return DietViewModel(dietRepository) as T
+		}
+		if (modelClass.isAssignableFrom(OAuthViewModel::class.java)) {
+			@Suppress("UNCHECKED_CAST")
+			return OAuthViewModel(kakaoSignInRepository, userRepository) as T
 		}
 		throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
 	}

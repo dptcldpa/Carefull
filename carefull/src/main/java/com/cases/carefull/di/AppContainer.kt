@@ -1,5 +1,6 @@
 package com.cases.carefull.di
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import com.cases.carefull.BuildConfig
 import com.cases.carefull.data.network.DietRetrofitClient
@@ -7,7 +8,11 @@ import com.cases.carefull.data.repository.MedicineRepositoryImpl
 import com.cases.carefull.domain.repository.MedicineRepository
 import com.cases.carefull.data.network.RetrofitInstance
 import com.cases.carefull.data.repository.DietRepositoryImpl
+import com.cases.carefull.data.repository.KakaoSignInRepositoryImpl
+import com.cases.carefull.data.repository.UserRepositoryImpl
 import com.cases.carefull.domain.repository.DietRepository
+import com.cases.carefull.domain.repository.KakaoSignInRepository
+import com.cases.carefull.domain.repository.UserRepository
 import com.cases.carefull.domain.usecase.MedicineSearchUseCase
 import com.cases.carefull.features.carefullcommon.components.NavigationRepositoryImpl
 import com.cases.carefull.features.carefullcommon.model.NavigationRepository
@@ -18,9 +23,11 @@ interface AppContainer {
     val medicineSearchUseCase: MedicineSearchUseCase
     val medicineViewModelFactory: ViewModelProvider.Factory
     val dietRepository: DietRepository
+    val kakaoSignInRepository: KakaoSignInRepository
+    val userRepository: UserRepository
 }
 
-class DefaultAppContainer : AppContainer {
+class DefaultAppContainer(private val context: Context) : AppContainer {
 
     override val navigationRepository: NavigationRepository by lazy {
         NavigationRepositoryImpl()
@@ -51,8 +58,16 @@ class DefaultAppContainer : AppContainer {
         ViewModelFactory(
             navigationRepository = navigationRepository,
             medicineSearchUseCase = medicineSearchUseCase,
-            dietRepository = dietRepository
-
+            dietRepository = dietRepository,
+            kakaoSignInRepository = kakaoSignInRepository,
+            userRepository = userRepository
         )
+    }
+    override val kakaoSignInRepository: KakaoSignInRepository by lazy {
+        KakaoSignInRepositoryImpl(context)
+    }
+
+    override val userRepository: UserRepository by lazy {
+        UserRepositoryImpl()
     }
 }

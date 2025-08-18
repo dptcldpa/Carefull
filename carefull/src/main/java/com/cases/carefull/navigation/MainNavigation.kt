@@ -49,6 +49,8 @@ import com.cases.carefull.features.carefullcontents.routine.DietViewModel
 import com.cases.carefull.features.carefullcontents.routine.Exercise
 import com.cases.carefull.features.carefullcontents.routine.FoodInformation
 import com.cases.carefull.features.carefullmainui.screen.Home
+import com.cases.carefull.features.carefullmainui.screen.auth.OAuthViewModel
+import com.cases.carefull.features.carefullmainui.screen.auth.OAuthViewModelFactory
 import com.cases.carefull.features.carefullmainui.screen.auth.Signin
 import com.cases.carefull.features.carefullmainui.screen.mypage.AccountManagement
 import com.cases.carefull.features.carefullmainui.screen.mypage.BasalMetabolicRateMeasurement
@@ -65,11 +67,14 @@ fun MainNavigation() {
     val viewModelFactory = ViewModelFactory(
         navigationRepository = container.navigationRepository,
         medicineSearchUseCase = container.medicineSearchUseCase,
-        dietRepository = container.dietRepository
+        dietRepository = container.dietRepository,
+        kakaoSignInRepository = container.kakaoSignInRepository,
+        userRepository = container.userRepository
     )
     val medicineViewModel: MedicineViewModel = viewModel(factory = viewModelFactory)
     val viewModel: MainViewModel = viewModel(factory = viewModelFactory)
     val dietViewModel: DietViewModel = viewModel(factory = viewModelFactory)
+    val oauthViewModel: OAuthViewModel = viewModel(factory = viewModelFactory)
 
     val navController = rememberNavController()
     val uiState by viewModel.uiState.collectAsState()
@@ -132,6 +137,7 @@ fun MainNavigation() {
             }
             composable<MainRoute.Signin> {
                 Signin(
+                    oauthViewModel = oauthViewModel,
                     onLoginClick = {
                         navController.navigate(MainRoute.Home) {
                             popUpTo(MainRoute.Signin) {
