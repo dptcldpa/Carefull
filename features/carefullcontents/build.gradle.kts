@@ -27,6 +27,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+
     }
     buildFeatures {
         compose = true
@@ -59,16 +60,13 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation(libs.coil.compose)
 
-//    // retrofit
-//    implementation(libs.retrofit)
-//    implementation(libs.converter.gson)
-
     // ViewModel
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.activity.ktx)
 
     // 로그 확인용
     implementation(libs.logging.interceptor)
+    implementation(libs.pose.detection.common)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -76,4 +74,19 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.guava)
+
+    // MlKit
+    implementation(libs.pose.detection)
+    implementation(libs.androidx.camera.mlkit.vision)
+
+    // Camera
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+
+    // Permissions
+    implementation(libs.google.accompanist.permissions)
 }

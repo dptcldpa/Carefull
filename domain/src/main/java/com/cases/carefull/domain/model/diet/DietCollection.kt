@@ -1,4 +1,4 @@
-package com.cases.carefull.domain.model
+package com.cases.carefull.domain.model.diet
 
 data class DietCollection(
 	val userId: String = "",

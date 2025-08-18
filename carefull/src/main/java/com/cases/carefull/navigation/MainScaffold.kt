@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.cases.carefull.common.MainViewModel
@@ -23,7 +23,7 @@ fun MainScaffold(
 	navController: NavController,
 	content: @Composable (PaddingValues) -> Unit
 ) {
-	val uiState by viewModel.uiState.collectAsState()
+	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	
 	Scaffold(
 		topBar = {

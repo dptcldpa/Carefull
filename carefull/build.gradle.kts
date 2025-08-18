@@ -77,7 +77,6 @@ dependencies {
 
     implementation(libs.kotlin.reflect)
 
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -87,4 +86,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     api(libs.androidx.navigation.compose)
+    
+    implementation(libs.pose.detection)
+    implementation(libs.pose.detection.accurate)
 }

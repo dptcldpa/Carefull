@@ -1,6 +1,6 @@
 package com.cases.carefull.data.model
 
-import com.cases.carefull.domain.model.DietCollection
+import com.cases.carefull.domain.model.diet.DietCollection
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ServerTimestamp
 

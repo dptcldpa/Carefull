@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullcontents.routine
+package com.cases.carefull.features.carefullcontents.routine.diet
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,26 +31,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.cases.carefull.domain.model.DietCollection
-import com.cases.carefull.domain.model.MealType
+import com.cases.carefull.domain.model.diet.DietCollection
+import com.cases.carefull.domain.model.diet.MealType
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
-
 
 @Composable
 fun DietScreen(
     viewModel: DietViewModel,
     navController: NavController
 ) {
-    val uiStateTwo = viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     Column {
-        if (uiStateTwo.value.isLoading) {
+        if (uiState.value.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         }
         Text(
-            text = "${uiStateTwo.value.totalCalories} kcal",
+            text = "${uiState.value.totalCalories} kcal",
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier
 				.fillMaxWidth()
@@ -58,7 +57,7 @@ fun DietScreen(
             textAlign = TextAlign.Center
         )
         Text(
-            text = "탄수화물 : ${uiStateTwo.value.totalCarbs}g",
+            text = "탄수화물 : ${uiState.value.totalCarbs}g",
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
 				.fillMaxWidth()
@@ -66,7 +65,7 @@ fun DietScreen(
             textAlign = TextAlign.Center
         )
         Text(
-            text = "단백질 : ${uiStateTwo.value.totalProteins}g",
+            text = "단백질 : ${uiState.value.totalProteins}g",
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
 				.fillMaxWidth()
@@ -74,14 +73,13 @@ fun DietScreen(
             textAlign = TextAlign.Center
         )
         Text(
-            text = "지방 : ${uiStateTwo.value.totalFats}g",
+            text = "지방 : ${uiState.value.totalFats}g",
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
 				.fillMaxWidth()
 				.padding(horizontal = 16.dp),
             textAlign = TextAlign.Center
         )
-
         LazyColumn(
             modifier = Modifier
 				.fillMaxSize()
@@ -91,7 +89,7 @@ fun DietScreen(
                 MealType.entries.forEach { mealType ->
                     MealSection(
                         mealType = mealType,
-                        addedFoods = uiStateTwo.value.mealsByTime[mealType] ?: emptyList(),
+                        addedFoods = uiState.value.mealsByTime[mealType] ?: emptyList(),
                         onCameraClick = {},
                         onAddClick = {
                             navController.navigate(RoutineRoute.DietSearchScreen(mealType = mealType.name))
@@ -99,7 +97,6 @@ fun DietScreen(
                         onRemoveClick = { mealRecordToRemove ->
                             viewModel.onRemoveMeal(mealRecordToRemove)
                         }
-
                     )
                 }
             }

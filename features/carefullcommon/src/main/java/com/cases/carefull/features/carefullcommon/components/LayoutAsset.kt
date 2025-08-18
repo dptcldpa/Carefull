@@ -13,7 +13,7 @@ import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 object LayoutAsset {
 	private val navItemConfig = mapOf(
 		NavType.TOP_ROUTINE to listOf(
-			NavItem("운동", RoutineRoute.Exercise),
+			NavItem("운동", RoutineRoute.ExerciseScreen),
 			NavItem("식단", RoutineRoute.DietScreen)
 		),
 		NavType.TOP_DIAGNOSIS to listOf(
@@ -24,6 +24,8 @@ object LayoutAsset {
 			NavItem("소셜", FeedRoute.Social),
 			NavItem("랭킹", FeedRoute.Ranking)
 		),
+		NavType.NONE to emptyList(),
+		
 		NavType.SUB_DIAGNOSIS to listOf(
 			NavItem("챗봇", DiagnosisRoute.ChatBotScreen),
 			NavItem("병원 정보", DiagnosisRoute.HospitalInfoScreen),
@@ -36,7 +38,7 @@ object LayoutAsset {
 		),
 		NavType.BOTTOM_MAIN to listOf(
 			NavItem("홈", MainRoute.Home, "home"),
-			NavItem("루틴", RoutineRoute.Exercise, "routine"),
+			NavItem("루틴", RoutineRoute.ExerciseScreen, "routine"),
 			NavItem("진단", DiagnosisRoute.ChatBotScreen, "diagnosis"),
 			NavItem("피드", FeedRoute.Social, "feed"),
 			NavItem("마이페이지", MyPageRoute.MyPage, "mypage")
@@ -49,7 +51,7 @@ object LayoutAsset {
 			showBottomBar = true),
 		
 		//루틴
-		RoutineRoute.Exercise to ScreenConfig(
+		RoutineRoute.ExerciseScreen to ScreenConfig(
 			topBarType = NavType.TOP_ROUTINE,
 			showBottomBar = true
 		),
@@ -64,7 +66,10 @@ object LayoutAsset {
 			topBarType = NavType.TOP_ROUTINE,
 			showBottomBar = true
 		),
-		
+		RoutineRoute.WorkOutScreen to ScreenConfig(
+			topBarType = NavType.NONE,
+			showBottomBar = false
+		),
 		//진단
 		DiagnosisRoute.ChatBotScreen to ScreenConfig(
 			topBarType = NavType.TOP_DIAGNOSIS,

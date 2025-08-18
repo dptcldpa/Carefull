@@ -1,8 +1,10 @@
 [versions]
 agp = "8.11.1"
 
+guava = "33.4.8-android"
 kotlin = "2.2.0"
 coreKtx = "1.16.0"
+kotlinxCoroutinesPlayServices = "1.10.2"
 lifecycleRuntimeKtx = "2.9.2"
 appcompat = "1.7.1"
 jetbrainsKotlinJvm = "2.2.0"
@@ -30,9 +32,12 @@ playServicesMaps = "19.2.0"
 kotlinSerialization = "2.2.0"
 kotlinxSerializationJson = "1.9.0"
 
+poseDetection = "18.0.0-beta5"
+
 retrofit = "3.0.0"
 gson = "3.0.0"
 
+ui = "1.8.3"
 viewmodel = "2.9.2"
 activity = "1.10.1"
 
@@ -44,11 +49,22 @@ loggingInterceptor = "5.1.0"
 secretsGradlePlugin = "2.0.1"
 coilCompose = "3.3.0"
 
+# camera
+camerax_version = "1.4.2"
+accompanistPermissions = "0.37.3"
+poseDetectionCommon = "17.0.0"
 
 [libraries]
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2",version.ref = "camerax_version" }
+androidx-camera-core = { module = "androidx.camera:camera-core",version.ref = "camerax_version" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle",version.ref = "camerax_version" }
+androidx-camera-mlkit-vision = { module = "androidx.camera:camera-mlkit-vision",version.ref = "camerax_version" }
+androidx-camera-view = { module = "androidx.camera:camera-view",version.ref = "camerax_version" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+google-accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -66,6 +82,7 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 
@@ -83,6 +100,8 @@ naver-map = { group = "com.naver.maps", name = "map-sdk", version.ref = "naverMa
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 # retrofit
+pose-detection = { module = "com.google.mlkit:pose-detection", version.ref = "poseDetection" }
+pose-detection-accurate = { module = "com.google.mlkit:pose-detection-accurate", version.ref = "poseDetection" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "gson" }
 
@@ -99,6 +118,8 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilCompose" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilCompose" }
+ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+pose-detection-common = { group = "com.google.mlkit", name = "pose-detection-common", version.ref = "poseDetectionCommon" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

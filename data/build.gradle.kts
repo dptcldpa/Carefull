@@ -30,6 +30,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 }
 kotlin {
@@ -38,10 +39,10 @@ kotlin {
 
 dependencies {
     implementation(project(":domain"))
-
+    
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation("androidx.compose.ui:ui:1.8.3")
+    implementation(libs.ui)
     implementation(libs.material)
     // retrofit
     implementation(libs.retrofit)
@@ -59,5 +60,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    //Coil
     implementation(libs.coil.compose)
+
+    implementation(libs.kotlinx.coroutines.play.services)
+
+    //ML Kit Pose Detection
+    implementation(libs.pose.detection)
 }

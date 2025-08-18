@@ -43,11 +43,13 @@ import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineS
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineViewModel
 import com.cases.carefull.features.carefullcontents.feed.Ranking
 import com.cases.carefull.features.carefullcontents.feed.Social
-import com.cases.carefull.features.carefullcontents.routine.DietScreen
-import com.cases.carefull.features.carefullcontents.routine.DietSearchScreen
-import com.cases.carefull.features.carefullcontents.routine.DietViewModel
-import com.cases.carefull.features.carefullcontents.routine.Exercise
-import com.cases.carefull.features.carefullcontents.routine.FoodInformation
+import com.cases.carefull.features.carefullcontents.routine.diet.DietScreen
+import com.cases.carefull.features.carefullcontents.routine.diet.DietSearchScreen
+import com.cases.carefull.features.carefullcontents.routine.diet.DietViewModel
+import com.cases.carefull.features.carefullcontents.routine.exercise.ExerciseViewModel
+import com.cases.carefull.features.carefullcontents.routine.diet.FoodInformation
+import com.cases.carefull.features.carefullcontents.routine.exercise.WorkOutScreen
+import com.cases.carefull.features.carefullcontents.routine.exercise.ExerciseScreen
 import com.cases.carefull.features.carefullmainui.screen.Home
 import com.cases.carefull.features.carefullmainui.screen.auth.Signin
 import com.cases.carefull.features.carefullmainui.screen.mypage.AccountManagement
@@ -61,20 +63,20 @@ import kotlinx.coroutines.launch
 fun MainNavigation() {
     val application = LocalContext.current.applicationContext as CarefullApplication
     val container = application.container
-
     val viewModelFactory = ViewModelFactory(
         navigationRepository = container.navigationRepository,
         medicineSearchUseCase = container.medicineSearchUseCase,
-        dietRepository = container.dietRepository
+        dietRepository = container.dietRepository,
+        exerciseRepository = container.exerciseRepository
     )
     val medicineViewModel: MedicineViewModel = viewModel(factory = viewModelFactory)
     val viewModel: MainViewModel = viewModel(factory = viewModelFactory)
     val dietViewModel: DietViewModel = viewModel(factory = viewModelFactory)
+    val exerciseViewModel: ExerciseViewModel = viewModel(factory = viewModelFactory)
 
     val navController = rememberNavController()
     val uiState by viewModel.uiState.collectAsState()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-
     val currentRoute: Route? by remember(navBackStackEntry) {
         derivedStateOf {
             val routeString = navBackStackEntry?.destination?.route
@@ -144,10 +146,18 @@ fun MainNavigation() {
             composable<MainRoute.Home> {
                 Home()
             }
-
             //루틴
-            composable<RoutineRoute.Exercise> {
-                Exercise()
+            composable<RoutineRoute.ExerciseScreen> { navBackStackEntry ->
+                ExerciseScreen(
+                    viewModel = exerciseViewModel,
+                    navController = navController
+                )
+            }
+            composable<RoutineRoute.WorkOutScreen> { navBackStackEntry ->
+                WorkOutScreen(
+                    viewModel = exerciseViewModel,
+                    navController = navController
+                )
             }
             composable<RoutineRoute.DietScreen> { navBackStackEntry ->
                 DietScreen(

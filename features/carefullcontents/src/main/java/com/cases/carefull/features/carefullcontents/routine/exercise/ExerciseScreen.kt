@@ -1,10 +1,13 @@
-package com.cases.carefull.features.carefullcontents.routine
+package com.cases.carefull.features.carefullcontents.routine.exercise
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,95 +15,162 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
-
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import com.cases.carefull.domain.model.exercise.ExerciseType
+import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 
 @Composable
-fun Exercise() {
-    var showDialog by remember { mutableStateOf(false) }
-    var selectedExercise by remember { mutableStateOf("") }
-    if (showDialog) {
+fun ExerciseScreen(
+    viewModel: ExerciseViewModel,
+    navController: NavController
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    if (uiState.showDialog && uiState.selectedExercise != null) {
         ExerciseCountDialog(
-            exerciseName = selectedExercise,
-            onDismiss = { showDialog = false },
+            exerciseName = uiState.selectedExercise!!,
+            onDismiss = { viewModel.onDialogDismiss() },
             onConfirm = { count ->
-                showDialog = false
+                viewModel.onDialogConfirm()
+                navController.navigate(
+					RoutineRoute.WorkOutScreen(
+						exerciseType = uiState.selectedExercise!!,
+						count = count
+					)
+                )
             }
         )
     }
-    LazyColumn(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        item {
-            Text(
-                text = "운동을 선택하세요.",
-                style = MaterialTheme.typography.titleMedium,
+        Text(
+            text = "운동을 선택하세요.",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp, bottom = 8.dp),
+            textAlign = TextAlign.Start
+        )
+        if (uiState.isLoading) {
+            CircularProgressIndicator()
+        } else if (uiState.dailyExercise.isNotEmpty()) {
+            val todayExerciseName = uiState.dailyExercise.first().type
+            Text("오늘의 운동: $todayExerciseName",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(top = 8.dp, bottom = 16.dp),
                 textAlign = TextAlign.Start
             )
-            Spacer(modifier = Modifier.height(24.dp))
-
-            val exercises = listOf(
-                "스쿼트",
-                "푸쉬업",
-                "런지",
-                "운동3",
-                "운동4",
-                "운동5",
-                "운동6",
-                "운동7",
-                "운동8",
-                "운동9",
-                "운동10",
-                "운동11",
-                "운동12",
-                "운동13"
+        } else {
+            Text("오늘의 운동을 불러오지 못했습니다.",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, bottom = 16.dp),
+                textAlign = TextAlign.Start
             )
+        }
 
-            exercises.forEach { exercise ->
-                Button(
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(
+                items = uiState.exerciseList,
+                key = { it.type.name }
+            ) { exerciseUiModel ->
+                ExerciseCard(
+                    uiModel = exerciseUiModel,
                     onClick = {
-                        selectedExercise = exercise
-                        showDialog = true
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .height(60.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text(
-                        text = exercise,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Spacer(modifier = Modifier.height(10.dp))
+                        viewModel.onExerciseSelected(exerciseUiModel.type)
+                    }
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ExerciseCard(
+    uiModel: ExerciseUiModel,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .height(IntrinsicSize.Min),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = uiModel.imageResId),
+                contentDescription = "${uiModel.type} 이미지",
+                modifier = Modifier
+                    .width(100.dp)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.Fit
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = uiModel.name,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = uiModel.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "총 ${uiModel.totalCount}회 수행",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
         }
     }
@@ -108,7 +178,7 @@ fun Exercise() {
 
 @Composable
 fun ExerciseCountDialog(
-    exerciseName: String,
+    exerciseName: ExerciseType,
     onDismiss: () -> Unit,
     onConfirm: (Int) -> Unit
 ) {
@@ -135,7 +205,7 @@ fun ExerciseCountDialog(
                 Row {
                     Spacer(modifier = Modifier.weight(0.5f))
                     Text(
-                        text = exerciseName,
+                        text = exerciseName.type,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -152,8 +222,7 @@ fun ExerciseCountDialog(
                 Row {
                     Text(
                         text = "$count",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(top = 5.dp)
+                        style = MaterialTheme.typography.titleLarge
                     )
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
@@ -239,14 +308,5 @@ fun ExerciseCountDialog(
                 }
             }
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun ExercisePreview() {
-    CarefullTheme {
-        Exercise()
     }
 }
