@@ -57,6 +57,7 @@ fun WorkOutScreen(
             .build()
     }
     val poseAnalyzerManager = remember { PoseAnalyzerManager() }
+    val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
     
     DisposableEffect(poseAnalyzerManager, imageAnalysis) {
         val analyzer = poseAnalyzerManager.build(context) { domainPose ->
@@ -73,8 +74,7 @@ fun WorkOutScreen(
             viewModel.initialize(exerciseType)
         }
     }
-
-    val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
+    
     LaunchedEffect(key1 = Unit) {
         if (!cameraPermissionState.status.isGranted) {
             cameraPermissionState.launchPermissionRequest()
