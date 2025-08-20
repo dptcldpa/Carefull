@@ -68,7 +68,7 @@ sealed interface FeedRoute : Route {
 	data object Social : FeedRoute
 	
 	@Serializable
-	data object Ranking : FeedRoute
+	data object RankingScreen : FeedRoute
 }
 
 @Serializable

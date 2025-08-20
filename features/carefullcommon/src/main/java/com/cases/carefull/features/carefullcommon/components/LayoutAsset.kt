@@ -22,7 +22,7 @@ object LayoutAsset {
 		),
 		NavType.TOP_FEED to listOf(
 			NavItem("소셜", FeedRoute.Social),
-			NavItem("랭킹", FeedRoute.Ranking)
+			NavItem("랭킹", FeedRoute.RankingScreen)
 		),
 		NavType.NONE to emptyList(),
 		
@@ -106,7 +106,7 @@ object LayoutAsset {
 		FeedRoute.Social to ScreenConfig(
 			topBarType = NavType.TOP_FEED,
 			showBottomBar = true),
-		FeedRoute.Ranking to ScreenConfig(
+		FeedRoute.RankingScreen to ScreenConfig(
 			topBarType = NavType.TOP_FEED,
 			showBottomBar = true),
 		

@@ -41,7 +41,8 @@ import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalS
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineInfoScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineSearchScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineViewModel
-import com.cases.carefull.features.carefullcontents.feed.Ranking
+import com.cases.carefull.features.carefullcontents.feed.RankingScreen
+import com.cases.carefull.features.carefullcontents.feed.RankingViewModel
 import com.cases.carefull.features.carefullcontents.feed.Social
 import com.cases.carefull.features.carefullcontents.routine.diet.DietScreen
 import com.cases.carefull.features.carefullcontents.routine.diet.DietSearchScreen
@@ -61,191 +62,195 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainNavigation() {
-    val application = LocalContext.current.applicationContext as CarefullApplication
-    val container = application.container
-    val viewModelFactory = ViewModelFactory(
-        navigationRepository = container.navigationRepository,
-        medicineSearchUseCase = container.medicineSearchUseCase,
-        dietRepository = container.dietRepository,
-        exerciseRepository = container.exerciseRepository
-    )
-    val medicineViewModel: MedicineViewModel = viewModel(factory = viewModelFactory)
-    val viewModel: MainViewModel = viewModel(factory = viewModelFactory)
-    val dietViewModel: DietViewModel = viewModel(factory = viewModelFactory)
-    val exerciseViewModel: ExerciseViewModel = viewModel(factory = viewModelFactory)
-
-    val navController = rememberNavController()
-    val uiState by viewModel.uiState.collectAsState()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute: Route? by remember(navBackStackEntry) {
-        derivedStateOf {
-            val routeString = navBackStackEntry?.destination?.route
-            LayoutAsset.findRouteByString(routeString)
-        }
-    }
-
-    LaunchedEffect(navBackStackEntry) {
-        viewModel.onRouteChanged(currentRoute)
-    }
-
-    val context = LocalContext.current
-    val activity = (context as? Activity)
-    val scope = rememberCoroutineScope()
-    var backPressedOnce by remember { mutableStateOf(false) }
-
-    BackHandler(enabled = true) {
-        if (uiState.showBottomBar && currentRoute != null) {
-            if (currentRoute !is MainRoute.Home) {
-                navController.navigate(MainRoute.Home) {
-                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            } else {
-                if (backPressedOnce) {
-                    activity?.finish()
-                } else {
-                    backPressedOnce = true
-                    Toast.makeText(context, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
-                    scope.launch { delay(2000L); backPressedOnce = false }
-                }
-            }
-        } else {
-            navController.popBackStack()
-        }
-    }
-    MainScaffold(
-        viewModel = viewModel,
-        navController = navController
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = MainRoute.Splash,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            composable<MainRoute.Splash> {
-                Splash(
-                    shift = {
-                        navController.navigate(MainRoute.Signin) {
-                            popUpTo(MainRoute.Splash) { inclusive = true }
-                        }
-                    }
-                )
-            }
-            composable<MainRoute.Signin> {
-                Signin(
-                    onLoginClick = {
-                        navController.navigate(MainRoute.Home) {
-                            popUpTo(MainRoute.Signin) {
-                                inclusive = true
-                            }
-                        }
-                    }
-                )
-            }
-            composable<MainRoute.Home> {
-                Home()
-            }
-            //루틴
-            composable<RoutineRoute.ExerciseScreen> { navBackStackEntry ->
-                ExerciseScreen(
-                    viewModel = exerciseViewModel,
-                    navController = navController
-                )
-            }
-            composable<RoutineRoute.WorkOutScreen> { navBackStackEntry ->
-                WorkOutScreen(
-                    viewModel = exerciseViewModel,
-                    navController = navController
-                )
-            }
-            composable<RoutineRoute.DietScreen> { navBackStackEntry ->
-                DietScreen(
-                    viewModel = dietViewModel,
-                    navController = navController
-                )
-            }
-            composable<RoutineRoute.DietSearchScreen> { navBackStackEntry ->
-                DietSearchScreen(
-                    viewModel = dietViewModel,
-                    navController = navController,
-                )
-            }
-            composable<RoutineRoute.FoodInformation> {
-                FoodInformation()
-            }
-
-            //진단
-            // 진료 - 챗봇
-            composable<DiagnosisRoute.ChatBotScreen> {
-                ChatBotScreen(
-                    onDepartmentClick = { department, diagnosis ->
-                        val encodedDept = Uri.encode(department)
-                        val encodedDiag = Uri.encode(diagnosis)
-                        navController.navigate("hospital_info/$encodedDept/$encodedDiag")
-                    }
+	val application = LocalContext.current.applicationContext as CarefullApplication
+	val container = application.container
+	val viewModelFactory = ViewModelFactory(
+		navigationRepository = container.navigationRepository,
+		medicineSearchUseCase = container.medicineSearchUseCase,
+		dietRepository = container.dietRepository,
+		exerciseRepository = container.exerciseRepository,
+		rankingRepository = container.rankingRepository
+	)
+	val medicineViewModel: MedicineViewModel = viewModel(factory = viewModelFactory)
+	val viewModel: MainViewModel = viewModel(factory = viewModelFactory)
+	val dietViewModel: DietViewModel = viewModel(factory = viewModelFactory)
+	val exerciseViewModel: ExerciseViewModel = viewModel(factory = viewModelFactory)
+	val rankingViewModel: RankingViewModel = viewModel(factory = viewModelFactory)
+	
+	val navController = rememberNavController()
+	val uiState by viewModel.uiState.collectAsState()
+	val navBackStackEntry by navController.currentBackStackEntryAsState()
+	val currentRoute: Route? by remember(navBackStackEntry) {
+		derivedStateOf {
+			val routeString = navBackStackEntry?.destination?.route
+			LayoutAsset.findRouteByString(routeString)
+		}
+	}
+	
+	LaunchedEffect(navBackStackEntry) {
+		viewModel.onRouteChanged(currentRoute)
+	}
+	
+	val context = LocalContext.current
+	val activity = (context as? Activity)
+	val scope = rememberCoroutineScope()
+	var backPressedOnce by remember { mutableStateOf(false) }
+	
+	BackHandler(enabled = true) {
+		if (uiState.showBottomBar && currentRoute != null) {
+			if (currentRoute !is MainRoute.Home) {
+				navController.navigate(MainRoute.Home) {
+					popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+					launchSingleTop = true
+					restoreState = true
+				}
+			} else {
+				if (backPressedOnce) {
+					activity?.finish()
+				} else {
+					backPressedOnce = true
+					Toast.makeText(context, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+					scope.launch { delay(2000L); backPressedOnce = false }
+				}
+			}
+		} else {
+			navController.popBackStack()
+		}
+	}
+	MainScaffold(
+		viewModel = viewModel,
+		navController = navController
+	) { innerPadding ->
+		NavHost(
+			navController = navController,
+			startDestination = MainRoute.Splash,
+			modifier = Modifier.fillMaxSize()
+		) {
+			composable<MainRoute.Splash> {
+				Splash(
+					shift = {
+						navController.navigate(MainRoute.Signin) {
+							popUpTo(MainRoute.Splash) { inclusive = true }
+						}
+					}
+				)
+			}
+			composable<MainRoute.Signin> {
+				Signin(
+					onLoginClick = {
+						navController.navigate(MainRoute.Home) {
+							popUpTo(MainRoute.Signin) {
+								inclusive = true
+							}
+						}
+					}
+				)
+			}
+			composable<MainRoute.Home> {
+				Home()
+			}
+			//루틴
+			composable<RoutineRoute.ExerciseScreen> { navBackStackEntry ->
+				ExerciseScreen(
+					viewModel = exerciseViewModel,
+					navController = navController
+				)
+			}
+			composable<RoutineRoute.WorkOutScreen> { navBackStackEntry ->
+				WorkOutScreen(
+					viewModel = exerciseViewModel,
+					navController = navController
+				)
+			}
+			composable<RoutineRoute.DietScreen> { navBackStackEntry ->
+				DietScreen(
+					viewModel = dietViewModel,
+					navController = navController
+				)
+			}
+			composable<RoutineRoute.DietSearchScreen> { navBackStackEntry ->
+				DietSearchScreen(
+					viewModel = dietViewModel,
+					navController = navController,
+				)
+			}
+			composable<RoutineRoute.FoodInformation> {
+				FoodInformation()
+			}
+			
+			//진단
+			// 진료 - 챗봇
+			composable<DiagnosisRoute.ChatBotScreen> {
+				ChatBotScreen(
+					onDepartmentClick = { department, diagnosis ->
+						val encodedDept = Uri.encode(department)
+						val encodedDiag = Uri.encode(diagnosis)
+						navController.navigate("hospital_info/$encodedDept/$encodedDiag")
+					}
 //						navController.navigate(DiagnosisRoute.HospitalInfoScreen)
-                )
-            }
-
-            // 진료 - 병원
-            composable<DiagnosisRoute.HospitalInfoScreen> {
-                val args = it.arguments
-                val department = args?.getString("department") ?: ""
-                val diagnosis = args?.getString("diagnosis") ?: ""
-
-                HospitalInfoScreen(
-                    department = department,
-                    diagnosis = diagnosis
-                )
-            }
-            // 진료 - 약
-            composable<DiagnosisRoute.MedicineInfoScreen> {
-                val uiState by medicineViewModel.uiState.collectAsStateWithLifecycle()
-
-                uiState.selectedItem?.let { item ->
-                    MedicineInfoScreen(medicineItem = item)
-                }
-            }
-            // 검색 - 병원
-            composable<DiagnosisRoute.HospitalSearchScreen> {
-                HospitalSearchScreen()
-            }
-            // 검색 - 질환
-            composable<DiagnosisRoute.DiseaseSearchScreen> {
-                DiseaseSearchScreen()
-            }
-            // 검색 - 약
-            composable<DiagnosisRoute.MedicineSearchScreen> {
-                MedicineSearchScreen(
-                    viewModel = medicineViewModel,
-                    onNavigateToMedicineInfo = {
-                        navController.navigate(DiagnosisRoute.MedicineInfoScreen)
-                    }
-                )
-            }
-
-            //피드
-            composable<FeedRoute.Social> {
-                Social()
-            }
-            composable<FeedRoute.Ranking> {
-                Ranking()
-            }
-
-            //마이페이지
-            composable<MyPageRoute.MyPage> {
-                MyPage()
-            }
-            composable<MyPageRoute.AccountManagement> {
-                AccountManagement()
-            }
-            composable<MyPageRoute.BasalMetabolicRateMeasurement> {
-                BasalMetabolicRateMeasurement()
-            }
-            composable<MyPageRoute.PostWrittenManagement> {
-                PostWrittenManagement()
-            }
-        }
-    }
+				)
+			}
+			
+			// 진료 - 병원
+			composable<DiagnosisRoute.HospitalInfoScreen> {
+				val args = it.arguments
+				val department = args?.getString("department") ?: ""
+				val diagnosis = args?.getString("diagnosis") ?: ""
+				
+				HospitalInfoScreen(
+					department = department,
+					diagnosis = diagnosis
+				)
+			}
+			// 진료 - 약
+			composable<DiagnosisRoute.MedicineInfoScreen> {
+				val uiState by medicineViewModel.uiState.collectAsStateWithLifecycle()
+				
+				uiState.selectedItem?.let { item ->
+					MedicineInfoScreen(medicineItem = item)
+				}
+			}
+			// 검색 - 병원
+			composable<DiagnosisRoute.HospitalSearchScreen> {
+				HospitalSearchScreen()
+			}
+			// 검색 - 질환
+			composable<DiagnosisRoute.DiseaseSearchScreen> {
+				DiseaseSearchScreen()
+			}
+			// 검색 - 약
+			composable<DiagnosisRoute.MedicineSearchScreen> {
+				MedicineSearchScreen(
+					viewModel = medicineViewModel,
+					onNavigateToMedicineInfo = {
+						navController.navigate(DiagnosisRoute.MedicineInfoScreen)
+					}
+				)
+			}
+			
+			//피드
+			composable<FeedRoute.Social> {
+				Social()
+			}
+			composable<FeedRoute.RankingScreen> {
+				RankingScreen(
+					viewModel = rankingViewModel
+				)
+			}
+			
+			//마이페이지
+			composable<MyPageRoute.MyPage> {
+				MyPage()
+			}
+			composable<MyPageRoute.AccountManagement> {
+				AccountManagement()
+			}
+			composable<MyPageRoute.BasalMetabolicRateMeasurement> {
+				BasalMetabolicRateMeasurement()
+			}
+			composable<MyPageRoute.PostWrittenManagement> {
+				PostWrittenManagement()
+			}
+		}
+	}
 }
