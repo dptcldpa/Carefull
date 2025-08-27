@@ -10,7 +10,7 @@ import com.cases.carefull.data.network.DietApiService
 import com.cases.carefull.domain.model.diet.DietCollection
 import com.cases.carefull.domain.model.exercise.Pose
 import com.cases.carefull.domain.repository.DietRepository
-import com.cases.carefull.domain.util.DataResult
+import com.cases.carefull.domain.util.DataResourceResult
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.mlkit.vision.common.InputImage
@@ -24,26 +24,26 @@ class DietRepositoryImpl(
 ) : DietRepository {
     private val db = Firebase.firestore
 
-    override suspend fun getAllMeal(): DataResult<List<DietCollection>> =
+    override suspend fun getAllMeal(): DataResourceResult<List<DietCollection>> =
         runCatching {
             val snapshot = db.collection("diet_collection").get().await()
             val dtoList = snapshot.toObjects(DietCollectionDTO::class.java)
 
             dtoList.toDomainDietCollectionList()
         }.map { dietList ->
-            DataResult.Success(dietList)
+            DataResourceResult.Success(dietList)
 
         }.getOrElse { exception ->
-            DataResult.Error(exception)
+            DataResourceResult.Error(exception)
         }
 
-    override suspend fun addMeal(mealData: DietCollection): DataResult<Unit> {
+    override suspend fun addMeal(mealData: DietCollection): DataResourceResult<Unit> {
         return try {
             val dto = mealData.toFirestoreDietCollectionDTO()
             db.collection("diet_collection").add(dto).await()
-            DataResult.Success(Unit)
+            DataResourceResult.Success(Unit)
         } catch (e: Exception) {
-            DataResult.Error(e)
+            DataResourceResult.Error(e)
         }
     }
 
@@ -64,16 +64,16 @@ class DietRepositoryImpl(
         emptyList()
     }
 
-    override suspend fun analyzeImage(image: Any): DataResult<Pose> =
+    override suspend fun analyzeImage(image: Any): DataResourceResult<Pose> =
         runCatching {
-            if (image !is InputImage) return DataResult.Error(IllegalArgumentException("Image must be InputImage"))
+            if (image !is InputImage) return DataResourceResult.Error(IllegalArgumentException("Image must be InputImage"))
             val mlKitPose =
                 poseDetector.process(image).await()
             mlKitPose.toDomainPose()
         }.map { domainPose ->
-            DataResult.Success(domainPose)
+            DataResourceResult.Success(domainPose)
         }.getOrElse { exception ->
-            DataResult.Error(exception)
+            DataResourceResult.Error(exception)
         }
 
     override suspend fun removeMeal(mealData: DietCollection) {

@@ -45,6 +45,8 @@ kotlinxCoroutinesCore = "1.10.2"
 
 loggingInterceptor = "5.1.0"
 
+v2User = "2.21.6"
+
 # serect
 secretsGradlePlugin = "2.0.1"
 coilCompose = "3.3.0"
@@ -118,8 +120,12 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilCompose" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilCompose" }
+
 ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 pose-detection-common = { group = "com.google.mlkit", name = "pose-detection-common", version.ref = "poseDetectionCommon" }
+
+#Kakao
+v2-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "v2User" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

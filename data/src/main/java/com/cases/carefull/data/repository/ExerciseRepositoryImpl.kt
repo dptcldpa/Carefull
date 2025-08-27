@@ -11,7 +11,7 @@ import com.cases.carefull.data.model.toFirestoreExerciseCollectionDTO
 import com.cases.carefull.domain.model.exercise.ExerciseCollection
 import com.cases.carefull.domain.model.exercise.ExerciseType
 import com.cases.carefull.domain.repository.ExerciseRepository
-import com.cases.carefull.domain.util.DataResult
+import com.cases.carefull.domain.util.DataResourceResult
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
@@ -89,7 +89,7 @@ class ExerciseRepositoryImpl(
         false
     }
 
-    override suspend fun resetExercise(exercise: ExerciseCollection): DataResult<Unit> {
+    override suspend fun resetExercise(exercise: ExerciseCollection): DataResourceResult<Unit> {
         TODO("Not yet implemented")
     }
 }

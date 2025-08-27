@@ -77,6 +77,9 @@ dependencies {
 
     implementation(libs.kotlin.reflect)
 
+    // kakao
+    implementation(libs.v2.user)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -14,7 +14,7 @@ sealed interface MainRoute : Route {
 	data object Splash : MainRoute
 	
 	@Serializable
-	data object Signin : MainRoute
+	data object SigninScreen : MainRoute
 	
 	@Serializable
 	data object Home : MainRoute

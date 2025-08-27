@@ -50,6 +50,8 @@ dependencies {
     // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore.ktx)
+    // kakao
+    implementation(libs.v2.user)
     // 로그 확인용
     implementation(libs.logging.interceptor)
     testImplementation(libs.junit)
