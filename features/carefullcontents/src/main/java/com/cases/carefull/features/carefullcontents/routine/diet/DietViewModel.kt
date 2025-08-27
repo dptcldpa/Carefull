@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.cases.carefull.domain.model.diet.DietCollection
 import com.cases.carefull.domain.model.diet.MealType
 import com.cases.carefull.domain.repository.DietRepository
-import com.cases.carefull.domain.util.DataResult
+import com.cases.carefull.domain.util.DataResourceResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -28,7 +28,7 @@ class DietViewModel(
 			_uiState.update { it.copy(isLoading = true) }
 			val result = dietRepository.getAllMeal()
 			when (result) {
-				is DataResult.Success -> {
+				is DataResourceResult.Success -> {
 					val meals = result.data
 					val mealsByTime = meals.groupBy {
 						try {
@@ -50,11 +50,11 @@ class DietViewModel(
 					}
 				}
 				
-				is DataResult.Error -> {
+				is DataResourceResult.Error -> {
 					_uiState.update { it.copy(isLoading = false, isError = true) }
 				}
 				
-				is DataResult.Loading -> {
+				is DataResourceResult.Loading -> {
 					_uiState.update { it.copy(isLoading = true) }
 				}
 			}
@@ -82,15 +82,15 @@ class DietViewModel(
 			
 			val result = dietRepository.addMeal(newDietCollection)
 			when (result) {
-				is DataResult.Success -> {
+				is DataResourceResult.Success -> {
 					fetchAllMeals()
 				}
 				
-				is DataResult.Error -> {
+				is DataResourceResult.Error -> {
 					_uiState.update { it.copy(isLoading = false, isError = true) }
 				}
 				
-				is DataResult.Loading -> {
+				is DataResourceResult.Loading -> {
 					_uiState.update { it.copy(isLoading = true) }
 				}
 			}

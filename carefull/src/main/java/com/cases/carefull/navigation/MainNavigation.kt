@@ -46,12 +46,13 @@ import com.cases.carefull.features.carefullcontents.feed.Social
 import com.cases.carefull.features.carefullcontents.routine.diet.DietScreen
 import com.cases.carefull.features.carefullcontents.routine.diet.DietSearchScreen
 import com.cases.carefull.features.carefullcontents.routine.diet.DietViewModel
-import com.cases.carefull.features.carefullcontents.routine.exercise.ExerciseViewModel
 import com.cases.carefull.features.carefullcontents.routine.diet.FoodInformation
-import com.cases.carefull.features.carefullcontents.routine.exercise.WorkOutScreen
 import com.cases.carefull.features.carefullcontents.routine.exercise.ExerciseScreen
+import com.cases.carefull.features.carefullcontents.routine.exercise.ExerciseViewModel
+import com.cases.carefull.features.carefullcontents.routine.exercise.WorkOutScreen
 import com.cases.carefull.features.carefullmainui.screen.Home
-import com.cases.carefull.features.carefullmainui.screen.auth.Signin
+import com.cases.carefull.features.carefullmainui.screen.auth.OAuthViewModel
+import com.cases.carefull.features.carefullmainui.screen.auth.SigninScreen
 import com.cases.carefull.features.carefullmainui.screen.mypage.AccountManagement
 import com.cases.carefull.features.carefullmainui.screen.mypage.BasalMetabolicRateMeasurement
 import com.cases.carefull.features.carefullmainui.screen.mypage.MyPage
@@ -63,20 +64,26 @@ import kotlinx.coroutines.launch
 fun MainNavigation() {
     val application = LocalContext.current.applicationContext as CarefullApplication
     val container = application.container
+
     val viewModelFactory = ViewModelFactory(
         navigationRepository = container.navigationRepository,
         medicineSearchUseCase = container.medicineSearchUseCase,
         dietRepository = container.dietRepository,
-        exerciseRepository = container.exerciseRepository
+        exerciseRepository = container.exerciseRepository,
+        userRepository = container.userRepository
     )
+
     val medicineViewModel: MedicineViewModel = viewModel(factory = viewModelFactory)
     val viewModel: MainViewModel = viewModel(factory = viewModelFactory)
     val dietViewModel: DietViewModel = viewModel(factory = viewModelFactory)
     val exerciseViewModel: ExerciseViewModel = viewModel(factory = viewModelFactory)
+    val oauthViewModel: OAuthViewModel = viewModel(factory = viewModelFactory)
 
     val navController = rememberNavController()
     val uiState by viewModel.uiState.collectAsState()
+    val loginUiState by oauthViewModel.uiState.collectAsStateWithLifecycle()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+
     val currentRoute: Route? by remember(navBackStackEntry) {
         derivedStateOf {
             val routeString = navBackStackEntry?.destination?.route
@@ -86,6 +93,28 @@ fun MainNavigation() {
 
     LaunchedEffect(navBackStackEntry) {
         viewModel.onRouteChanged(currentRoute)
+    }
+
+    LaunchedEffect(key1 = loginUiState.isLoading) {
+        if (!loginUiState.isLoading) {
+            delay(1000L)
+
+            if (loginUiState.userInfo != null) {
+                navController.navigate(MainRoute.Home) {
+                    popUpTo(MainRoute.Splash) { inclusive = true }
+                    launchSingleTop = true
+                }
+            } else if (loginUiState.errorMessage == null) {
+                navController.navigate(MainRoute.SigninScreen) {
+                    popUpTo(MainRoute.Splash) { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        oauthViewModel.checkLoggedInState()
     }
 
     val context = LocalContext.current
@@ -126,23 +155,32 @@ fun MainNavigation() {
             composable<MainRoute.Splash> {
                 Splash(
                     shift = {
-                        navController.navigate(MainRoute.Signin) {
+                        navController.navigate(MainRoute.SigninScreen) {
                             popUpTo(MainRoute.Splash) { inclusive = true }
                         }
                     }
                 )
             }
-            composable<MainRoute.Signin> {
-                Signin(
+            composable<MainRoute.SigninScreen> {
+                LaunchedEffect(key1 = loginUiState.errorMessage) {
+                    loginUiState.errorMessage?.let {
+                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                        oauthViewModel.errorMessageShown()
+                    }
+                }
+                SigninScreen(
+                    isLoading = loginUiState.isLoading,
                     onLoginClick = {
                         navController.navigate(MainRoute.Home) {
-                            popUpTo(MainRoute.Signin) {
+                            popUpTo(MainRoute.SigninScreen) {
                                 inclusive = true
                             }
                         }
-                    }
+                    },
+                    onKakaoLoginClick = { oauthViewModel.loginWithKakao() }
                 )
             }
+
             composable<MainRoute.Home> {
                 Home()
             }

@@ -1,12 +1,14 @@
 package com.cases.carefull.common
 
 import android.app.Application
+import com.cases.carefull.BuildConfig.KAKAO_NATIVE_APP_KEY
 import com.cases.carefull.di.AppContainer
 import com.cases.carefull.di.DefaultAppContainer
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.firestore.persistentCacheSettings
+import com.kakao.sdk.common.KakaoSdk
 
 const val COIL_MEMORY_CACHE_SIZE_PERCENT = 0.3
 
@@ -21,7 +23,9 @@ class CarefullApplication : Application() {
 	override fun onCreate() {
 		super.onCreate()
 		container = DefaultAppContainer(applicationContext)
-		setUpFirestoreLocalSinkCache()
+//		setUpFirestoreLocalSinkCache()
+
+		KakaoSdk.init(this, KAKAO_NATIVE_APP_KEY)
 	}
 	
 	fun setUpFirestoreLocalSinkCache() {

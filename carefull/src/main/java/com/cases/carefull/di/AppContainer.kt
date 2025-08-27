@@ -3,14 +3,18 @@ package com.cases.carefull.di
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import com.cases.carefull.BuildConfig
+import com.cases.carefull.data.datasource.KakaoDataSourceImpl
+import com.cases.carefull.data.firestore.UserDataSourceImpl
 import com.cases.carefull.data.network.DietRetrofitClient
 import com.cases.carefull.data.network.RetrofitInstance
 import com.cases.carefull.data.repository.DietRepositoryImpl
 import com.cases.carefull.data.repository.ExerciseRepositoryImpl
 import com.cases.carefull.data.repository.MedicineRepositoryImpl
+import com.cases.carefull.data.repository.UserRepositoryImpl
 import com.cases.carefull.domain.repository.DietRepository
 import com.cases.carefull.domain.repository.ExerciseRepository
 import com.cases.carefull.domain.repository.MedicineRepository
+import com.cases.carefull.domain.repository.UserRepository
 import com.cases.carefull.domain.usecase.MedicineSearchUseCase
 import com.cases.carefull.features.carefullcommon.components.NavigationRepositoryImpl
 import com.cases.carefull.features.carefullcommon.model.NavigationRepository
@@ -26,6 +30,7 @@ interface AppContainer {
     val dietRepository: DietRepository
     val exerciseRepository: ExerciseRepository
     val poseDetector: PoseDetector
+    val userRepository: UserRepository
 }
 
 class DefaultAppContainer(private val context: Context) : AppContainer {
@@ -70,12 +75,24 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
         )
     }
 
+    override val userRepository: UserRepository by lazy {
+        val kakaoDataSource = KakaoDataSourceImpl()
+        val userDataSource = UserDataSourceImpl()
+
+        UserRepositoryImpl(
+            context = context.applicationContext,
+            kakaoDataSource = kakaoDataSource,
+            userDataSource = userDataSource
+        )
+    }
+
     override val medicineViewModelFactory: ViewModelProvider.Factory by lazy {
         ViewModelFactory(
             navigationRepository = navigationRepository,
             medicineSearchUseCase = medicineSearchUseCase,
             dietRepository = dietRepository,
-            exerciseRepository = exerciseRepository
+            exerciseRepository = exerciseRepository,
+            userRepository = userRepository
         )
     }
 }
