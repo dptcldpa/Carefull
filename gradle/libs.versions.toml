@@ -56,12 +56,13 @@ camerax_version = "1.4.2"
 accompanistPermissions = "0.37.3"
 poseDetectionCommon = "17.0.0"
 
+#ksp
+ksp = "2.2.0-2.0.2"
+#room
+room = "2.7.2"
+
 [libraries]
-androidx-camera-camera2 = { module = "androidx.camera:camera-camera2",version.ref = "camerax_version" }
-androidx-camera-core = { module = "androidx.camera:camera-core",version.ref = "camerax_version" }
-androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle",version.ref = "camerax_version" }
-androidx-camera-mlkit-vision = { module = "androidx.camera:camera-mlkit-vision",version.ref = "camerax_version" }
-androidx-camera-view = { module = "androidx.camera:camera-view",version.ref = "camerax_version" }
+
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -87,6 +88,7 @@ androidx-material3-android = { group = "androidx.compose.material3", name = "mat
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 
 # navigation
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
@@ -102,12 +104,12 @@ naver-map = { group = "com.naver.maps", name = "map-sdk", version.ref = "naverMa
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 # retrofit
-pose-detection = { module = "com.google.mlkit:pose-detection", version.ref = "poseDetection" }
-pose-detection-accurate = { module = "com.google.mlkit:pose-detection-accurate", version.ref = "poseDetection" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "gson" }
 
 # coil
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilCompose" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilCompose" }
 
 # viewModel
 lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "viewmodel" }
@@ -118,14 +120,27 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 
 # Logging
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
-coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilCompose" }
-coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilCompose" }
 
-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+
+#Camera
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2",version.ref = "camerax_version" }
+androidx-camera-core = { module = "androidx.camera:camera-core",version.ref = "camerax_version" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle",version.ref = "camerax_version" }
+androidx-camera-mlkit-vision = { module = "androidx.camera:camera-mlkit-vision",version.ref = "camerax_version" }
+androidx-camera-view = { module = "androidx.camera:camera-view",version.ref = "camerax_version" }
+
+# ML Kit
 pose-detection-common = { group = "com.google.mlkit", name = "pose-detection-common", version.ref = "poseDetectionCommon" }
+pose-detection = { module = "com.google.mlkit:pose-detection", version.ref = "poseDetection" }
+pose-detection-accurate = { module = "com.google.mlkit:pose-detection-accurate", version.ref = "poseDetection" }
 
 #Kakao
 v2-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "v2User" }
+
+# Room
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -137,6 +152,8 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin"}
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsServices" }
 secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin",  version.ref = "secretsGradlePlugin" }
+
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 [bundles]
 compose-libraries = [
@@ -150,4 +167,9 @@ compose-libraries = [
 ]
 firebase-libraries = [
     "firebase-firestore-ktx"
+]
+room-libraries = [
+    "androidx-room-ktx",
+    "androidx-room-compiler",
+    "androidx-room-runtime"
 ]

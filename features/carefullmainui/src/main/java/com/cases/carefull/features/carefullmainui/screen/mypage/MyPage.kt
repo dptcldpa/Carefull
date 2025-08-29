@@ -21,54 +21,50 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 import com.cases.carefull.features.carefullcommon.components.MenuButton
 import com.cases.carefull.features.carefullcommon.components.RowLine
 import com.cases.carefull.features.carefullcommon.components.SwitchMenuButton
+import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 
 @Composable
-fun MyPage() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-
-        Text(
-            text = stringResource(R.string.mypage),
-            style = MaterialTheme.typography.titleLarge
-        )
-        //임시 프로필 아이콘
-        Image(
-            painter = painterResource(id = R.drawable.app_logo),
-            contentDescription = null,
-            modifier = Modifier
-                .size(120.dp)
-                .clip(CircleShape)
-                .border(1.dp, Color.Gray, CircleShape)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        RowLine()
-        MenuButton(text = stringResource(R.string.account_management), onClick = { })
-        RowLine()
-        MenuButton(
-            text = stringResource(R.string.basal_metabolic_rate_measurement),
-            onClick = { })
-        RowLine()
-        SwitchMenuButton(text = stringResource(R.string.notification_setting))
-        RowLine()
-        MenuButton(text = stringResource(R.string.writing_management), onClick = { })
-        RowLine()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MyPageScreenPreview() {
-    CarefullTheme {
-        MyPage()
-    }
+fun MyPage(
+	navController: NavController
+) {
+	Column(
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(top = 32.dp),
+		horizontalAlignment = Alignment.CenterHorizontally,
+		verticalArrangement = Arrangement.spacedBy(10.dp)
+	) {
+		
+		Text(
+			text = stringResource(R.string.mypage),
+			style = MaterialTheme.typography.titleLarge
+		)
+		//임시 프로필 아이콘
+		Image(
+			painter = painterResource(id = R.drawable.app_logo),
+			contentDescription = null,
+			modifier = Modifier
+				.size(120.dp)
+				.clip(CircleShape)
+				.border(1.dp, Color.Gray, CircleShape)
+		)
+		Spacer(modifier = Modifier.height(16.dp))
+		RowLine()
+		MenuButton(text = stringResource(R.string.account_management), onClick = { })
+		RowLine()
+		MenuButton(
+			text = stringResource(R.string.basal_metabolic_rate_measurement),
+			onClick = { navController.navigate(RoutineRoute.BmrScreen) })
+		RowLine()
+		SwitchMenuButton(text = stringResource(R.string.notification_setting))
+		RowLine()
+		MenuButton(text = stringResource(R.string.writing_management), onClick = { })
+		RowLine()
+	}
 }

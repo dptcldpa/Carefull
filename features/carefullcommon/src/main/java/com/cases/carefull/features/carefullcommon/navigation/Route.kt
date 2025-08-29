@@ -24,18 +24,21 @@ sealed interface MainRoute : Route {
 sealed interface RoutineRoute : Route {
 	@Serializable
 	data object ExerciseScreen : RoutineRoute
-
-    @Serializable
-    data class WorkOutScreen(val exerciseType: ExerciseType, val count: Int) : RoutineRoute
-
+	
+	@Serializable
+	data class WorkOutScreen(val exerciseType: ExerciseType, val count: Int) : RoutineRoute
+	
 	@Serializable
 	data object DietScreen : RoutineRoute
-
+	
 	@Serializable
 	data class DietSearchScreen(val mealType: String? = null) : RoutineRoute
-
+	
 	@Serializable
 	data object FoodInformation : RoutineRoute
+	
+	@Serializable
+	data object BmrScreen : RoutineRoute
 }
 
 @Serializable
@@ -78,9 +81,6 @@ sealed interface MyPageRoute : Route {
 	
 	@Serializable
 	data object AccountManagement : MyPageRoute
-	
-	@Serializable
-	data object BasalMetabolicRateMeasurement : MyPageRoute
 	
 	@Serializable
 	data object PostWrittenManagement : MyPageRoute

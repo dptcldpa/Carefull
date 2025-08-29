@@ -49,6 +49,10 @@ kotlin {
     jvmToolchain(21)
 }
 
+configurations.all {
+    exclude(group = "com.intellij", module = "annotations")
+}
+
 dependencies {
     implementation(project(":data"))
     implementation(project(":domain"))

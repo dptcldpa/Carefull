@@ -68,7 +68,8 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
         DietRepositoryImpl(
             apiService = DietRetrofitClient.api,
             dietApiKey = BuildConfig.diet_api_key,
-            poseDetector = poseDetector
+            poseDetector = poseDetector,
+            context = context
         )
     }
 
