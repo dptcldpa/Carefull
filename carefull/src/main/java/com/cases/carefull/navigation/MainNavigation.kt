@@ -41,7 +41,8 @@ import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalS
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineInfoScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineSearchScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineViewModel
-import com.cases.carefull.features.carefullcontents.feed.Ranking
+import com.cases.carefull.features.carefullcontents.feed.RankingScreen
+import com.cases.carefull.features.carefullcontents.feed.RankingViewModel
 import com.cases.carefull.features.carefullcontents.feed.Social
 import com.cases.carefull.features.carefullcontents.routine.diet.DietScreen
 import com.cases.carefull.features.carefullcontents.routine.diet.DietSearchScreen
@@ -70,7 +71,8 @@ fun MainNavigation() {
         medicineSearchUseCase = container.medicineSearchUseCase,
         dietRepository = container.dietRepository,
         exerciseRepository = container.exerciseRepository,
-        userRepository = container.userRepository
+        userRepository = container.userRepository,
+        rankingRepository = container.rankingRepository
     )
 
     val medicineViewModel: MedicineViewModel = viewModel(factory = viewModelFactory)
@@ -78,6 +80,7 @@ fun MainNavigation() {
     val dietViewModel: DietViewModel = viewModel(factory = viewModelFactory)
     val exerciseViewModel: ExerciseViewModel = viewModel(factory = viewModelFactory)
     val oauthViewModel: OAuthViewModel = viewModel(factory = viewModelFactory)
+    val rankingViewModel: RankingViewModel = viewModel(factory = viewModelFactory)
 
     val navController = rememberNavController()
     val uiState by viewModel.uiState.collectAsState()
@@ -267,8 +270,10 @@ fun MainNavigation() {
             composable<FeedRoute.Social> {
                 Social()
             }
-            composable<FeedRoute.Ranking> {
-                Ranking()
+            composable<FeedRoute.RankingScreen> {
+                RankingScreen(
+                    viewModel = rankingViewModel
+                )
             }
 
             //마이페이지

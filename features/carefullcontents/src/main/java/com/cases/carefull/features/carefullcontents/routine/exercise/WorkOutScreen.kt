@@ -51,36 +51,36 @@ fun WorkOutScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val route = navController.currentBackStackEntry?.toRoute<RoutineRoute.WorkOutScreen>()
     val exerciseType = route?.exerciseType
-    val poseAnalyzerManager = remember { PoseAnalyzerManager() }
-    val analyzer = remember(viewModel) {
-        poseAnalyzerManager.build(context) { domainPose ->
-            viewModel.onPoseDetected(domainPose)
-        }
-    }
     val imageAnalysis = remember {
         ImageAnalysis.Builder()
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
-            .also {
-                it.setAnalyzer(ContextCompat.getMainExecutor(context), analyzer)
-            }
     }
+    val poseAnalyzerManager = remember { PoseAnalyzerManager() }
     val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
-    DisposableEffect(Unit) {
+    
+    DisposableEffect(poseAnalyzerManager, imageAnalysis) {
+        val analyzer = poseAnalyzerManager.build(context) { domainPose ->
+            viewModel.onPoseDetected(domainPose)
+        }
+        imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(context), analyzer)
         onDispose {
             imageAnalysis.clearAnalyzer()
         }
     }
+    
     LaunchedEffect(exerciseType) {
         if (exerciseType != null) {
             viewModel.initialize(exerciseType)
         }
     }
+    
     LaunchedEffect(key1 = Unit) {
         if (!cameraPermissionState.status.isGranted) {
             cameraPermissionState.launchPermissionRequest()
         }
     }
+
     if (cameraPermissionState.status.isGranted) {
         Box(modifier = Modifier.fillMaxSize()) {
             CameraView(

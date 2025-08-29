@@ -15,6 +15,8 @@ import com.cases.carefull.domain.repository.DietRepository
 import com.cases.carefull.domain.repository.ExerciseRepository
 import com.cases.carefull.domain.repository.MedicineRepository
 import com.cases.carefull.domain.repository.UserRepository
+import com.cases.carefull.data.repository.RankingRepositoryImpl
+import com.cases.carefull.domain.repository.RankingRepository
 import com.cases.carefull.domain.usecase.MedicineSearchUseCase
 import com.cases.carefull.features.carefullcommon.components.NavigationRepositoryImpl
 import com.cases.carefull.features.carefullcommon.model.NavigationRepository
@@ -31,6 +33,7 @@ interface AppContainer {
     val exerciseRepository: ExerciseRepository
     val poseDetector: PoseDetector
     val userRepository: UserRepository
+    val rankingRepository: RankingRepository
 }
 
 class DefaultAppContainer(private val context: Context) : AppContainer {
@@ -86,13 +89,19 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
         )
     }
 
+    override val rankingRepository: RankingRepository by lazy {
+        RankingRepositoryImpl(
+        )
+    }
+
     override val medicineViewModelFactory: ViewModelProvider.Factory by lazy {
         ViewModelFactory(
             navigationRepository = navigationRepository,
             medicineSearchUseCase = medicineSearchUseCase,
             dietRepository = dietRepository,
             exerciseRepository = exerciseRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            rankingRepository = rankingRepository
         )
     }
 }
