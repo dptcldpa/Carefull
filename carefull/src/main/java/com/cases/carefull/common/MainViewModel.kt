@@ -60,7 +60,7 @@ class MainViewModel(private val repository: NavigationRepository) : ViewModel() 
 		val specRoute = spec.route
 		if (spec.iconName != null) {
 			return when (specRoute) {
-				is MainRoute.Home -> currentRoute is MainRoute
+				is MainRoute.HomeScreen -> currentRoute is MainRoute
 				is RoutineRoute -> currentRoute is RoutineRoute
 				is DiagnosisRoute -> currentRoute is DiagnosisRoute
 				is FeedRoute -> currentRoute is FeedRoute
