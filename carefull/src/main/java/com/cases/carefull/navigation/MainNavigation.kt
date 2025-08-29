@@ -2,8 +2,10 @@ package com.cases.carefull.navigation
 
 import android.app.Activity
 import android.net.Uri
+import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,7 +54,8 @@ import com.cases.carefull.features.carefullcontents.routine.diet.FoodInformation
 import com.cases.carefull.features.carefullcontents.routine.exercise.ExerciseScreen
 import com.cases.carefull.features.carefullcontents.routine.exercise.ExerciseViewModel
 import com.cases.carefull.features.carefullcontents.routine.exercise.WorkOutScreen
-import com.cases.carefull.features.carefullmainui.screen.Home
+import com.cases.carefull.features.carefullmainui.home.HomeScreen
+import com.cases.carefull.features.carefullmainui.home.HomeViewModel
 import com.cases.carefull.features.carefullmainui.screen.auth.OAuthViewModel
 import com.cases.carefull.features.carefullmainui.screen.auth.SigninScreen
 import com.cases.carefull.features.carefullmainui.screen.mypage.AccountManagement
@@ -61,6 +64,7 @@ import com.cases.carefull.features.carefullmainui.screen.mypage.PostWrittenManag
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainNavigation() {
 	val application = LocalContext.current.applicationContext as CarefullApplication
@@ -72,7 +76,8 @@ fun MainNavigation() {
 		dietRepository = container.dietRepository,
 		exerciseRepository = container.exerciseRepository,
 		userRepository = container.userRepository,
-		rankingRepository = container.rankingRepository
+		rankingRepository = container.rankingRepository,
+		homeRepository = container.homeRepository
 	)
 	
 	val medicineViewModel: MedicineViewModel = viewModel(factory = viewModelFactory)
@@ -81,6 +86,7 @@ fun MainNavigation() {
 	val exerciseViewModel: ExerciseViewModel = viewModel(factory = viewModelFactory)
 	val oauthViewModel: OAuthViewModel = viewModel(factory = viewModelFactory)
 	val rankingViewModel: RankingViewModel = viewModel(factory = viewModelFactory)
+	val homeViewModel: HomeViewModel = viewModel(factory = viewModelFactory)
 	
 	val navController = rememberNavController()
 	val uiState by viewModel.uiState.collectAsState()
@@ -103,7 +109,7 @@ fun MainNavigation() {
 			delay(1000L)
 			
 			if (loginUiState.userInfo != null) {
-				navController.navigate(MainRoute.Home) {
+				navController.navigate(MainRoute.HomeScreen) {
 					popUpTo(MainRoute.Splash) { inclusive = true }
 					launchSingleTop = true
 				}
@@ -127,8 +133,8 @@ fun MainNavigation() {
 	
 	BackHandler(enabled = true) {
 		if (uiState.showBottomBar && currentRoute != null) {
-			if (currentRoute !is MainRoute.Home) {
-				navController.navigate(MainRoute.Home) {
+			if (currentRoute !is MainRoute.HomeScreen) {
+				navController.navigate(MainRoute.HomeScreen) {
 					popUpTo(navController.graph.findStartDestination().id) { saveState = true }
 					launchSingleTop = true
 					restoreState = true
@@ -174,7 +180,7 @@ fun MainNavigation() {
 				SigninScreen(
 					isLoading = loginUiState.isLoading,
 					onLoginClick = {
-						navController.navigate(MainRoute.Home) {
+						navController.navigate(MainRoute.HomeScreen) {
 							popUpTo(MainRoute.SigninScreen) {
 								inclusive = true
 							}
@@ -184,8 +190,8 @@ fun MainNavigation() {
 				)
 			}
 			
-			composable<MainRoute.Home> {
-				Home()
+			composable<MainRoute.HomeScreen> {
+				HomeScreen(viewModel = homeViewModel)
 			}
 			//루틴
 			composable<RoutineRoute.ExerciseScreen> { navBackStackEntry ->

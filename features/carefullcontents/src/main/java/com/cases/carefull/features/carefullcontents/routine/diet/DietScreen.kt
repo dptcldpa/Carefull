@@ -52,62 +52,62 @@ fun DietScreen(
 			text = "기초대사량 : ${uiState.value.bmrState.calculatedBmr}kcal",
 			style = MaterialTheme.typography.bodySmall,
 			modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+				.fillMaxWidth()
+				.padding(horizontal = 16.dp),
 			textAlign = TextAlign.Center
 		)
 		Text(
 			text = "활동대사량 : ${uiState.value.bmrState.activityMetabolism}kcal",
 			style = MaterialTheme.typography.bodySmall,
 			modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+				.fillMaxWidth()
+				.padding(horizontal = 16.dp),
 			textAlign = TextAlign.Center
 		)
 		Text(
 			text = "현재 섭취량: ${uiState.value.totalCalories}kcal",
 			style = MaterialTheme.typography.bodyLarge,
 			modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+				.fillMaxWidth()
+				.padding(horizontal = 16.dp),
 			textAlign = TextAlign.Center
 		)
 		Text(
 			text = "지방 : ${uiState.value.totalFats}g",
 			style = MaterialTheme.typography.bodySmall,
 			modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+				.fillMaxWidth()
+				.padding(horizontal = 16.dp),
 			textAlign = TextAlign.Center
 		)
 		Text(
 			text = "탄수화물 : ${uiState.value.totalCarbs}g",
 			style = MaterialTheme.typography.bodySmall,
 			modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+				.fillMaxWidth()
+				.padding(horizontal = 16.dp),
 			textAlign = TextAlign.Center
 		)
 		Text(
 			text = "단백질 : ${uiState.value.totalProteins}g",
 			style = MaterialTheme.typography.bodySmall,
 			modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+				.fillMaxWidth()
+				.padding(horizontal = 16.dp),
 			textAlign = TextAlign.Center
 		)
 		Text(
 			text = "지방 : ${uiState.value.totalFats}g",
 			style = MaterialTheme.typography.bodySmall,
 			modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+				.fillMaxWidth()
+				.padding(horizontal = 16.dp),
 			textAlign = TextAlign.Center
 		)
 		LazyColumn(
 			modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+				.fillMaxSize()
+				.padding(16.dp)
 		) {
 			item {
 				MealType.entries.forEach { mealType ->
@@ -138,8 +138,8 @@ fun MealSection(
 ) {
 	Card(
 		modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp),
+			.fillMaxWidth()
+			.padding(vertical = 12.dp),
 		elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
 	) {
 		Column(
@@ -148,8 +148,8 @@ fun MealSection(
 		) {
 			Row(
 				modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
+					.fillMaxWidth()
+					.padding(8.dp),
 				verticalAlignment = Alignment.CenterVertically
 			) {
 				Text(
@@ -207,8 +207,8 @@ fun MealSection(
 fun FoodItemRow(food: DietCollection, onRemove: () -> Unit) {
 	Row(
 		modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+			.fillMaxWidth()
+			.padding(horizontal = 16.dp, vertical = 8.dp),
 		verticalAlignment = Alignment.CenterVertically
 	) {
 		Text(

@@ -17,7 +17,7 @@ sealed interface MainRoute : Route {
 	data object SigninScreen : MainRoute
 	
 	@Serializable
-	data object Home : MainRoute
+	data object HomeScreen : MainRoute
 }
 
 @Serializable

@@ -37,7 +37,7 @@ object LayoutAsset {
 			NavItem("약", DiagnosisRoute.MedicineSearchScreen)
 		),
 		NavType.BOTTOM_MAIN to listOf(
-			NavItem("홈", MainRoute.Home, "home"),
+			NavItem("홈", MainRoute.HomeScreen, "home"),
 			NavItem("루틴", RoutineRoute.ExerciseScreen, "routine"),
 			NavItem("진단", DiagnosisRoute.ChatBotScreen, "diagnosis"),
 			NavItem("피드", FeedRoute.Social, "feed"),
@@ -45,7 +45,7 @@ object LayoutAsset {
 		)
 	)
 	private val screenConfig = mapOf(
-		MainRoute.Home to ScreenConfig(
+		MainRoute.HomeScreen to ScreenConfig(
 			showBottomBar = true
 		),
 		MyPageRoute.MyPage to ScreenConfig(
