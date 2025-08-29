@@ -28,7 +28,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -50,7 +50,7 @@ fun YearMonthPickerDialog(
 	onYearMonthSelected: (YearMonth) -> Unit
 ) {
 	if (isVisible) {
-		var displayedYear by remember { mutableStateOf(initialYearMonth.year) }
+		var displayedYear by remember { mutableIntStateOf(initialYearMonth.year) }
 		
 		Dialog(onDismissRequest = onDismissRequest) {
 			Surface(
