@@ -46,9 +46,11 @@ object LayoutAsset {
 	)
 	private val screenConfig = mapOf(
 		MainRoute.Home to ScreenConfig(
-			showBottomBar = true),
+			showBottomBar = true
+		),
 		MyPageRoute.MyPage to ScreenConfig(
-			showBottomBar = true),
+			showBottomBar = true
+		),
 		
 		//루틴
 		RoutineRoute.ExerciseScreen to ScreenConfig(
@@ -57,7 +59,8 @@ object LayoutAsset {
 		),
 		RoutineRoute.DietScreen to ScreenConfig(
 			topBarType = NavType.TOP_ROUTINE,
-			showBottomBar = true),
+			showBottomBar = true
+		),
 		RoutineRoute.DietSearchScreen to ScreenConfig(
 			topBarType = NavType.TOP_ROUTINE,
 			showBottomBar = true
@@ -67,6 +70,10 @@ object LayoutAsset {
 			showBottomBar = true
 		),
 		RoutineRoute.WorkOutScreen to ScreenConfig(
+			topBarType = NavType.NONE,
+			showBottomBar = false
+		),
+		RoutineRoute.BmrScreen to ScreenConfig(
 			topBarType = NavType.NONE,
 			showBottomBar = false
 		),
@@ -105,10 +112,12 @@ object LayoutAsset {
 		//피드
 		FeedRoute.Social to ScreenConfig(
 			topBarType = NavType.TOP_FEED,
-			showBottomBar = true),
+			showBottomBar = true
+		),
 		FeedRoute.RankingScreen to ScreenConfig(
 			topBarType = NavType.TOP_FEED,
-			showBottomBar = true),
+			showBottomBar = true
+		),
 		
 		MyPageRoute.AccountManagement to ScreenConfig()
 	)

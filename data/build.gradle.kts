@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -61,12 +62,18 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
+    
     //Coil
     implementation(libs.coil.compose)
-
+    
     implementation(libs.kotlinx.coroutines.play.services)
-
+    
     //ML Kit Pose Detection
     implementation(libs.pose.detection)
+    
+    //RoomDB
+    implementation(libs.bundles.room.libraries)
+    ksp(libs.androidx.room.compiler) {
+        exclude(group = "com.intellij", module = "annotations")
+    }
 }
