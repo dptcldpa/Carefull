@@ -2,80 +2,84 @@ package com.cases.carefull.features.carefullmainui.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.cases.carefull.domain.model.CalendarViewType
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.YearMonth
-import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalAdjusters
+import androidx.navigation.NavController
+import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
-	viewModel: HomeViewModel
+	viewModel: HomeViewModel,
+	navController: NavController
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	val pagerState = rememberPagerState(
 		initialPage = HomeViewModel.START_PAGE,
 		pageCount = { Int.MAX_VALUE }
 	)
-	LaunchedEffect(pagerState.settledPage) {
-		if (pagerState.settledPage != HomeViewModel.START_PAGE) {
-			viewModel.onPageScrolled(pagerState.settledPage)
-		}
-	}
-	LaunchedEffect(uiState.selectedDate, uiState.viewType) {
-		val targetPage = if (uiState.viewType == CalendarViewType.MONTHLY) {
-			HomeViewModel.START_PAGE + ChronoUnit.MONTHS.between(
-				YearMonth.from(LocalDate.now()),
-				YearMonth.from(uiState.selectedDate)
-			).toInt()
-		} else { // WEEKLY
-			// 1. 현재 Pager 페이지가 보여주는 주의 시작일 계산
-			val pageOffset = pagerState.currentPage - HomeViewModel.START_PAGE
-			val startOfCurrentPageWeek = LocalDate.now()
-				.plusWeeks(pageOffset.toLong())
-				.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
-			
-			// 2. 선택된 날짜가 속한 주의 시작일 계산
-			val startOfSelectedDateWeek = uiState.selectedDate
-				.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
-			
-			if (startOfCurrentPageWeek != startOfSelectedDateWeek) {
-				val startOfReferenceWeek =
-					LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
-				HomeViewModel.START_PAGE + ChronoUnit.WEEKS.between(
-					startOfReferenceWeek,
-					startOfSelectedDateWeek
-				).toInt()
-			} else {
-				pagerState.currentPage
+	
+	val todayExerciseName = uiState.dailyExercise.first().type
+	
+	LaunchedEffect(pagerState) {
+		// pagerState.settledPage의 변경을 Flow로 변환합니다.
+		snapshotFlow { pagerState.settledPage }
+			.distinctUntilChanged() // 실제로 페이지 값이 변경되었을 때만 collect를 호출합니다.
+			.collect { page ->
+				viewModel.onPageScrolled(page)
 			}
-		}
-		
-		if (pagerState.currentPage != targetPage) {
-			pagerState.animateScrollToPage(targetPage)
+	}
+	LaunchedEffect(uiState.pagerTargetPage) {
+		if (pagerState.currentPage != uiState.pagerTargetPage) {
+			pagerState.animateScrollToPage(uiState.pagerTargetPage)
 		}
 	}
+	YearMonthPickerDialog(
+		isVisible = uiState.isYearMonthPickerVisible,
+		initialYearMonth = uiState.displayedYearMonth,
+		onDismissRequest = {
+			viewModel.hideYearMonthPicker()
+		},
+		onYearMonthSelected = { selectedYearMonth ->
+			viewModel.onYearMonthSelected(selectedYearMonth)
+		}
+	)
+	
 	Column(
-		modifier = Modifier
-			.fillMaxSize(),
-		horizontalAlignment = Alignment.CenterHorizontally
+		modifier = Modifier.fillMaxSize()
 	) {
 		Calendar(
 			modifier = Modifier
@@ -96,28 +100,125 @@ fun HomeScreen(
 				viewModel.onGoToToday()
 			}
 		)
-		Spacer(modifier = Modifier.weight(1f))
-		Text(
-			text = "선택된 날짜 정보",
-			style = MaterialTheme.typography.titleMedium
-		)
-		Text(
-			text = "날짜: ${uiState.selectedDate}",
-			style = MaterialTheme.typography.titleMedium
-		)
-		Text(
-			text = "상태: ${uiState.selectedDateInfo}",
-			style = MaterialTheme.typography.titleMedium
-		)
-	}
-	YearMonthPickerDialog(
-		isVisible = uiState.isYearMonthPickerVisible,
-		initialYearMonth = uiState.displayedYearMonth,
-		onDismissRequest = {
-			viewModel.hideYearMonthPicker()
-		},
-		onYearMonthSelected = { selectedYearMonth ->
-			viewModel.onYearMonthSelected(selectedYearMonth)
+		
+		Column(
+			modifier = Modifier
+				.fillMaxSize()
+				.padding(horizontal = 16.dp, vertical = 8.dp),
+		) {
+			Spacer(modifier = Modifier.height(200.dp))
+			Column(
+				verticalArrangement = Arrangement.spacedBy(12.dp)
+			) {
+				DietInfoCard(
+					todayCalories = uiState.todayTotalCalories,
+					targetCalories = uiState.activityMetabolism,
+					onClick = { navController.navigate(RoutineRoute.DietScreen) }
+				)
+				WorkoutInfoCard(
+					exerciseName = todayExerciseName,
+					onClick = {
+						navController.navigate(
+							RoutineRoute.WorkOutScreen(
+								exerciseType = uiState.dailyExercise.first(),
+								count = 10
+							)
+						)
+					}
+				)
+			}
 		}
-	)
+	}
 }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DietInfoCard(
+	todayCalories: Int,
+	targetCalories: Int,
+	onClick: () -> Unit
+) {
+	Card(
+		modifier = Modifier.fillMaxWidth(),
+		shape = RoundedCornerShape(16.dp),
+		border = BorderStroke(1.dp, Color.LightGray),
+		onClick = onClick
+	) {
+		Row(
+			modifier = Modifier
+				.padding(horizontal = 20.dp, vertical = 24.dp),
+			verticalAlignment = Alignment.CenterVertically
+		) {
+			Column(modifier = Modifier.weight(1f)) {
+				Text(
+					text = "오늘의 섭취 칼로리",
+					style = MaterialTheme.typography.titleMedium,
+					color = Color.Gray
+				)
+				Spacer(modifier = Modifier.height(4.dp))
+				Text(
+					text = buildAnnotatedString {
+						withStyle(
+							style = SpanStyle(
+								fontWeight = FontWeight.Bold,
+								fontSize = 22.sp
+							)
+						) {
+							append("$todayCalories")
+						}
+						append(" / $targetCalories kcal")
+					},
+					style = MaterialTheme.typography.bodyLarge
+				)
+			}
+			Icon(
+				imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+				contentDescription = "식단 입력",
+				modifier = Modifier.size(20.dp),
+				tint = Color.Gray
+			)
+		}
+	}
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun WorkoutInfoCard(
+	exerciseName: String,
+	onClick: () -> Unit
+) {
+	Card(
+		modifier = Modifier.fillMaxWidth(),
+		shape = RoundedCornerShape(16.dp),
+		border = BorderStroke(1.dp, Color.LightGray),
+		onClick = onClick
+	) {
+		Row(
+			modifier = Modifier
+				.padding(horizontal = 20.dp, vertical = 24.dp),
+			verticalAlignment = Alignment.CenterVertically
+		) {
+			Column(modifier = Modifier.weight(1f)) {
+				Text(
+					text = "오늘의 운동",
+					style = MaterialTheme.typography.titleMedium,
+					color = Color.Gray
+				)
+				Spacer(modifier = Modifier.height(4.dp))
+				Text(
+					text = exerciseName,
+					style = MaterialTheme.typography.bodyLarge,
+					fontWeight = FontWeight.Bold
+				)
+			}
+			Icon(
+				imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+				contentDescription = "운동 시작",
+				modifier = Modifier.size(20.dp),
+				tint = Color.Gray
+			)
+		}
+	}
+}
+

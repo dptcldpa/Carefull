@@ -77,7 +77,7 @@ fun MainNavigation() {
 		exerciseRepository = container.exerciseRepository,
 		userRepository = container.userRepository,
 		rankingRepository = container.rankingRepository,
-		homeRepository = container.homeRepository
+		calendarRepository = container.calendarRepository
 	)
 	
 	val medicineViewModel: MedicineViewModel = viewModel(factory = viewModelFactory)
@@ -191,7 +191,8 @@ fun MainNavigation() {
 			}
 			
 			composable<MainRoute.HomeScreen> {
-				HomeScreen(viewModel = homeViewModel)
+				HomeScreen(viewModel = homeViewModel,
+					navController = navController)
 			}
 			//루틴
 			composable<RoutineRoute.ExerciseScreen> { navBackStackEntry ->
