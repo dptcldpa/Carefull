@@ -11,6 +11,7 @@ import java.time.temporal.TemporalAdjusters
 
 @RequiresApi(Build.VERSION_CODES.O)
 class CalendarRepositoryImpl : CalendarRepository {
+
 	override suspend fun getSchedulesForDate(date: LocalDate): List<String> {
 		return emptyList()
 	}

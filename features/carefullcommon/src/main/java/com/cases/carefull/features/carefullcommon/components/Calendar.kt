@@ -1,8 +1,7 @@
-package com.cases.carefull.features.carefullmainui.home
+package com.cases.carefull.features.carefullcommon.components
 
 import android.annotation.SuppressLint
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -11,7 +10,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -60,7 +58,7 @@ import kotlin.math.abs
 @Composable
 fun Calendar(
 	modifier: Modifier = Modifier,
-	uiState: HomeUiState,
+	calendarState: CalendarState,
 	pagerState: PagerState,
 	onDateClick: (LocalDate) -> Unit,
 	onToggleViewType: () -> Unit,
@@ -72,13 +70,13 @@ fun Calendar(
 	Surface(
 		modifier = modifier
 			.fillMaxWidth()
-			.pointerInput(uiState.viewType) {
+			.pointerInput(calendarState.viewType) {
 				detectDragGestures(
 					onDragStart = { totalDragY = 0f },
 					onDragEnd = {
-						if (totalDragY > swipeThreshold && uiState.viewType == CalendarViewType.WEEKLY) {
+						if (totalDragY > swipeThreshold && calendarState.viewType == CalendarViewType.WEEKLY) {
 							onToggleViewType()
-						} else if (totalDragY < -swipeThreshold && uiState.viewType == CalendarViewType.MONTHLY) {
+						} else if (totalDragY < -swipeThreshold && calendarState.viewType == CalendarViewType.MONTHLY) {
 							onToggleViewType()
 						}
 					}
@@ -96,19 +94,19 @@ fun Calendar(
 	) {
 		Column(modifier = Modifier.animateContentSize()) {
 			CalendarHeader(
-				uiState = uiState,
+				calendarState = calendarState,
 				onToggleViewType = onToggleViewType,
 				onMonthPickerClick = onMonthPickerClick,
 				onGoToToday = onGoToToday
 			)
 			WeekDays()
 			CalendarGrid(
-				uiState = uiState,
+				calendarState = calendarState,
 				pagerState = pagerState,
 				onDateClick = onDateClick
 			)
 			CalendarFooter(
-				selectedDateInfo = uiState.selectedDateInfo
+				selectedDateInfo = calendarState.selectedDateInfo
 			)
 		}
 	}
@@ -117,24 +115,24 @@ fun Calendar(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun CalendarHeader(
-	uiState: HomeUiState,
+	calendarState: CalendarState,
 	onToggleViewType: () -> Unit,
 	onMonthPickerClick: () -> Unit,
 	onGoToToday: () -> Unit
 ) {
-	val targetBias = if (uiState.viewType == CalendarViewType.MONTHLY) 0f else -1f
+	val targetBias = if (calendarState.viewType == CalendarViewType.MONTHLY) 0f else -1f
 	val animatedBias by animateFloatAsState(
 		targetValue = targetBias,
 		animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing),
 		label = "Header Alignment Bias"
 	)
-	val targetFontSize = if (uiState.viewType == CalendarViewType.MONTHLY) 22.sp else 18.sp
+	val targetFontSize = if (calendarState.viewType == CalendarViewType.MONTHLY) 22.sp else 18.sp
 	val animatedFontSize by animateFloatAsState(
 		targetValue = targetFontSize.value,
 		animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing),
 		label = "Header Font Size"
 	)
-	val targetStartPadding = if (uiState.viewType == CalendarViewType.MONTHLY) 8.dp else 0.dp
+	val targetStartPadding = if (calendarState.viewType == CalendarViewType.MONTHLY) 8.dp else 0.dp
 	val animatedStartPadding by animateDpAsState(
 		targetValue = targetStartPadding,
 		animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing),
@@ -154,8 +152,8 @@ private fun CalendarHeader(
 				.align(BiasAlignment(horizontalBias = animatedBias, verticalBias = 0f))
 				.padding(start = animatedStartPadding)
 		) {
-			val yearMonth = uiState.displayedYearMonth
-			val headerText = if (uiState.viewType == CalendarViewType.MONTHLY) {
+			val yearMonth = calendarState.displayedYearMonth
+			val headerText = if (calendarState.viewType == CalendarViewType.MONTHLY) {
 				"${yearMonth.year}. ${yearMonth.monthValue}"
 			} else {
 				"${yearMonth.monthValue}월"
@@ -174,7 +172,7 @@ private fun CalendarHeader(
 		) {
 			IconButton(onClick = onToggleViewType) {
 				Icon(
-					imageVector = if (uiState.viewType == CalendarViewType.WEEKLY)
+					imageVector = if (calendarState.viewType == CalendarViewType.WEEKLY)
 						Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
 					contentDescription = "달력 펼치기/접기",
 					modifier = Modifier.size(22.dp)
@@ -226,7 +224,7 @@ private fun WeekDays() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun CalendarGrid(
-	uiState: HomeUiState,
+	calendarState: CalendarState,
 	pagerState: PagerState,
 	onDateClick: (LocalDate) -> Unit
 ) {
@@ -236,11 +234,11 @@ private fun CalendarGrid(
 			.padding(horizontal = 8.dp)
 	) {
 		val dayHeight = maxWidth / 7
-		val monthlyWeekCount = if (uiState.viewType == CalendarViewType.MONTHLY) {
-			uiState.calendarDates.size / 7
+		val monthlyWeekCount = if (calendarState.viewType == CalendarViewType.MONTHLY) {
+			calendarState.calendarDates.size / 7
 		} else 1
 		
-		val targetHeight = if (uiState.viewType == CalendarViewType.MONTHLY) {
+		val targetHeight = if (calendarState.viewType == CalendarViewType.MONTHLY) {
 			dayHeight * monthlyWeekCount
 		} else {
 			dayHeight
@@ -255,7 +253,7 @@ private fun CalendarGrid(
 		Box(modifier = Modifier.height(animatedHeight)) {
 			HorizontalPager(state = pagerState) {
 				Column {
-					uiState.calendarDates.chunked(7).forEach { week ->
+					calendarState.calendarDates.chunked(7).forEach { week ->
 						Row(
 							modifier = Modifier
 								.fillMaxWidth()
@@ -264,7 +262,7 @@ private fun CalendarGrid(
 							week.forEach { date ->
 								CalendarDayBox(
 									date = date,
-									uiState = uiState,
+									calendarState = calendarState,
 									onClick = { onDateClick(date) }
 								)
 							}
@@ -297,7 +295,7 @@ private fun CalendarFooter(selectedDateInfo: String) {
 @Composable
 private fun RowScope.CalendarDayBox(
 	date: LocalDate,
-	uiState: HomeUiState,
+	calendarState: CalendarState,
 	onClick: () -> Unit
 ) {
 	Box(
@@ -305,16 +303,18 @@ private fun RowScope.CalendarDayBox(
 			.weight(1f)
 			.fillMaxHeight()
 	) {
-		val isSelected = date == uiState.selectedDate
-		val isVisibleMonth = YearMonth.from(date) == uiState.displayedYearMonth
+		val isSelected = date == calendarState.selectedDate
+		val isVisibleMonth = YearMonth.from(date) == calendarState.displayedYearMonth
 		val isToday = date == LocalDate.now()
+		
+		val hasLoggedMeal = calendarState.markedDates.contains(date)
 		
 		CalendarDay(
 			date = date,
 			isToday = isToday,
 			isSelected = isSelected,
-			isVisibleMonth = if (uiState.viewType == CalendarViewType.WEEKLY) true else isVisibleMonth,
-			hasLoggedMealToday = uiState.hasLoggedMealToday,
+			isVisibleMonth = if (calendarState.viewType == CalendarViewType.WEEKLY) true else isVisibleMonth,
+			hasLoggedMeal = hasLoggedMeal,
 			onClick = onClick
 		)
 	}

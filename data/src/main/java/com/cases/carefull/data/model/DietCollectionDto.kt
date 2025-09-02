@@ -3,6 +3,7 @@ package com.cases.carefull.data.model
 import com.cases.carefull.domain.model.diet.DietCollection
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ServerTimestamp
+import java.util.Date
 
 data class DietCollectionDTO(
 	val user_id: String = "",
@@ -13,7 +14,6 @@ data class DietCollectionDTO(
 	val protein: Int = 0,
 	val fat: Int = 0,
 	val weight: Int = 0,
-	@ServerTimestamp
 	val created_at: Timestamp? = null,
 	@ServerTimestamp
 	val updated_at: Timestamp? = null
@@ -29,7 +29,7 @@ fun DietCollection.toFirestoreDietCollectionDTO(): DietCollectionDTO {
 		protein = this.protein,
 		fat = this.fat,
 		weight = this.weight,
-		created_at = null,
+		created_at = Timestamp(Date(this.createdAt)),
 		updated_at = null
 	)
 }

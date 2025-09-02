@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullmainui.home
+package com.cases.carefull.features.carefullcommon.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -34,7 +34,7 @@ fun CalendarDay(
 	isToday: Boolean,
 	isSelected: Boolean,
 	isVisibleMonth: Boolean,
-	hasLoggedMealToday: Boolean,
+	hasLoggedMeal: Boolean,
 	onClick: () -> Unit
 ) {
 	val textColor = remember(isToday, isVisibleMonth) {
@@ -82,7 +82,7 @@ fun CalendarDay(
 					color = textColor
 				)
 			}
-			if (isToday && hasLoggedMealToday) {
+			if (hasLoggedMeal) {
 				Icon(
 					imageVector = Icons.Default.CheckCircle,
 					contentDescription = "식단 기록 완료",

@@ -19,13 +19,19 @@ data class HomeUiState(
 	val isLoading: Boolean = false,
 	val isError: Boolean = false,
 	val dailyExercise: List<ExerciseType> = emptyList(),
-	val selectedExercise: ExerciseType? = null,
-	val showDialog: Boolean = false,
-	
+
 	val todayTotalCalories: Int = 0,
 	val activityMetabolism: Int = 0,
-	
-	val hasLoggedMealToday: Boolean = false,
-	
-	val pagerTargetPage: Int = HomeViewModel.START_PAGE
-)
+
+	val loggedMealDates: Set<LocalDate> = emptySet(),
+
+	val pagerTargetPage: Int = START_PAGE
+
+//	val selectedExercise: ExerciseType? = null,
+//	val showDialog: Boolean = false,
+//	val hasLoggedMealToday: Boolean = false,
+) {
+	companion object {
+		const val START_PAGE = Int.MAX_VALUE / 2
+	}
+}
