@@ -9,6 +9,7 @@ import com.cases.carefull.domain.repository.CalendarRepository
 import com.cases.carefull.domain.repository.DietRepository
 import com.cases.carefull.domain.repository.ExerciseRepository
 import com.cases.carefull.domain.util.DataResourceResult
+import com.cases.carefull.features.carefullmainui.home.HomeUiState.Companion.START_PAGE
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -30,11 +31,16 @@ class HomeViewModel(
 	private val _uiState = MutableStateFlow(HomeUiState())
 	val uiState = _uiState.asStateFlow()
 	
-	companion object {
-		const val START_PAGE = Int.MAX_VALUE / 2
+	init {
+		observeCalendarChanges()
+		observeAllMeals()
+		refreshHomeData()
+		loadInitialData()
+		loadBmrData()
+		loadDietData()
 	}
 	
-	init {
+	private fun observeCalendarChanges() {
 		viewModelScope.launch {
 			uiState.map { it.selectedDate to it.viewType }
 				.distinctUntilChanged()
@@ -52,12 +58,54 @@ class HomeViewModel(
 					}
 				}
 		}
-		calculateAndupdateTargetPage(_uiState.value.selectedDate, _uiState.value.viewType)
-		loadInitialData()
-		loadBmrAndDietData()
 	}
 	
-	//이거됨
+	private fun observeAllMeals() {
+		viewModelScope.launch {
+			dietRepository.getAllMeal().collect { result ->
+				_uiState.update { it.copy(isLoading = true) }
+				when (result) {
+					is DataResourceResult.Success -> {
+						val mealsByDate = result.data
+						val today = LocalDate.now()
+						val todayMeals = mealsByDate[today] ?: emptyList()
+						val todayCalories = todayMeals.sumOf { it.kcal }
+						val datesWithLoggedMeals = mealsByDate.keys
+						
+						_uiState.update {
+							it.copy(
+								isLoading = false,
+								isError = false,
+								todayTotalCalories = todayCalories,
+								loggedMealDates = datesWithLoggedMeals
+							)
+						}
+					}
+					
+					is DataResourceResult.Error -> {
+						_uiState.update { it.copy(isLoading = false, isError = true) }
+					}
+					
+					is DataResourceResult.Loading -> {
+					}
+				}
+			}
+		}
+	}
+	
+	fun refreshHomeData() {
+		viewModelScope.launch {
+			dietRepository.getMyBmr("test").collect { bmr ->
+				if (bmr != null) {
+					_uiState.update {
+						it.copy(activityMetabolism = bmr.activityBmr)
+					}
+				}
+			}
+		}
+		calculateAndupdateTargetPage(_uiState.value.selectedDate, _uiState.value.viewType)
+	}
+	
 	private fun calculateAndupdateTargetPage(selectedDate: LocalDate, viewType: CalendarViewType) {
 		val targetPage = if (viewType == CalendarViewType.MONTHLY) {
 			START_PAGE + ChronoUnit.MONTHS.between(
@@ -78,6 +126,7 @@ class HomeViewModel(
 	}
 	
 	fun onDateSelected(date: LocalDate) {
+		if (date == _uiState.value.selectedDate) return
 		_uiState.update {
 			it.copy(
 				selectedDate = date,
@@ -87,33 +136,26 @@ class HomeViewModel(
 		calculateAndupdateTargetPage(date, _uiState.value.viewType)
 	}
 	
-	// 이거됨
 	fun onPageScrolled(page: Int) {
-		// START_PAGE가 '오늘'이 속한 페이지이므로, page와의 차이가 곧바로 오프셋이 됩니다.
 		val pageOffset = (page - START_PAGE).toLong()
 		val currentViewType = _uiState.value.viewType
-		
 		val newDate = if (currentViewType == CalendarViewType.MONTHLY) {
-			// --- 월간 뷰 로직 ---
 			val originalSelectedDay = _uiState.value.selectedDate.dayOfMonth
-			// 1. 목표 '연월'을 '오늘' 기준으로 간단하게 계산합니다.
 			val targetYearMonth = YearMonth.from(LocalDate.now()).plusMonths(pageOffset)
-			// 2. 해당 월의 마지막 날짜(28, 29, 30, 31 중 하나)를 구합니다.
 			val lastDayOfTargetMonth = targetYearMonth.lengthOfMonth()
-			// 3. 원래 선택했던 날짜와 마지막 날짜 중 '더 작은 값'을 선택하여 유효한 날짜를 보장합니다.
-			// 예: 31일 -> 28일로 자동 변경, 29일 -> 29일로 유지
+			// 예: 31일 -> 28일 자동 변경, 29일 -> 29일
 			val dayToSet = minOf(originalSelectedDay, lastDayOfTargetMonth)
 			targetYearMonth.atDay(dayToSet)
 			
-		} else { // WEEKLY
+		} else {
 			LocalDate.now().plusWeeks(pageOffset)
 				.with(_uiState.value.selectedDate.dayOfWeek)
 		}
-		
 		_uiState.update {
 			it.copy(
 				selectedDate = newDate,
-				selectedDateInfo = calculateDaysDifference(newDate)
+				selectedDateInfo = calculateDaysDifference(newDate),
+				pagerTargetPage = page
 			)
 		}
 	}
@@ -129,6 +171,7 @@ class HomeViewModel(
 	
 	fun onGoToToday() {
 		val today = LocalDate.now()
+		if (today == _uiState.value.selectedDate) return
 		_uiState.update {
 			it.copy(
 				selectedDate = today,
@@ -174,7 +217,6 @@ class HomeViewModel(
 		viewModelScope.launch {
 			_uiState.update { it.copy(isLoading = true) }
 			try {
-				
 				val dailyExercises = exerciseRepository.getDailyExerciseList()
 				_uiState.update {
 					it.copy(
@@ -188,7 +230,7 @@ class HomeViewModel(
 		}
 	}
 	
-	private fun loadBmrAndDietData() {
+	private fun loadBmrData() {
 		viewModelScope.launch {
 			dietRepository.getMyBmr("test").collect { bmr ->
 				if (bmr != null) {
@@ -198,23 +240,41 @@ class HomeViewModel(
 				}
 			}
 		}
+	}
+	
+	private fun loadDietData() {
 		viewModelScope.launch {
-			val result = dietRepository.getAllMeal()
-			when (result) {
-				is DataResourceResult.Success -> {
-					val totalCalories = result.data.sumOf { it.kcal }
-					_uiState.update {
-						it.copy(
-							todayTotalCalories = totalCalories,
-							hasLoggedMealToday = totalCalories > 0
-						)
+			_uiState.update { it.copy(isLoading = true) }
+			dietRepository.getAllMeal().collect { result ->
+				_uiState.update { it.copy(isLoading = true) }
+				when (result) {
+					is DataResourceResult.Success -> {
+						val meals = result.data
+						val today = LocalDate.now()
+						val todayMeals = meals[today] ?: emptyList()
+						val todayCalories = todayMeals.sumOf { it.kcal }
+						val datesWithLoggedMeals = meals.keys
+						_uiState.update {
+							it.copy(
+								isLoading = false,
+								isError = false,
+								todayTotalCalories = todayCalories,
+								loggedMealDates = datesWithLoggedMeals
+							)
+						}
 					}
-				}
-				
-				is DataResourceResult.Error -> {
-				}
-				
-				is DataResourceResult.Loading -> {
+					
+					is DataResourceResult.Error -> {
+						_uiState.update {
+							it.copy(isLoading = false, isError = true)
+						}
+					}
+					
+					is DataResourceResult.Loading -> {
+						_uiState.update {
+							it.copy(isLoading = true)
+						}
+					}
 				}
 			}
 		}

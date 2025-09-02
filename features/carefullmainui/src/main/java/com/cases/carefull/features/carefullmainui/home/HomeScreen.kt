@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,7 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.cases.carefull.features.carefullcommon.components.Calendar
+import com.cases.carefull.features.carefullcommon.components.CalendarState
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
+import com.cases.carefull.features.carefullmainui.home.HomeUiState.Companion.START_PAGE
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -48,25 +50,33 @@ fun HomeScreen(
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	val pagerState = rememberPagerState(
-		initialPage = HomeViewModel.START_PAGE,
+		initialPage = START_PAGE,
 		pageCount = { Int.MAX_VALUE }
 	)
-	
+	val calendarState = CalendarState(
+		selectedDate = uiState.selectedDate,
+		displayedYearMonth = uiState.displayedYearMonth,
+		viewType = uiState.viewType,
+		calendarDates = uiState.calendarDates,
+		selectedDateInfo = uiState.selectedDateInfo,
+		markedDates = uiState.loggedMealDates
+	)
 	val todayExerciseName = uiState.dailyExercise.first().type
 	
 	LaunchedEffect(pagerState) {
-		// pagerState.settledPage의 변경을 Flow로 변환합니다.
 		snapshotFlow { pagerState.settledPage }
-			.distinctUntilChanged() // 실제로 페이지 값이 변경되었을 때만 collect를 호출합니다.
+			.distinctUntilChanged()
 			.collect { page ->
 				viewModel.onPageScrolled(page)
 			}
 	}
+	
 	LaunchedEffect(uiState.pagerTargetPage) {
 		if (pagerState.currentPage != uiState.pagerTargetPage) {
 			pagerState.animateScrollToPage(uiState.pagerTargetPage)
 		}
 	}
+	
 	YearMonthPickerDialog(
 		isVisible = uiState.isYearMonthPickerVisible,
 		initialYearMonth = uiState.displayedYearMonth,
@@ -85,7 +95,7 @@ fun HomeScreen(
 			modifier = Modifier
 				.fillMaxWidth()
 				.padding(horizontal = 16.dp, vertical = 8.dp),
-			uiState = uiState,
+			calendarState = calendarState,
 			pagerState = pagerState,
 			onDateClick = { date ->
 				viewModel.onDateSelected(date)
@@ -106,7 +116,6 @@ fun HomeScreen(
 				.fillMaxSize()
 				.padding(horizontal = 16.dp, vertical = 8.dp),
 		) {
-			Spacer(modifier = Modifier.height(200.dp))
 			Column(
 				verticalArrangement = Arrangement.spacedBy(12.dp)
 			) {
@@ -130,7 +139,6 @@ fun HomeScreen(
 		}
 	}
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

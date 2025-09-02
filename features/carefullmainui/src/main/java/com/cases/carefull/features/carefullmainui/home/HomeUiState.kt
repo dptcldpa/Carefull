@@ -25,7 +25,12 @@ data class HomeUiState(
 	val todayTotalCalories: Int = 0,
 	val activityMetabolism: Int = 0,
 	
+	val loggedMealDates: Set<LocalDate> = emptySet(),
 	val hasLoggedMealToday: Boolean = false,
 	
-	val pagerTargetPage: Int = HomeViewModel.START_PAGE
-)
+	val pagerTargetPage: Int = START_PAGE
+) {
+	companion object {
+		const val START_PAGE = Int.MAX_VALUE / 2
+	}
+}
