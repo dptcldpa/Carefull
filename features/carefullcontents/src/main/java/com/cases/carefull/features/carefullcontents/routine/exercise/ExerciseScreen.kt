@@ -1,6 +1,10 @@
 package com.cases.carefull.features.carefullcontents.routine.exercise
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -47,12 +51,15 @@ import androidx.navigation.NavController
 import com.cases.carefull.domain.model.exercise.ExerciseType
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ExerciseScreen(
 	viewModel: ExerciseViewModel,
 	navController: NavController
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+	val todayExercise = uiState.dailyExercise.firstOrNull()
+	
 	
 	if (uiState.showDialog && uiState.selectedExercise != null) {
 		ExerciseCountDialog(
@@ -117,8 +124,10 @@ fun ExerciseScreen(
 				items = uiState.exerciseList,
 				key = { it.type.name }
 			) { exerciseUiModel ->
+				val isTodayExercise = exerciseUiModel.type == todayExercise
 				ExerciseCard(
 					uiModel = exerciseUiModel,
+					isTodayExercise = isTodayExercise,
 					onClick = {
 						viewModel.onExerciseSelected(exerciseUiModel.type)
 					}
@@ -132,12 +141,27 @@ fun ExerciseScreen(
 @Composable
 fun ExerciseCard(
 	uiModel: ExerciseUiModel,
+	isTodayExercise: Boolean,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier
 ) {
+	val cardModifier = if (isTodayExercise) {
+		modifier
+			.fillMaxWidth()
+			.then(
+				Modifier.border(
+					BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+					RoundedCornerShape(16.dp)
+				)
+			)
+	} else {
+		modifier.fillMaxWidth()
+	}
+	
 	Card(
 		onClick = onClick,
-		modifier = modifier.fillMaxWidth(),
+		modifier = cardModifier,
+		shape = RoundedCornerShape(16.dp),
 		elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
 	) {
 		Row(
@@ -168,12 +192,26 @@ fun ExerciseCard(
 					color = MaterialTheme.colorScheme.onSurfaceVariant,
 				)
 				Spacer(modifier = Modifier.height(8.dp))
-				Text(
-					text = "총 ${uiModel.totalCount}회 수행",
-					style = MaterialTheme.typography.bodySmall,
-					color = MaterialTheme.colorScheme.primary,
-					fontWeight = FontWeight.SemiBold
-				)
+				Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+					Text(
+						text = "오늘 ${uiModel.dailyCount}회",
+						style = MaterialTheme.typography.bodySmall,
+						color = MaterialTheme.colorScheme.secondary,
+						fontWeight = FontWeight.Bold
+					)
+					Text(
+						text = "이번 주 ${uiModel.weeklyCount}회",
+						style = MaterialTheme.typography.bodySmall,
+						color = Color.Gray,
+						fontWeight = FontWeight.SemiBold
+					)
+					Text(
+						text = "총 ${uiModel.totalCount}회",
+						style = MaterialTheme.typography.bodySmall,
+						color = MaterialTheme.colorScheme.primary,
+						fontWeight = FontWeight.SemiBold
+					)
+				}
 			}
 		}
 	}

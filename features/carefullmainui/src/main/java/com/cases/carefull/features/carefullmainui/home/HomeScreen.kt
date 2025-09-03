@@ -49,6 +49,9 @@ fun HomeScreen(
 	navController: NavController
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+	
+	val todayExercise = uiState.dailyExercise.firstOrNull()
+	
 	val pagerState = rememberPagerState(
 		initialPage = START_PAGE,
 		pageCount = { Int.MAX_VALUE }
@@ -59,9 +62,10 @@ fun HomeScreen(
 		viewType = uiState.viewType,
 		calendarDates = uiState.calendarDates,
 		selectedDateInfo = uiState.selectedDateInfo,
-		markedDates = uiState.loggedMealDates
+		markedDates = uiState.loggedMealDates,
+		dailyExerciseCompletedDates = uiState.dailyExerciseCompletedDates
 	)
-	val todayExerciseName = uiState.dailyExercise.first().type
+//	val todayExerciseName = uiState.dailyExercise.firstOrNull()
 	
 	LaunchedEffect(pagerState) {
 		snapshotFlow { pagerState.settledPage }
@@ -124,17 +128,21 @@ fun HomeScreen(
 					targetCalories = uiState.activityMetabolism,
 					onClick = { navController.navigate(RoutineRoute.DietScreen) }
 				)
-				WorkoutInfoCard(
-					exerciseName = todayExerciseName,
-					onClick = {
-						navController.navigate(
-							RoutineRoute.WorkOutScreen(
-								exerciseType = uiState.dailyExercise.first(),
-								count = 10
+				if (todayExercise != null) {
+					WorkoutInfoCard(
+						exerciseName = todayExercise.type,
+						todayCount = uiState.todayExerciseCount,
+						goalCount = HomeViewModel.TODAY_EXERCISE_GOAL, // [추가] 목표량 전달
+						onClick = {
+							navController.navigate(
+								RoutineRoute.WorkOutScreen(
+									exerciseType = uiState.dailyExercise.first(),
+									count = 10
+								)
 							)
-						)
-					}
-				)
+						}
+					)
+				}
 			}
 		}
 	}
@@ -194,6 +202,8 @@ fun DietInfoCard(
 @Composable
 fun WorkoutInfoCard(
 	exerciseName: String,
+	todayCount: Int, // [추가]
+	goalCount: Int, // [추가]
 	onClick: () -> Unit
 ) {
 	Card(
@@ -214,11 +224,31 @@ fun WorkoutInfoCard(
 					color = Color.Gray
 				)
 				Spacer(modifier = Modifier.height(4.dp))
-				Text(
-					text = exerciseName,
-					style = MaterialTheme.typography.bodyLarge,
-					fontWeight = FontWeight.Bold
-				)
+				Row(
+					verticalAlignment = Alignment.Bottom,
+					horizontalArrangement = Arrangement.spacedBy(8.dp)
+				) {
+					Text(
+						text = exerciseName,
+						style = MaterialTheme.typography.bodyLarge,
+						fontWeight = FontWeight.Bold
+					)
+					Text(
+						text = buildAnnotatedString {
+							withStyle(
+								style = SpanStyle(
+									fontWeight = FontWeight.Bold,
+									color = MaterialTheme.colorScheme.primary
+								)
+							) {
+								append("$todayCount")
+							}
+							append(" / $goalCount 회")
+						},
+						style = MaterialTheme.typography.bodyMedium,
+						color = Color.Gray
+					)
+				}
 			}
 			Icon(
 				imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,

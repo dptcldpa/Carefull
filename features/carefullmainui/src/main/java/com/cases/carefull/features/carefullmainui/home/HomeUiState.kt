@@ -26,6 +26,8 @@ data class HomeUiState(
 	val activityMetabolism: Int = 0,
 	
 	val loggedMealDates: Set<LocalDate> = emptySet(),
+	val dailyExerciseCompletedDates: Set<LocalDate> = emptySet(),
+	val todayExerciseCount: Int = 0, // [추가]
 	val hasLoggedMealToday: Boolean = false,
 	
 	val pagerTargetPage: Int = START_PAGE

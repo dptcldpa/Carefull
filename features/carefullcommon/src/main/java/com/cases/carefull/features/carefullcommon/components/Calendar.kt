@@ -308,6 +308,7 @@ private fun RowScope.CalendarDayBox(
 		val isToday = date == LocalDate.now()
 		
 		val hasLoggedMeal = calendarState.markedDates.contains(date)
+		val hasCompletedDailyExercise = calendarState.dailyExerciseCompletedDates.contains(date)
 		
 		CalendarDay(
 			date = date,
@@ -315,6 +316,7 @@ private fun RowScope.CalendarDayBox(
 			isSelected = isSelected,
 			isVisibleMonth = if (calendarState.viewType == CalendarViewType.WEEKLY) true else isVisibleMonth,
 			hasLoggedMeal = hasLoggedMeal,
+			hasCompletedDailyExercise = hasCompletedDailyExercise,
 			onClick = onClick
 		)
 	}

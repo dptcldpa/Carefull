@@ -5,5 +5,7 @@ data class ExerciseCollection(
 	val exerciseType: String = "",
 	val count: Int = 0,
 	val createdAt: Long = 0,
-	val updatedAt: Long = 0
+	val updatedAt: Long = 0,
+	val weeklyCounts: Map<String, Int> = emptyMap(),
+	val dailyCounts: Map<String, Int> = emptyMap()
 )
