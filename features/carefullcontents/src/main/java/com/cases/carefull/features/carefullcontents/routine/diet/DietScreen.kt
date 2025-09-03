@@ -63,16 +63,16 @@ fun DietScreen(
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	val lazyListState = rememberLazyListState()
-	
+
 	LaunchedEffect(uiState.selectedDate) {
 		val targetIndex = uiState.dietSections.indexOfFirst { it.date == uiState.selectedDate }
 		if (targetIndex != -1) {
 			lazyListState.scrollToItem(index = targetIndex)
 		}
 	}
-	
+
 	if (uiState.isDatePickerVisible) {
-		
+
 		val calendarState = CalendarState(
 			selectedDate = uiState.selectedDate,
 			displayedYearMonth = uiState.datePickerDisplayedMonth,
@@ -92,7 +92,7 @@ fun DietScreen(
 			onGoToToday = { viewModel.onGoToToday() }
 		)
 	}
-	
+
 	LazyColumn(
 		modifier = Modifier.fillMaxSize(),
 		state = lazyListState
@@ -100,17 +100,17 @@ fun DietScreen(
 		item {
 			NutritionSummary(uiState = uiState)
 		}
-		
+
 		item {
 			val section = uiState.selectedDateSection
-			
+
 			DateHeader(
 				date = uiState.selectedDate,
 				totalCalories = section?.totalCalories ?: 0,
 				onCalendarClick = { viewModel.showDatePicker() }
 			)
 			HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-			
+
 			Column(modifier = Modifier.padding(horizontal = 16.dp)) {
 				val mealsByTimeForDay = section?.meals?.groupBy {
 					try {
@@ -119,7 +119,7 @@ fun DietScreen(
 						MealType.SNACK
 					}
 				} ?: emptyMap()
-				
+
 				MealType.entries.forEach { mealType ->
 					val addedFoodsForMealType = mealsByTimeForDay[mealType] ?: emptyList()
 					MealSection(
@@ -153,7 +153,7 @@ fun DatePickerDialog(
 		initialPage = startPage,
 		pageCount = { Int.MAX_VALUE })
 	var previousPage by remember { mutableIntStateOf(startPage) }
-	
+
 	LaunchedEffect(pagerState) {
 		snapshotFlow { pagerState.currentPage }
 			.distinctUntilChanged()
@@ -344,7 +344,7 @@ fun FoodItemRow(
 			)
 		}
 		Text(text = "${food.kcal} kcal", style = MaterialTheme.typography.bodyMedium)
-		
+
 		IconButton(onClick = onRemove, modifier = Modifier.size(20.dp)) {
 			Icon(imageVector = Icons.Default.Close, contentDescription = "삭제")
 		}
@@ -378,7 +378,7 @@ fun DateHeader(
 			text = "총 $totalCalories kcal",
 			style = MaterialTheme.typography.bodyMedium
 		)
-		
+
 	}
 }
 
@@ -386,7 +386,7 @@ fun DateHeader(
 fun formatDate(date: LocalDate): String {
 	val today = LocalDate.now()
 	val yesterday = today.minusDays(1)
-	
+
 	return when {
 		date.isEqual(today) -> "오늘"
 		date.isEqual(yesterday) -> "어제"
