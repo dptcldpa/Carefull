@@ -3,14 +3,15 @@ package com.cases.carefull.data.repository
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.cases.carefull.domain.repository.HomeRepository
+import com.cases.carefull.domain.repository.CalendarRepository
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.TemporalAdjusters
 
 @RequiresApi(Build.VERSION_CODES.O)
-class HomeRepositoryImpl : HomeRepository {
+class CalendarRepositoryImpl : CalendarRepository {
+
 	override suspend fun getSchedulesForDate(date: LocalDate): List<String> {
 		return emptyList()
 	}

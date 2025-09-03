@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullmainui.home
+package com.cases.carefull.features.carefullcommon.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +34,7 @@ fun CalendarDay(
 	isToday: Boolean,
 	isSelected: Boolean,
 	isVisibleMonth: Boolean,
+	hasLoggedMeal: Boolean,
 	onClick: () -> Unit
 ) {
 	val textColor = remember(isToday, isVisibleMonth) {
@@ -41,7 +45,6 @@ fun CalendarDay(
 			else -> Color.Black
 		}
 	}
-	
 	val surfaceColor = remember(isToday) {
 		if (isToday) {
 			Color(0xFFE8F5E9)
@@ -77,6 +80,14 @@ fun CalendarDay(
 					lineHeight = 12.sp,
 					fontWeight = FontWeight.Normal,
 					color = textColor
+				)
+			}
+			if (hasLoggedMeal) {
+				Icon(
+					imageVector = Icons.Default.CheckCircle,
+					contentDescription = "식단 기록 완료",
+					modifier = Modifier.size(12.dp),
+					tint = Color(0xFF4CAF50)
 				)
 			}
 		}

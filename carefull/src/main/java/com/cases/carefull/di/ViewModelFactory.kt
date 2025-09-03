@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.cases.carefull.common.MainViewModel
 import com.cases.carefull.domain.repository.DietRepository
 import com.cases.carefull.domain.repository.ExerciseRepository
-import com.cases.carefull.domain.repository.HomeRepository
+import com.cases.carefull.domain.repository.CalendarRepository
 import com.cases.carefull.domain.repository.UserRepository
 import com.cases.carefull.domain.repository.RankingRepository
 import com.cases.carefull.domain.usecase.MedicineSearchUseCase
@@ -26,7 +26,7 @@ class ViewModelFactory(
 	private val exerciseRepository: ExerciseRepository,
 	private val userRepository: UserRepository,
 	private val rankingRepository: RankingRepository,
-	private val homeRepository: HomeRepository
+	private val calendarRepository: CalendarRepository,
 ) : ViewModelProvider.Factory {
 	@RequiresApi(Build.VERSION_CODES.O)
 	override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -56,7 +56,7 @@ class ViewModelFactory(
 		}
 		if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
 			@Suppress("UNCHECKED_CAST")
-			return HomeViewModel(homeRepository) as T
+			return HomeViewModel(calendarRepository,exerciseRepository,dietRepository) as T
 		}
 		throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
 	}

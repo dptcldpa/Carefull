@@ -1,6 +1,7 @@
 package com.cases.carefull.domain.model.diet
 
 data class DietCollection(
+	val documentId:String = "",
 	val userId: String = "",
 	val mealType: String = "",
 	val mealName: String = "",

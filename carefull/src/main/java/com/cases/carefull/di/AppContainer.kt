@@ -1,6 +1,8 @@
 package com.cases.carefull.di
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.cases.carefull.BuildConfig
 import com.cases.carefull.data.datasource.KakaoDataSourceImpl
@@ -9,7 +11,7 @@ import com.cases.carefull.data.network.DietRetrofitClient
 import com.cases.carefull.data.network.RetrofitInstance
 import com.cases.carefull.data.repository.DietRepositoryImpl
 import com.cases.carefull.data.repository.ExerciseRepositoryImpl
-import com.cases.carefull.data.repository.HomeRepositoryImpl
+import com.cases.carefull.data.repository.CalendarRepositoryImpl
 import com.cases.carefull.data.repository.MedicineRepositoryImpl
 import com.cases.carefull.data.repository.UserRepositoryImpl
 import com.cases.carefull.domain.repository.DietRepository
@@ -17,7 +19,7 @@ import com.cases.carefull.domain.repository.ExerciseRepository
 import com.cases.carefull.domain.repository.MedicineRepository
 import com.cases.carefull.domain.repository.UserRepository
 import com.cases.carefull.data.repository.RankingRepositoryImpl
-import com.cases.carefull.domain.repository.HomeRepository
+import com.cases.carefull.domain.repository.CalendarRepository
 import com.cases.carefull.domain.repository.RankingRepository
 import com.cases.carefull.domain.usecase.MedicineSearchUseCase
 import com.cases.carefull.features.carefullcommon.components.NavigationRepositoryImpl
@@ -36,9 +38,10 @@ interface AppContainer {
 	val poseDetector: PoseDetector
 	val userRepository: UserRepository
 	val rankingRepository: RankingRepository
-	val homeRepository: HomeRepository
+	val calendarRepository: CalendarRepository
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 class DefaultAppContainer(private val context: Context) : AppContainer {
 	
 	override val navigationRepository: NavigationRepository by lazy {
@@ -97,8 +100,8 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
 		RankingRepositoryImpl(
 		)
 	}
-	override val homeRepository: HomeRepository by lazy {
-		HomeRepositoryImpl()
+	override val calendarRepository: CalendarRepository by lazy {
+		CalendarRepositoryImpl()
 	}
 	
 	override val medicineViewModelFactory: ViewModelProvider.Factory by lazy {
@@ -109,7 +112,7 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
 			exerciseRepository = exerciseRepository,
 			userRepository = userRepository,
 			rankingRepository = rankingRepository,
-			homeRepository = homeRepository
+			calendarRepository = calendarRepository
 		)
 	}
 }

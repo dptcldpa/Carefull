@@ -1,5 +1,7 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,7 +47,7 @@ import com.cases.carefull.domain.model.diet.BmrActivity
 import com.cases.carefull.domain.model.diet.Gender
 import com.cases.carefull.features.carefullcommon.R
 
-
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BmrScreen(
@@ -121,7 +123,7 @@ fun BasalMetabolicRateContent(
 		modifier = Modifier
 			.fillMaxSize()
 			.padding(16.dp)
-			.verticalScroll(scrollState), // 키보드가 올라올 때 화면이 스크롤되도록 설정
+			.verticalScroll(scrollState),
 		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
 		Text(
