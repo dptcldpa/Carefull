@@ -30,9 +30,9 @@ import java.time.temporal.TemporalAdjusters
 
 @RequiresApi(Build.VERSION_CODES.O)
 class HomeViewModel(
-	private val calendarRepository: CalendarRepository,
-	private val exerciseRepository: ExerciseRepository,
-	private val dietRepository: DietRepository
+    private val calendarRepository: CalendarRepository,
+    private val exerciseRepository: ExerciseRepository,
+    private val dietRepository: DietRepository
 ) : ViewModel() {
 	private val _uiState = MutableStateFlow(HomeUiState())
 	val uiState = _uiState.asStateFlow()

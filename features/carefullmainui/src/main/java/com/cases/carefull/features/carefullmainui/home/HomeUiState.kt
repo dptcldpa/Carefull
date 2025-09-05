@@ -20,13 +20,12 @@ data class HomeUiState(
 	val isLoading: Boolean = false,
 	val isError: Boolean = false,
 	val dailyExercise: List<ExerciseType> = emptyList(),
-	val selectedExercise: ExerciseType? = null,
-	val showDialog: Boolean = false,
-	
+
 	val todayTotalCalories: Int = 0,
 	val activityMetabolism: Int = 0,
-	
+
 	val loggedMealDates: Set<LocalDate> = emptySet(),
+
 	val dailyExerciseCompletedDates: Set<LocalDate> = emptySet(),
 	val todayExerciseCount: Int = 0,
 	val hasLoggedMealToday: Boolean = false,
