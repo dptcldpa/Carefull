@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -54,7 +55,6 @@ fun CalendarDay(
 			Color.White
 		}
 	}
-	
 	Surface(
 		modifier = Modifier.clickable(
 			interactionSource = remember { MutableInteractionSource() },
@@ -84,20 +84,23 @@ fun CalendarDay(
 					color = textColor
 				)
 			}
-			if (hasCompletedDailyExercise) {
-				Icon(
-					imageVector = Icons.Default.CheckCircle,
-					contentDescription = "오늘의 운동 완료",
-					modifier = Modifier.size(12.dp),
-					tint = MaterialTheme.colorScheme.primary
-				)
-			} else if (hasLoggedMeal) {
-				Icon(
-					imageVector = Icons.Default.CheckCircle,
-					contentDescription = "식단 기록 완료",
-					modifier = Modifier.size(12.dp),
-					tint = Color(0xFF4CAF50)
-				)
+			Row {
+				if (hasCompletedDailyExercise) {
+					Icon(
+						imageVector = Icons.Default.CheckCircle,
+						contentDescription = "오늘의 운동 완료",
+						modifier = Modifier.size(12.dp),
+						tint = MaterialTheme.colorScheme.onErrorContainer
+					)
+				}
+				if (hasLoggedMeal) {
+					Icon(
+						imageVector = Icons.Default.CheckCircle,
+						contentDescription = "식단 기록 완료",
+						modifier = Modifier.size(12.dp),
+						tint = Color(0xFF4CAF50)
+					)
+				}
 			}
 		}
 	}

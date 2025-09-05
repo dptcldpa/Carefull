@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
+import kotlin.collections.map
 
 @RequiresApi(Build.VERSION_CODES.O)
 class ExerciseViewModel(
@@ -45,34 +46,24 @@ class ExerciseViewModel(
 			_uiState.update { it.copy(isLoading = true) }
 			try {
 				val exercises = exerciseRepository.getExerciseStat(userId = "test")
-				//
 				val dailyExercises = exerciseRepository.getDailyExerciseList()
 				val completedDates = exerciseRepository.getCompletedDailyExerciseDates("test")
-				
-				//
 				val totalCountsMap = exercises.associate {
-					ExerciseType.valueOf(it.exerciseType) to it.count
+					it.exerciseType to it.count
 				}
-				
-				//
 				val weeklyCountsMap = calculateWeeklyCounts(exercises)
-				val dailyCountsMap = calculateDailyCounts(exercises) // [추가]
-				
-				
+				val dailyCountsMap = calculateDailyCounts(exercises)
 				val groupedBySport = exercises.groupBy { it.exerciseType }
-				val countsMap = groupedBySport.mapNotNull { (sportName, records) ->
-					ExerciseType.valueOf(sportName).let { type ->
-						type to records.sumOf { it.count }
+				val countsMap = groupedBySport.mapValues { (_, records) ->
+					records.sumOf { it.count }
 					}
-				}.toMap()
 				val uiModelList = ExerciseType.entries.map { exerciseType ->
-					val count = countsMap[exerciseType] ?: 0
+					val count = countsMap[exerciseType]?:0
 					val weeklyCount = weeklyCountsMap[exerciseType] ?: 0
-					val dailyCount = dailyCountsMap[exerciseType] ?: 0 // [추가]
+					val dailyCount = dailyCountsMap[exerciseType] ?: 0
 					//
 					exerciseType.toUiModel(count, weeklyCount, dailyCount)
 				}
-//                    exerciseType.toUiModel(count)      }
 				_uiState.update {
 					it.copy(
 						isLoading = false,
@@ -80,7 +71,7 @@ class ExerciseViewModel(
 						
 						totalExerciseCounts = totalCountsMap,
 						weeklyExerciseCounts = weeklyCountsMap,
-						dailyExerciseCounts = dailyCountsMap, // [추가]
+						dailyExerciseCounts = dailyCountsMap,
 						completedDailyExerciseDates = completedDates,
 						
 						exerciseCounts = countsMap,
@@ -96,41 +87,24 @@ class ExerciseViewModel(
 	private fun calculateDailyCounts(exercises: List<ExerciseCollection>): Map<ExerciseType, Int> {
 		val currentDailyKey = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
 		return exercises.associate {
-			ExerciseType.valueOf(it.exerciseType) to (it.dailyCounts[currentDailyKey] ?: 0)
+			it.exerciseType to (it.dailyCounts[currentDailyKey] ?: 0)
 		}
 	}
 	
-	// [수정] 이번 주 운동 횟수 계산 로직
 	@SuppressLint("DefaultLocale")
 	private fun calculateWeeklyCounts(exercises: List<ExerciseCollection>): Map<ExerciseType, Int> {
-		// "년도-W주차" 형식의 키 생성
 		val today = LocalDate.now()
 		val weekFields = WeekFields.ISO
 		
-		// [수정] 여기도 동일하게 '주차 기준 연도'를 사용해야 합니다.
 		val weekBasedYear = today.get(weekFields.weekBasedYear())
 		val weekOfYear = today.get(weekFields.weekOfWeekBasedYear())
 		
 		val currentWeekKey = "${weekBasedYear}-W${String.format("%02d", weekOfYear)}"
 		
-		// 각 운동의 weeklyCounts 맵에서 이번 주 키에 해당하는 값을 가져옴
 		return exercises.associate {
-			ExerciseType.valueOf(it.exerciseType) to (it.weeklyCounts[currentWeekKey] ?: 0)
+			it.exerciseType to (it.weeklyCounts[currentWeekKey] ?: 0)
 		}
 	}
-//	@RequiresApi(Build.VERSION_CODES.O)
-//	private fun calculateWeeklyCounts(exercises: List<ExerciseCollection>): Map<ExerciseType, Int> {
-//		val today = LocalDate.now()
-//		// 월요일을 주의 시작으로 설정
-//		val startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-//		val startOfWeekMillis =
-//			startOfWeek.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-//
-//		return exercises
-//			.filter { it.createdAt >= startOfWeekMillis } // 이번 주 기록만 필터링
-//			.groupBy { ExerciseType.valueOf(it.exerciseType) }
-//			.mapValues { (_, records) -> records.sumOf { it.count } }
-//	}
 	
 	fun initialize(exerciseType: ExerciseType) {
 		this.analyzer = createAnalyzer(exerciseType)
@@ -175,7 +149,7 @@ class ExerciseViewModel(
 			if (totalCount > 0) {
 				val recordToSave = ExerciseCollection(
 					userId = "test",
-					exerciseType = exerciseType.name,
+					exerciseType = exerciseType,
 					count = totalCount
 				)
 				val result = exerciseRepository.addExerciseRecord(recordToSave)

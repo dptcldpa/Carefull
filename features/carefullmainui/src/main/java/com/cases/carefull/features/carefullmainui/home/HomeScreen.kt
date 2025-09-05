@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.cases.carefull.domain.model.CalendarViewType
 import com.cases.carefull.features.carefullcommon.components.Calendar
 import com.cases.carefull.features.carefullcommon.components.CalendarState
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
@@ -65,7 +66,6 @@ fun HomeScreen(
 		markedDates = uiState.loggedMealDates,
 		dailyExerciseCompletedDates = uiState.dailyExerciseCompletedDates
 	)
-//	val todayExerciseName = uiState.dailyExercise.firstOrNull()
 	
 	LaunchedEffect(pagerState) {
 		snapshotFlow { pagerState.settledPage }
@@ -112,6 +112,68 @@ fun HomeScreen(
 			},
 			onGoToToday = {
 				viewModel.onGoToToday()
+			},
+			calendarFooterContent = {
+				val shouldShowDetails = uiState.viewType == CalendarViewType.MONTHLY &&
+						(uiState.selectedDateExerciseRecords.isNotEmpty() || uiState.selectedDateTotalCalories > 0)
+				
+				if (shouldShowDetails) {
+					if (uiState.selectedDateExerciseRecords.isNotEmpty()) {
+						Column {
+							Text(
+								"운동 기록",
+								fontWeight = FontWeight.Bold,
+								style = MaterialTheme.typography.titleSmall
+							)
+							Spacer(modifier = Modifier.height(4.dp))
+							uiState.selectedDateExerciseRecords.forEach { record ->
+								Row(
+									modifier = Modifier.fillMaxWidth(),
+									horizontalArrangement = Arrangement.SpaceBetween,
+									verticalAlignment = Alignment.CenterVertically
+								) {
+									Text(
+										record.name,
+										style = MaterialTheme.typography.bodyMedium
+									)
+									Text(
+										"${record.count}회",
+										style = MaterialTheme.typography.bodyMedium,
+										color = Color.Gray
+									)
+								}
+							}
+						}
+					}
+					
+					
+					// 식단 기록 섹션
+					if (uiState.selectedDateTotalCalories > 0) {
+						Column {
+							Text(
+								"식단 기록",
+								fontWeight = FontWeight.Bold,
+								style = MaterialTheme.typography.titleSmall
+							)
+							Spacer(modifier = Modifier.height(4.dp))
+							Row(
+								modifier = Modifier.fillMaxWidth(),
+								horizontalArrangement = Arrangement.SpaceBetween,
+								verticalAlignment = Alignment.CenterVertically
+							) {
+								Text(
+									"총 섭취 칼로리",
+									style = MaterialTheme.typography.bodyMedium
+								)
+								Text(
+									"${uiState.selectedDateTotalCalories} kcal",
+									style = MaterialTheme.typography.bodyMedium,
+									color = Color.Gray
+								)
+							}
+						}
+					}
+				}
 			}
 		)
 		
@@ -132,7 +194,7 @@ fun HomeScreen(
 					WorkoutInfoCard(
 						exerciseName = todayExercise.type,
 						todayCount = uiState.todayExerciseCount,
-						goalCount = HomeViewModel.TODAY_EXERCISE_GOAL, // [추가] 목표량 전달
+						goalCount = HomeViewModel.TODAY_EXERCISE_GOAL,
 						onClick = {
 							navController.navigate(
 								RoutineRoute.WorkOutScreen(
@@ -202,8 +264,8 @@ fun DietInfoCard(
 @Composable
 fun WorkoutInfoCard(
 	exerciseName: String,
-	todayCount: Int, // [추가]
-	goalCount: Int, // [추가]
+	todayCount: Int,
+	goalCount: Int,
 	onClick: () -> Unit
 ) {
 	Card(

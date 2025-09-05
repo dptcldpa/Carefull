@@ -3,6 +3,7 @@ package com.cases.carefull.features.carefullmainui.home
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.cases.carefull.domain.model.CalendarViewType
+import com.cases.carefull.domain.model.exercise.ExerciseRecordForDate
 import com.cases.carefull.domain.model.exercise.ExerciseType
 import java.time.LocalDate
 import java.time.YearMonth
@@ -27,8 +28,11 @@ data class HomeUiState(
 	
 	val loggedMealDates: Set<LocalDate> = emptySet(),
 	val dailyExerciseCompletedDates: Set<LocalDate> = emptySet(),
-	val todayExerciseCount: Int = 0, // [추가]
+	val todayExerciseCount: Int = 0,
 	val hasLoggedMealToday: Boolean = false,
+	
+	val selectedDateExerciseRecords: List<ExerciseRecordForDate> = emptyList(),
+	val selectedDateTotalCalories: Int = 0,
 	
 	val pagerTargetPage: Int = START_PAGE
 ) {

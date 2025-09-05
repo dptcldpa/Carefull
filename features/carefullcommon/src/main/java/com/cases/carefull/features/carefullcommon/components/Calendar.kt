@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -63,7 +64,8 @@ fun Calendar(
 	onDateClick: (LocalDate) -> Unit,
 	onToggleViewType: () -> Unit,
 	onMonthPickerClick: () -> Unit,
-	onGoToToday: () -> Unit
+	onGoToToday: () -> Unit,
+	calendarFooterContent: (@Composable ColumnScope.() -> Unit)? = null
 ) {
 	var totalDragY by remember { mutableFloatStateOf(0f) }
 	val swipeThreshold = with(LocalDensity.current) { 50.dp.toPx() }
@@ -106,7 +108,8 @@ fun Calendar(
 				onDateClick = onDateClick
 			)
 			CalendarFooter(
-				selectedDateInfo = calendarState.selectedDateInfo
+				selectedDateInfo = calendarState.selectedDateInfo,
+				content = calendarFooterContent
 			)
 		}
 	}
@@ -145,7 +148,6 @@ private fun CalendarHeader(
 			.height(56.dp)
 			.padding(horizontal = 16.dp)
 	) {
-		
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
 			modifier = Modifier
@@ -164,7 +166,6 @@ private fun CalendarHeader(
 				fontWeight = FontWeight.SemiBold
 			)
 		}
-		
 		Row(
 			modifier = Modifier
 				.align(Alignment.CenterEnd)
@@ -275,22 +276,34 @@ private fun CalendarGrid(
 }
 
 @Composable
-private fun CalendarFooter(selectedDateInfo: String) {
-	Spacer(modifier = Modifier.height(8.dp))
-	Row(
-		modifier = Modifier.fillMaxWidth(),
-		horizontalArrangement = Arrangement.End
-	) {
-		Text(
-			text = selectedDateInfo,
-			style = MaterialTheme.typography.titleSmall,
-			color = Color.Gray,
-			modifier = Modifier.padding(end = 16.dp)
-		)
+private fun CalendarFooter(
+	selectedDateInfo: String,
+	content: (@Composable ColumnScope.() -> Unit)?
+) {
+	Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+		if (content != null) {
+			Column(
+				verticalArrangement = Arrangement.spacedBy(12.dp)
+			) {
+				content()
+			}
+		}
+		
+		Row(
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(top = 8.dp),
+			horizontalArrangement = Arrangement.End
+		) {
+			Text(
+				text = selectedDateInfo,
+				style = MaterialTheme.typography.bodySmall,
+				color = Color.Gray
+			)
+		}
+		Spacer(modifier = Modifier.height(12.dp))
 	}
-	Spacer(modifier = Modifier.height(8.dp))
 }
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun RowScope.CalendarDayBox(
