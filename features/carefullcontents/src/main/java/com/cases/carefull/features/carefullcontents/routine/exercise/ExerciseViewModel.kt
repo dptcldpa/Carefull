@@ -15,6 +15,8 @@ import com.cases.carefull.domain.model.exercise.analyzer.PushUpAnalyzer
 import com.cases.carefull.domain.model.exercise.analyzer.SquatAnalyzer
 import com.cases.carefull.domain.repository.ExerciseAnalyzer
 import com.cases.carefull.domain.repository.ExerciseRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -25,7 +27,8 @@ import java.time.temporal.WeekFields
 import kotlin.collections.map
 
 @RequiresApi(Build.VERSION_CODES.O)
-class ExerciseViewModel(
+@HiltViewModel
+class ExerciseViewModel @Inject constructor(
 	private val exerciseRepository: ExerciseRepository
 ) : ViewModel() {
 	private val _uiState = MutableStateFlow(ExerciseUiState())

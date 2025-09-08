@@ -1,4 +1,4 @@
-package com.cases.carefull.data.model
+package com.cases.carefull.data.dto
 
 import com.google.firebase.firestore.ServerTimestamp
 import java.util.Date

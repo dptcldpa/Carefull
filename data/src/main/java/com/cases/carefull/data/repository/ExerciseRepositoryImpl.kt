@@ -6,17 +6,17 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.edit
-import com.cases.carefull.data.model.ExerciseCollectionDTO
-import com.cases.carefull.data.model.toDomainExerciseCollectionList
+import com.cases.carefull.data.dto.ExerciseCollectionDTO
+import com.cases.carefull.data.dto.toDomainExerciseCollectionList
 import com.cases.carefull.domain.model.exercise.ExerciseCollection
 import com.cases.carefull.domain.model.exercise.ExerciseType
 import com.cases.carefull.domain.repository.ExerciseRepository
-import com.cases.carefull.domain.util.DataResourceResult
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObjects
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -25,9 +25,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.Calendar
+import javax.inject.Inject
 
-class ExerciseRepositoryImpl(
-    private val context: Context
+class ExerciseRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context
 ) : ExerciseRepository {
     private val db = Firebase.firestore
     private companion object {

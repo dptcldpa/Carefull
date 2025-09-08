@@ -2,7 +2,7 @@ package com.cases.carefull.data.repository
 
 import android.util.Log
 import com.cases.carefull.data.mapper.toDomain
-import com.cases.carefull.data.model.MedicineItemDto
+import com.cases.carefull.data.dto.MedicineItemDto
 import com.cases.carefull.data.network.MedicineApiService
 import com.cases.carefull.domain.repository.MedicineRepository
 

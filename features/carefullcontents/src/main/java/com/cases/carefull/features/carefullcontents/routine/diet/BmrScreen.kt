@@ -42,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cases.carefull.domain.model.diet.BmrActivity
 import com.cases.carefull.domain.model.diet.Gender
@@ -51,7 +52,7 @@ import com.cases.carefull.features.carefullcommon.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BmrScreen(
-	viewModel: DietViewModel = viewModel()
+	viewModel: DietViewModel = hiltViewModel()
 ) {
 	val uiState by viewModel.uiState.collectAsState()
 	

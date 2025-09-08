@@ -1,4 +1,4 @@
-package com.cases.carefull
+package com.cases.carefull.features.carefullmainui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column

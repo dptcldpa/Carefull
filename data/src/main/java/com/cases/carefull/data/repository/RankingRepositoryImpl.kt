@@ -1,6 +1,6 @@
 package com.cases.carefull.data.repository
 
-import com.cases.carefull.data.model.ExerciseCollectionDTO
+import com.cases.carefull.data.dto.ExerciseCollectionDTO
 import com.cases.carefull.domain.model.MyRankInfo
 import com.cases.carefull.domain.model.Ranker
 import com.cases.carefull.domain.model.exercise.ExerciseType
@@ -11,8 +11,9 @@ import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class RankingRepositoryImpl() : RankingRepository {
+class RankingRepositoryImpl @Inject constructor() : RankingRepository {
 	private val db = Firebase.firestore
 	
 	override suspend fun getAllUsersNicknameMap(): Map<String, String> {

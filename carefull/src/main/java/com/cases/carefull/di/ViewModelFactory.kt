@@ -20,43 +20,48 @@ import com.cases.carefull.features.carefullmainui.home.HomeViewModel
 import com.cases.carefull.features.carefullmainui.screen.auth.OAuthViewModel
 
 class ViewModelFactory(
-	private val navigationRepository: NavigationRepository,
+//	private val navigationRepository: NavigationRepository,
 	private val medicineSearchUseCase: MedicineSearchUseCase,
-	private val dietRepository: DietRepository,
-	private val exerciseRepository: ExerciseRepository,
+//	private val dietRepository: DietRepository,
+//	private val exerciseRepository: ExerciseRepository,
 	private val userRepository: UserRepository,
-	private val rankingRepository: RankingRepository,
-	private val calendarRepository: CalendarRepository,
+//	private val rankingRepository: RankingRepository,
+//	private val calendarRepository: CalendarRepository,
 ) : ViewModelProvider.Factory {
 	@RequiresApi(Build.VERSION_CODES.O)
 	override fun <T : ViewModel> create(modelClass: Class<T>): T {
 		if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-			@Suppress("UNCHECKED_CAST")
-			return MainViewModel(navigationRepository) as T
+//			@Suppress("UNCHECKED_CAST")
+//			return MainViewModel(navigationRepository) as T
+			throw IllegalArgumentException("MainViewModel should be provided by Hilt")
 		}
 		if (modelClass.isAssignableFrom(MedicineViewModel::class.java)) {
 			@Suppress("UNCHECKED_CAST")
 			return MedicineViewModel(medicineSearchUseCase) as T
 		}
 		if (modelClass.isAssignableFrom(DietViewModel::class.java)) {
-			@Suppress("UNCHECKED_CAST")
-			return DietViewModel(dietRepository) as T
+//			@Suppress("UNCHECKED_CAST")
+//			return DietViewModel(dietRepository) as T
+			throw IllegalArgumentException("DietViewModel should be provided by Hilt")
 		}
 		if (modelClass.isAssignableFrom(ExerciseViewModel::class.java)) {
-			@Suppress("UNCHECKED_CAST")
-			return ExerciseViewModel(exerciseRepository) as T
+//			@Suppress("UNCHECKED_CAST")
+//			return ExerciseViewModel(exerciseRepository) as T
+			throw IllegalArgumentException("ExerciseViewModel should be provided by Hilt")
 		}
 		if (modelClass.isAssignableFrom(OAuthViewModel::class.java)) {
 			@Suppress("UNCHECKED_CAST")
 			return OAuthViewModel(userRepository) as T
 		}
 		if (modelClass.isAssignableFrom(RankingViewModel::class.java)) {
-			@Suppress("UNCHECKED_CAST")
-			return RankingViewModel(rankingRepository) as T
+//			@Suppress("UNCHECKED_CAST")
+//			return RankingViewModel(rankingRepository) as T
+			throw IllegalArgumentException("RankingViewModel should be provided by Hilt")
 		}
 		if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-			@Suppress("UNCHECKED_CAST")
-			return HomeViewModel(calendarRepository,exerciseRepository,dietRepository) as T
+//			@Suppress("UNCHECKED_CAST")
+//			return HomeViewModel(calendarRepository,exerciseRepository,dietRepository) as T
+			throw IllegalArgumentException("HomeViewModel should be provided by Hilt")
 		}
 		throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
 	}

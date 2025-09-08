@@ -3,7 +3,7 @@ package com.cases.carefull.data.firestore
 import com.cases.carefull.data.datasource.UserDataSource
 import com.cases.carefull.data.mapper.toDTO
 import com.cases.carefull.data.mapper.toDomain
-import com.cases.carefull.data.model.UserDTO
+import com.cases.carefull.data.dto.UserDTO
 import com.cases.carefull.domain.model.UserInfo
 import com.cases.carefull.domain.util.DataResourceResult
 import com.google.firebase.Firebase

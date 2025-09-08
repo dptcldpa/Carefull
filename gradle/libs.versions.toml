@@ -60,6 +60,9 @@ poseDetectionCommon = "17.0.0"
 ksp = "2.2.0-2.0.2"
 #room
 room = "2.7.2"
+#hilt
+hiltAndroid = "2.57.1"
+hitNavigationCompose = "1.2.0"
 
 [libraries]
 
@@ -142,6 +145,11 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 
+#Hilt
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hitNavigationCompose" }
+hilt-android = { module = "com.google.dagger:hilt-android",version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler",  version.ref = "hiltAndroid" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -155,6 +163,8 @@ secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secret
 
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
+google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
+
 [bundles]
 compose-libraries = [
     "androidx-activity-compose",
@@ -166,7 +176,8 @@ compose-libraries = [
     "androidx-material3-android"
 ]
 firebase-libraries = [
-    "firebase-firestore-ktx"
+    "firebase-firestore-ktx",
+    "firebase-bom"
 ]
 room-libraries = [
     "androidx-room-ktx",

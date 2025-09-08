@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.cases.carefull.data.model.RecentMealSearchEntity
+import com.cases.carefull.data.dto.RecentMealSearchEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

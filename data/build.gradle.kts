@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.ksp)
+    
+    alias(libs.plugins.google.dagger.hilt.android)
 }
 
 android {
@@ -76,4 +78,7 @@ dependencies {
     ksp(libs.androidx.room.compiler) {
         exclude(group = "com.intellij", module = "annotations")
     }
+    
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 }

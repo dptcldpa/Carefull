@@ -8,9 +8,10 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.TemporalAdjusters
+import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.O)
-class CalendarRepositoryImpl : CalendarRepository {
+class CalendarRepositoryImpl @Inject constructor(): CalendarRepository {
 
 	override suspend fun getSchedulesForDate(date: LocalDate): List<String> {
 		return emptyList()

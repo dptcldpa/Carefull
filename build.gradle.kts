@@ -13,4 +13,5 @@ plugins {
     alias(libs.plugins.google.gms.google.services) apply false
     alias(libs.plugins.secrets.gradle.plugin) apply false
     
+    id("com.google.dagger.hilt.android") version "2.57.1" apply  false
 }

@@ -1,6 +1,6 @@
 package com.cases.carefull.data.mapper
 
-import com.cases.carefull.data.model.RecentMealSearchEntity
+import com.cases.carefull.data.dto.RecentMealSearchEntity
 import com.cases.carefull.domain.model.diet.RecentMealSearch
 
 fun RecentMealSearchEntity.toDomain(): RecentMealSearch {

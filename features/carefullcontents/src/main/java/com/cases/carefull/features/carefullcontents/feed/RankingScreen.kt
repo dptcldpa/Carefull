@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cases.carefull.domain.model.MyRankInfo
 import com.cases.carefull.domain.model.Ranker
@@ -42,7 +43,7 @@ import com.cases.carefull.features.carefullcommon.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RankingScreen(
-	viewModel: RankingViewModel
+	viewModel: RankingViewModel = hiltViewModel()
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	val sports = ExerciseType.entries
