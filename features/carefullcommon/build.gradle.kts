@@ -40,23 +40,13 @@ kotlin {
 dependencies {
     implementation(project(":domain"))
 
+    implementation(libs.bundles.android.core)
+
+    implementation(libs.bundles.navigation)
+
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.material.icons.extended)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.navigation.runtime.android)
+    implementation(libs.bundles.compose.libraries)
 
-    implementation(libs.material)
-
-    
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.kotlin.reflect)
     api(libs.androidx.navigation.compose)
 
     testImplementation(libs.junit)

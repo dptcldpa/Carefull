@@ -41,7 +41,7 @@
 
                 <data
                     android:host="oauth"
-                    android:scheme="kakao816cce424892459eff0c0988017b65f2" />
+                    android:scheme="kakao{kakao_native_app_key}" />
             </intent-filter>
         </activity>
     </application>

@@ -1,6 +1,6 @@
 package com.cases.carefull.data.mapper
 
-import com.cases.carefull.data.model.UserDTO
+import com.cases.carefull.data.dto.UserDTO
 import com.cases.carefull.domain.model.UserInfo
 
 fun UserDTO.toDomain(id:String): UserInfo = UserInfo(

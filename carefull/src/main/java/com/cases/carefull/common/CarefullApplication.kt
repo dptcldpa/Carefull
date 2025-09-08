@@ -1,7 +1,7 @@
 package com.cases.carefull.common
 
 import android.app.Application
-import com.cases.carefull.BuildConfig.KAKAO_NATIVE_APP_KEY
+import com.cases.carefull.BuildConfig.kakao_native_app_key
 import com.cases.carefull.di.AppContainer
 import com.cases.carefull.di.DefaultAppContainer
 import com.google.firebase.Firebase
@@ -25,7 +25,7 @@ class CarefullApplication : Application() {
 		container = DefaultAppContainer(applicationContext)
 //		setUpFirestoreLocalSinkCache()
 
-		KakaoSdk.init(this, KAKAO_NATIVE_APP_KEY)
+		KakaoSdk.init(this, kakao_native_app_key)
 	}
 	
 	fun setUpFirestoreLocalSinkCache() {

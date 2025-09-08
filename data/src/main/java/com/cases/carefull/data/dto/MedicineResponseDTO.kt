@@ -1,8 +1,8 @@
-package com.cases.carefull.data.model
+package com.cases.carefull.data.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class MedicineResponse(
+data class MedicineResponseDTO(
     @SerializedName("header") val header: Header,
     @SerializedName("body") val body: Body
 )

@@ -7,9 +7,9 @@ import androidx.room.RoomDatabase
 import com.cases.carefull.data.dao.BmrDao
 import com.cases.carefull.data.dao.FavoriteMealDao
 import com.cases.carefull.data.dao.RecentMealSearchDao
-import com.cases.carefull.data.model.BmrCollection
-import com.cases.carefull.data.model.FavoriteMealEntity
-import com.cases.carefull.data.model.RecentMealSearchEntity
+import com.cases.carefull.data.dto.BmrCollection
+import com.cases.carefull.data.dto.FavoriteMealEntity
+import com.cases.carefull.data.dto.RecentMealSearchEntity
 
 @Database(
 	entities = [

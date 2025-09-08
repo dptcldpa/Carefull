@@ -5,7 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.cases.carefull.data.model.BmrCollection
+import com.cases.carefull.data.dto.BmrCollection
 import kotlinx.coroutines.flow.Flow
 
 @Dao

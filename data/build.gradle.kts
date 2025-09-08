@@ -40,21 +40,37 @@ kotlin {
 
 dependencies {
     implementation(project(":domain"))
-    
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.ui)
-    implementation(libs.material)
-    // retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    // firebase
+
+    implementation(libs.bundles.android.core)
+
+    implementation(libs.bundles.compose.libraries)
+
+    implementation(libs.kotlinx.coroutines.play.services)
+
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.firestore.ktx)
-    // kakao
-    implementation(libs.v2.user)
+    implementation(libs.bundles.firebase.libraries)
+
+    implementation(libs.bundles.retrofit)
+
     // 로그 확인용
     implementation(libs.logging.interceptor)
+
+    // kakao
+    implementation(libs.v2.user)
+
+    // Coil
+    implementation(libs.coil.compose)
+
+
+    // ML Kit Pose Detection
+    implementation(libs.pose.detection)
+
+    // RoomDB
+    implementation(libs.bundles.room.libraries)
+    ksp(libs.androidx.room.compiler) {
+        exclude(group = "com.intellij", module = "annotations")
+    }
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -62,18 +78,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    
-    //Coil
-    implementation(libs.coil.compose)
-    
-    implementation(libs.kotlinx.coroutines.play.services)
-    
-    //ML Kit Pose Detection
-    implementation(libs.pose.detection)
-    
-    //RoomDB
-    implementation(libs.bundles.room.libraries)
-    ksp(libs.androidx.room.compiler) {
-        exclude(group = "com.intellij", module = "annotations")
-    }
 }
