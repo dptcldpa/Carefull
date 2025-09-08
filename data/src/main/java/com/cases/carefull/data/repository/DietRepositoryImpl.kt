@@ -12,10 +12,10 @@ import com.cases.carefull.data.mapper.toDomain
 import com.cases.carefull.data.mapper.toDomainModel
 import com.cases.carefull.data.mapper.toDomainPose
 import com.cases.carefull.data.mapper.toEntity
-import com.cases.carefull.data.model.DietCollectionDTO
-import com.cases.carefull.data.model.DietItemDto
-import com.cases.carefull.data.model.toDomainDietCollection
-import com.cases.carefull.data.model.toFirestoreDietCollectionDTO
+import com.cases.carefull.data.dto.DietCollectionDTO
+import com.cases.carefull.data.dto.DietItemDto
+import com.cases.carefull.data.dto.toDomainDietCollection
+import com.cases.carefull.data.dto.toFirestoreDietCollectionDTO
 import com.cases.carefull.data.network.DietApiService
 import com.cases.carefull.domain.model.diet.Bmr
 import com.cases.carefull.domain.model.diet.DietCollection

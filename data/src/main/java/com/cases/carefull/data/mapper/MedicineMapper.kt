@@ -1,6 +1,6 @@
 package com.cases.carefull.data.mapper
 
-import com.cases.carefull.data.model.MedicineItemDto
+import com.cases.carefull.data.dto.MedicineItemDto
 import com.cases.carefull.domain.model.MedicineItem
 
 fun MedicineItemDto.toDomain(): MedicineItem {

@@ -42,31 +42,29 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":features:carefullcommon"))
 
+    implementation(libs.bundles.android.core)
+
+    implementation(libs.guava)
+
+    // Permissions
+    implementation(libs.google.accompanist.permissions)
+
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.material.icons.extended)
-    implementation(libs.material)
+    implementation(libs.bundles.compose.libraries)
 
-    // map
-    implementation(libs.naver.map)
-    implementation(libs.play.services.maps)
+    implementation(libs.bundles.maps.sdk)
 
-    //Coil
-    implementation(libs.coil.network.okhttp)
-    implementation(libs.coil.compose)
+    implementation(libs.bundles.coil)
 
-    // ViewModel
-    implementation(libs.lifecycle.viewmodel.ktx)
-    implementation(libs.activity.ktx)
+    implementation(libs.bundles.androidx.ktx)
 
     // 로그 확인용
     implementation(libs.logging.interceptor)
-    implementation(libs.pose.detection.common)
+
+    implementation(libs.bundles.camerax)
+
+    implementation(libs.bundles.pose.detection)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -74,19 +72,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    implementation(libs.guava)
-
-    // MlKit
-    implementation(libs.pose.detection)
-    implementation(libs.androidx.camera.mlkit.vision)
-
-    // Camera
-    implementation(libs.androidx.camera.core)
-    implementation(libs.androidx.camera.camera2)
-    implementation(libs.androidx.camera.lifecycle)
-    implementation(libs.androidx.camera.view)
-
-    // Permissions
-    implementation(libs.google.accompanist.permissions)
 }

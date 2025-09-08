@@ -1,6 +1,6 @@
 package com.cases.carefull.data.mapper
 
-import com.cases.carefull.data.model.BmrCollection
+import com.cases.carefull.data.dto.BmrCollection
 import com.cases.carefull.domain.model.diet.Bmr
 
 fun BmrCollection.toDomainModel(): Bmr {

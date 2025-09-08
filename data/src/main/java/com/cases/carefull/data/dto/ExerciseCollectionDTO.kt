@@ -1,4 +1,4 @@
-package com.cases.carefull.data.model
+package com.cases.carefull.data.dto
 
 import com.cases.carefull.domain.model.exercise.ExerciseCollection
 import com.cases.carefull.domain.model.exercise.ExerciseType

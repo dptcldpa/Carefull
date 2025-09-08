@@ -1,6 +1,6 @@
 package com.cases.carefull.data.repository
 
-import com.cases.carefull.data.model.ExerciseCollectionDTO
+import com.cases.carefull.data.dto.ExerciseCollectionDTO
 import com.cases.carefull.domain.model.MyRankInfo
 import com.cases.carefull.domain.model.Ranker
 import com.cases.carefull.domain.model.exercise.ExerciseType
