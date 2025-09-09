@@ -1,6 +1,5 @@
 package com.cases.carefull.data.network
 
-import com.cases.carefull.data.dto.DietResponse
 import com.cases.carefull.data.dto.DietResponseDTO
 import retrofit2.http.GET
 import retrofit2.http.Query

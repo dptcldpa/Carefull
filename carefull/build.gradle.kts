@@ -91,13 +91,9 @@ dependencies {
 
     api(libs.androidx.navigation.compose)
     
-    implementation(libs.pose.detection)
-    implementation(libs.pose.detection.accurate)
+    ksp(libs.hilt.compiler)
     
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
-    
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.bundles.hilt.runtime)
     
     implementation(libs.retrofit)
     implementation(libs.converter.gson)

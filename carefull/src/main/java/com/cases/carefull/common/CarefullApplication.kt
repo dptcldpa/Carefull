@@ -1,11 +1,9 @@
 package com.cases.carefull.common
 
 import android.app.Application
-import com.cases.carefull.BuildConfig.kakao_native_app_key
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.cases.carefull.di.AppContainer
-import com.cases.carefull.di.DefaultAppContainer
+import com.cases.carefull.BuildConfig.kakao_native_app_key
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.firestoreSettings
@@ -22,14 +20,10 @@ const val COIL_DISK_CACHE_MAX_SIZE = 1024 * 1024 * 100
 @HiltAndroidApp
 class CarefullApplication : Application() {
 	
-	lateinit var container: AppContainer
-	
 	@RequiresApi(Build.VERSION_CODES.O)
 	override fun onCreate() {
 		super.onCreate()
-		container = DefaultAppContainer(applicationContext)
 //		setUpFirestoreLocalSinkCache()
-
 		KakaoSdk.init(this, kakao_native_app_key)
 	}
 	

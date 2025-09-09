@@ -1,4 +1,4 @@
-package com.cases.carefull.di
+package com.cases.carefull.features.carefullcontents.di
 
 import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.PoseDetector

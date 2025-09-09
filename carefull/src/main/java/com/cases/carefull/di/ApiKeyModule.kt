@@ -2,6 +2,7 @@ package com.cases.carefull.di
 
 import com.cases.carefull.BuildConfig
 import com.cases.carefull.data.di.DietApiKey
+import com.cases.carefull.data.di.MedicineApiKey
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,5 +18,12 @@ object ApiKeyModule {
 	@DietApiKey
 	fun provideDietApiKey(): String {
 		return BuildConfig.diet_api_key
+	}
+	
+	@Provides
+	@Singleton
+	@MedicineApiKey
+	fun provideMedicineApiKey(): String {
+		return BuildConfig.medicine_api_key
 	}
 }

@@ -1,7 +1,6 @@
 package com.cases.carefull.data.datasource
 
 import android.content.Context
-import android.util.Log
 import com.cases.carefull.domain.model.UserInfo
 import com.cases.carefull.domain.util.DataResourceResult
 import com.kakao.sdk.auth.AuthApiClient
@@ -9,10 +8,11 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import com.kakao.sdk.user.model.AccessTokenInfo
 import kotlinx.coroutines.suspendCancellableCoroutine
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class KakaoDataSourceImpl: KaKaoDataSource {
+class KakaoDataSourceImpl @Inject constructor() : KaKaoDataSource {
     override suspend fun login(context: Context): DataResourceResult<UserInfo> = runCatching {
         suspendCancellableCoroutine<UserInfo> { continuation ->
             val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->

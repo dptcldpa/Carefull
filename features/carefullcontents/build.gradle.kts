@@ -75,24 +75,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    implementation(libs.guava)
-
-    // MlKit
-    implementation(libs.pose.detection)
-    implementation(libs.androidx.camera.mlkit.vision)
-
-    // Camera
-    implementation(libs.androidx.camera.core)
-    implementation(libs.androidx.camera.camera2)
-    implementation(libs.androidx.camera.lifecycle)
-    implementation(libs.androidx.camera.view)
-
-    // Permissions
-    implementation(libs.google.accompanist.permissions)
     
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
+    ksp(libs.hilt.compiler)
     
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.bundles.hilt.runtime)
+
 }
