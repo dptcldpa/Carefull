@@ -21,13 +21,18 @@ import com.cases.carefull.features.carefullcommon.navigation.MainRoute
 import com.cases.carefull.features.carefullcommon.navigation.MyPageRoute
 import com.cases.carefull.features.carefullcommon.navigation.Route
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import javax.inject.Inject
 
 
-class MainViewModel(private val repository: NavigationRepository) : ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(
+	private val repository: NavigationRepository
+) : ViewModel() {
 
 	private val _uiState = MutableStateFlow(MainUiState())
 	val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()

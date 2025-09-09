@@ -18,6 +18,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -25,7 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.cases.carefull.Splash
+import com.cases.carefull.features.carefullmainui.screen.Splash
 import com.cases.carefull.common.CarefullApplication
 import com.cases.carefull.common.MainViewModel
 import com.cases.carefull.di.ViewModelFactory
@@ -44,18 +45,14 @@ import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineI
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineSearchScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineViewModel
 import com.cases.carefull.features.carefullcontents.feed.RankingScreen
-import com.cases.carefull.features.carefullcontents.feed.RankingViewModel
 import com.cases.carefull.features.carefullcontents.feed.Social
 import com.cases.carefull.features.carefullcontents.routine.diet.BmrScreen
 import com.cases.carefull.features.carefullcontents.routine.diet.DietScreen
 import com.cases.carefull.features.carefullcontents.routine.diet.DietSearchScreen
-import com.cases.carefull.features.carefullcontents.routine.diet.DietViewModel
 import com.cases.carefull.features.carefullcontents.routine.diet.FoodInformation
 import com.cases.carefull.features.carefullcontents.routine.exercise.ExerciseScreen
-import com.cases.carefull.features.carefullcontents.routine.exercise.ExerciseViewModel
 import com.cases.carefull.features.carefullcontents.routine.exercise.WorkOutScreen
 import com.cases.carefull.features.carefullmainui.home.HomeScreen
-import com.cases.carefull.features.carefullmainui.home.HomeViewModel
 import com.cases.carefull.features.carefullmainui.screen.auth.OAuthViewModel
 import com.cases.carefull.features.carefullmainui.screen.auth.SigninScreen
 import com.cases.carefull.features.carefullmainui.screen.mypage.AccountManagement
@@ -66,27 +63,29 @@ import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainNavigation() {
+fun MainNavigation (
+	viewModel: MainViewModel = hiltViewModel()
+) {
 	val application = LocalContext.current.applicationContext as CarefullApplication
 	val container = application.container
 	
 	val viewModelFactory = ViewModelFactory(
-		navigationRepository = container.navigationRepository,
+//		navigationRepository = container.navigationRepository,
 		medicineSearchUseCase = container.medicineSearchUseCase,
-		dietRepository = container.dietRepository,
-		exerciseRepository = container.exerciseRepository,
+//		dietRepository = container.dietRepository,
+//		exerciseRepository = container.exerciseRepository,
 		userRepository = container.userRepository,
-		rankingRepository = container.rankingRepository,
-		calendarRepository = container.calendarRepository
+//		rankingRepository = container.rankingRepository,
+//		calendarRepository = container.calendarRepository
 	)
 	
 	val medicineViewModel: MedicineViewModel = viewModel(factory = viewModelFactory)
-	val viewModel: MainViewModel = viewModel(factory = viewModelFactory)
-	val dietViewModel: DietViewModel = viewModel(factory = viewModelFactory)
-	val exerciseViewModel: ExerciseViewModel = viewModel(factory = viewModelFactory)
+//	val viewModel: MainViewModel = viewModel(factory = viewModelFactory)
+//	val dietViewModel: DietViewModel = viewModel(factory = viewModelFactory)
+//	val exerciseViewModel: ExerciseViewModel = viewModel(factory = viewModelFactory)
 	val oauthViewModel: OAuthViewModel = viewModel(factory = viewModelFactory)
-	val rankingViewModel: RankingViewModel = viewModel(factory = viewModelFactory)
-	val homeViewModel: HomeViewModel = viewModel(factory = viewModelFactory)
+//	val rankingViewModel: RankingViewModel = viewModel(factory = viewModelFactory)
+//	val homeViewModel: HomeViewModel = viewModel(factory = viewModelFactory)
 	
 	val navController = rememberNavController()
 	val uiState by viewModel.uiState.collectAsState()
@@ -191,37 +190,38 @@ fun MainNavigation() {
 			}
 			
 			composable<MainRoute.HomeScreen> {
-				HomeScreen(viewModel = homeViewModel,
+				HomeScreen(
+//					viewModel = homeViewModel,
 					navController = navController)
 			}
 			//루틴
 			composable<RoutineRoute.ExerciseScreen> { navBackStackEntry ->
 				ExerciseScreen(
-					viewModel = exerciseViewModel,
+//					viewModel = exerciseViewModel,
 					navController = navController
 				)
 			}
 			composable<RoutineRoute.WorkOutScreen> { navBackStackEntry ->
 				WorkOutScreen(
-					viewModel = exerciseViewModel,
+//					viewModel = exerciseViewModel,
 					navController = navController
 				)
 			}
 			composable<RoutineRoute.DietScreen> { navBackStackEntry ->
 				DietScreen(
-					viewModel = dietViewModel,
+//					viewModel = dietViewModel,
 					navController = navController
 				)
 			}
 			composable<RoutineRoute.DietSearchScreen> { navBackStackEntry ->
 				DietSearchScreen(
-					viewModel = dietViewModel,
+//					viewModel = dietViewModel,
 					navController = navController,
 				)
 			}
 			composable<RoutineRoute.BmrScreen> {
 				BmrScreen(
-					viewModel = dietViewModel
+//					viewModel = dietViewModel
 				)
 			}
 			composable<RoutineRoute.FoodInformation> {
@@ -284,7 +284,7 @@ fun MainNavigation() {
 			}
 			composable<FeedRoute.RankingScreen> {
 				RankingScreen(
-					viewModel = rankingViewModel
+//					viewModel = rankingViewModel
 				)
 			}
 			

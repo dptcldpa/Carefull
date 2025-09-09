@@ -29,24 +29,24 @@ import com.google.mlkit.vision.pose.PoseDetector
 import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions
 
 interface AppContainer {
-	val navigationRepository: NavigationRepository
+//	val navigationRepository: NavigationRepository
 	val medicineRepository: MedicineRepository
 	val medicineSearchUseCase: MedicineSearchUseCase
 	val medicineViewModelFactory: ViewModelProvider.Factory
-	val dietRepository: DietRepository
-	val exerciseRepository: ExerciseRepository
-	val poseDetector: PoseDetector
+//	val dietRepository: DietRepository
+//	val exerciseRepository: ExerciseRepository
+//	val poseDetector: PoseDetector
 	val userRepository: UserRepository
-	val rankingRepository: RankingRepository
-	val calendarRepository: CalendarRepository
+//	val rankingRepository: RankingRepository
+//	val calendarRepository: CalendarRepository
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 class DefaultAppContainer(private val context: Context) : AppContainer {
 	
-	override val navigationRepository: NavigationRepository by lazy {
-		NavigationRepositoryImpl()
-	}
+//	override val navigationRepository: NavigationRepository by lazy {
+//		NavigationRepositoryImpl()
+//	}
 	
 	private val medicineApiService by lazy {
 		RetrofitInstance.medicineApi
@@ -63,27 +63,27 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
 		)
 	}
 	
-	override val poseDetector: PoseDetector by lazy {
-		val options = PoseDetectorOptions.Builder()
-			.setDetectorMode(PoseDetectorOptions.STREAM_MODE)
-			.build()
-		PoseDetection.getClient(options)
-	}
+//	override val poseDetector: PoseDetector by lazy {
+//		val options = PoseDetectorOptions.Builder()
+//			.setDetectorMode(PoseDetectorOptions.STREAM_MODE)
+//			.build()
+//		PoseDetection.getClient(options)
+//	}
 	
-	override val dietRepository: DietRepository by lazy {
-		DietRepositoryImpl(
-			apiService = DietRetrofitClient.api,
-			dietApiKey = BuildConfig.diet_api_key,
-			poseDetector = poseDetector,
-			context = context
-		)
-	}
+//	override val dietRepository: DietRepository by lazy {
+//		DietRepositoryImpl(
+//			apiService = DietRetrofitClient.api,
+//			dietApiKey = BuildConfig.diet_api_key,
+//			poseDetector = poseDetector,
+//			context = context
+//		)
+//	}
 	
-	override val exerciseRepository: ExerciseRepository by lazy {
-		ExerciseRepositoryImpl(
-			context = context
-		)
-	}
+//	override val exerciseRepository: ExerciseRepository by lazy {
+//		ExerciseRepositoryImpl(
+//			context = context
+//		)
+//	}
 	
 	override val userRepository: UserRepository by lazy {
 		val kakaoDataSource = KakaoDataSourceImpl()
@@ -96,23 +96,23 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
 		)
 	}
 	
-	override val rankingRepository: RankingRepository by lazy {
-		RankingRepositoryImpl(
-		)
-	}
-	override val calendarRepository: CalendarRepository by lazy {
-		CalendarRepositoryImpl()
-	}
+//	override val rankingRepository: RankingRepository by lazy {
+//		RankingRepositoryImpl(
+//		)
+//	}
+//	override val calendarRepository: CalendarRepository by lazy {
+//		CalendarRepositoryImpl()
+//	}
 	
 	override val medicineViewModelFactory: ViewModelProvider.Factory by lazy {
 		ViewModelFactory(
-			navigationRepository = navigationRepository,
+//			navigationRepository = navigationRepository,
 			medicineSearchUseCase = medicineSearchUseCase,
-			dietRepository = dietRepository,
-			exerciseRepository = exerciseRepository,
+//			dietRepository = dietRepository,
+//			exerciseRepository = exerciseRepository,
 			userRepository = userRepository,
-			rankingRepository = rankingRepository,
-			calendarRepository = calendarRepository
+//			rankingRepository = rankingRepository,
+//			calendarRepository = calendarRepository
 		)
 	}
 }

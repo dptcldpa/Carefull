@@ -13,6 +13,8 @@ import com.cases.carefull.domain.repository.DietRepository
 import com.cases.carefull.domain.repository.ExerciseRepository
 import com.cases.carefull.domain.util.DataResourceResult
 import com.cases.carefull.features.carefullmainui.home.HomeUiState.Companion.START_PAGE
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -29,7 +31,8 @@ import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 
 @RequiresApi(Build.VERSION_CODES.O)
-class HomeViewModel(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val calendarRepository: CalendarRepository,
     private val exerciseRepository: ExerciseRepository,
     private val dietRepository: DietRepository

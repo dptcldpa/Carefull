@@ -11,8 +11,9 @@ import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class RankingRepositoryImpl() : RankingRepository {
+class RankingRepositoryImpl @Inject constructor() : RankingRepository {
 	private val db = Firebase.firestore
 	
 	override suspend fun getAllUsersNicknameMap(): Map<String, String> {

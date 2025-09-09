@@ -13,6 +13,8 @@ import com.cases.carefull.domain.model.diet.MealType
 import com.cases.carefull.domain.model.diet.RecentMealSearch
 import com.cases.carefull.domain.repository.DietRepository
 import com.cases.carefull.domain.util.DataResourceResult
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -27,7 +29,8 @@ import java.time.ZoneId
 import java.time.temporal.TemporalAdjusters
 
 @RequiresApi(Build.VERSION_CODES.O)
-class DietViewModel(
+@HiltViewModel
+class DietViewModel @Inject constructor(
 	private val dietRepository: DietRepository
 ) : ViewModel() {
 	private val _uiState = MutableStateFlow(DietUiState())

@@ -5,13 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.cases.carefull.domain.model.exercise.ExerciseType
 import com.cases.carefull.domain.repository.RankingRepository
 import com.cases.carefull.domain.util.DataResourceResult
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class RankingViewModel(
+@HiltViewModel
+class RankingViewModel @Inject constructor(
 	private val rankingRepository: RankingRepository
 ) : ViewModel() {
 	private val _uiState = MutableStateFlow(RankingUiState())
