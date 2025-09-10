@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.cases.carefull.domain.model.exercise.ExerciseType
@@ -54,7 +55,7 @@ import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ExerciseScreen(
-	viewModel: ExerciseViewModel,
+	viewModel: ExerciseViewModel = hiltViewModel(),
 	navController: NavController
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()

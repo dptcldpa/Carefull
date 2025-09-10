@@ -7,6 +7,7 @@ import com.cases.carefull.data.dao.BmrDao
 import com.cases.carefull.data.dao.FavoriteMealDao
 import com.cases.carefull.data.dao.RecentMealSearchDao
 import com.cases.carefull.data.database.AppDatabase
+import com.cases.carefull.data.di.DietApiKey
 import com.cases.carefull.data.mapper.toDataModel
 import com.cases.carefull.data.mapper.toDomain
 import com.cases.carefull.data.mapper.toDomainModel
@@ -31,18 +32,20 @@ import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.pose.PoseDetector
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import javax.inject.Inject
 
-class DietRepositoryImpl(
+class DietRepositoryImpl @Inject constructor(
 	private val apiService: DietApiService,
-	private val dietApiKey: String,
+	@DietApiKey private val dietApiKey: String,
 	private val poseDetector: PoseDetector,
-	context: Context
+	@ApplicationContext private val context: Context
 ) : DietRepository {
 	private val db = Firebase.firestore
 	

@@ -1,0 +1,29 @@
+package com.cases.carefull.data.di
+
+
+import com.cases.carefull.data.datasource.KaKaoDataSource
+import com.cases.carefull.data.datasource.KakaoDataSourceImpl
+import com.cases.carefull.data.datasource.UserDataSource
+import com.cases.carefull.data.firestore.UserDataSourceImpl
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class DataSourceModule {
+	
+	@Binds
+	@Singleton
+	abstract fun bindKakaoDataSource(
+		kakaoDataSourceImpl: KakaoDataSourceImpl
+	): KaKaoDataSource
+	
+	@Binds
+	@Singleton
+	abstract fun bindUserDataSource(
+		userDataSourceImpl: UserDataSourceImpl
+	): UserDataSource
+}

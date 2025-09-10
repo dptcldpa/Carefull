@@ -52,6 +52,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.toRoute
@@ -64,7 +65,7 @@ import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DietSearchScreen(
-	viewModel: DietViewModel,
+	viewModel: DietViewModel = hiltViewModel(),
 	navController: NavController
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()

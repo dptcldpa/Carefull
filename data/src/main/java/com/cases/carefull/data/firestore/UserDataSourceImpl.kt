@@ -11,8 +11,9 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class UserDataSourceImpl: UserDataSource {
+class UserDataSourceImpl @Inject constructor() : UserDataSource {
 
     private val db = Firebase.firestore
 

@@ -7,11 +7,9 @@ import kotlinx.coroutines.flow.flow
 
 class MedicineSearchUseCase(
     private val repository: MedicineRepository,
-    private val medicineApiKey: String
 ) {
     operator fun invoke(query: String): Flow<List<MedicineItem>> = flow {
         val items = repository.searchMedicines(
-            medicineApiKey = medicineApiKey,
             query = query
         )
         emit(items)

@@ -26,7 +26,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -37,16 +36,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cases.carefull.domain.model.MedicineItem
 
 @Composable
 fun MedicineSearchScreen(
-	viewModel: MedicineViewModel,
+	viewModel: MedicineViewModel = hiltViewModel(),
 	onNavigateToMedicineInfo: () -> Unit
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
+	
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
@@ -69,9 +69,9 @@ fun MedicineSearchScreen(
 					contentDescription = "카메라"
 				)
 			}
-
+			
 			Spacer(modifier = Modifier.width(8.dp))
-
+			
 			TextField(
 				value = uiState.searchQuery,
 				onValueChange = { newQuery ->
@@ -101,9 +101,9 @@ fun MedicineSearchScreen(
 				)
 			}
 		}
-
+		
 		Spacer(modifier = Modifier.height(24.dp))
-
+		
 		if (uiState.searchQuery.isEmpty()) {
 			RecentSearchSection(
 				recentSearches = uiState.recentSearches,
@@ -119,7 +119,7 @@ fun MedicineSearchScreen(
 					CircularProgressIndicator()
 				}
 			}
-
+			
 			if (uiState.errorMessage != null) {
 				Box(
 					modifier = Modifier.fillMaxSize(),
@@ -164,7 +164,7 @@ private fun RecentSearchSection(
 			}
 		}
 		Spacer(modifier = Modifier.height(16.dp))
-
+		
 		if (recentSearches.isEmpty()) {
 			Text("검색 기록이 없습니다.", color = Color.Gray)
 		} else {
@@ -196,7 +196,7 @@ private fun SearchResultSection(
 	if (searchResults.isNotEmpty()) {
 		Text("검색 결과", style = MaterialTheme.typography.titleMedium)
 		Spacer(modifier = Modifier.height(8.dp))
-
+		
 		LazyColumn(modifier = Modifier.fillMaxSize()) {
 			items(searchResults) { item ->
 				Card(

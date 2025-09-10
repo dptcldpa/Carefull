@@ -1,18 +1,19 @@
 package com.cases.carefull.data.repository
 
 import android.content.Context
-import android.util.Log
 import com.cases.carefull.data.datasource.KaKaoDataSource
 import com.cases.carefull.data.datasource.UserDataSource
 import com.cases.carefull.domain.model.UserInfo
 import com.cases.carefull.domain.repository.UserRepository
 import com.cases.carefull.domain.util.DataResourceResult
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class UserRepositoryImpl(
-    private val context: Context,
+class UserRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val kakaoDataSource: KaKaoDataSource,
     private val userDataSource: UserDataSource
 ) : UserRepository {

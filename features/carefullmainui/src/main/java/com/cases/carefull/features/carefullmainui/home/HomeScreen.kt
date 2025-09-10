@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.cases.carefull.domain.model.CalendarViewType
@@ -46,7 +47,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
-	viewModel: HomeViewModel,
+	viewModel: HomeViewModel = hiltViewModel(),
 	navController: NavController
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()

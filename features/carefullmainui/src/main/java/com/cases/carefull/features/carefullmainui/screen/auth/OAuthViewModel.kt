@@ -1,19 +1,21 @@
 package com.cases.carefull.features.carefullmainui.screen.auth
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cases.carefull.domain.model.UserInfo
 import com.cases.carefull.domain.repository.UserRepository
 import com.cases.carefull.domain.util.DataResourceResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class OAuthViewModel(
+@HiltViewModel
+class OAuthViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 

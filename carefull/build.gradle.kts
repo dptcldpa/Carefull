@@ -6,6 +6,9 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.secrets.gradle.plugin)
+    
+    id("com.google.devtools.ksp")
+    alias(libs.plugins.google.dagger.hilt.android)
 }
 
 android {
@@ -85,4 +88,13 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    api(libs.androidx.navigation.compose)
+    
+    ksp(libs.hilt.compiler)
+    
+    implementation(libs.bundles.hilt.runtime)
+    
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }
