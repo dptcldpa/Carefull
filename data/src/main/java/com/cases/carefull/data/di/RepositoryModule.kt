@@ -5,12 +5,14 @@ import com.cases.carefull.data.repository.DietRepositoryImpl
 import com.cases.carefull.data.repository.ExerciseRepositoryImpl
 import com.cases.carefull.data.repository.MedicineRepositoryImpl
 import com.cases.carefull.data.repository.RankingRepositoryImpl
+import com.cases.carefull.data.repository.SocialRepositoryImpl
 import com.cases.carefull.data.repository.UserRepositoryImpl
 import com.cases.carefull.domain.repository.CalendarRepository
 import com.cases.carefull.domain.repository.DietRepository
 import com.cases.carefull.domain.repository.ExerciseRepository
 import com.cases.carefull.domain.repository.MedicineRepository
 import com.cases.carefull.domain.repository.RankingRepository
+import com.cases.carefull.domain.repository.SocialRepository
 import com.cases.carefull.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -58,4 +60,10 @@ abstract class RepositoryModule {
 	abstract fun bindUserRepository(
 		userRepositoryImpl: UserRepositoryImpl
 	): UserRepository
+	
+	@Binds
+	@Singleton
+	abstract fun bindSocialRepository(
+		socialRepositoryImpl: SocialRepositoryImpl
+	): SocialRepository
 }

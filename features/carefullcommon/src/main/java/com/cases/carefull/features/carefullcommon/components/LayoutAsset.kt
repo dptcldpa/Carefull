@@ -21,7 +21,7 @@ object LayoutAsset {
 			NavItem("검색", DiagnosisRoute.HospitalSearchScreen)
 		),
 		NavType.TOP_FEED to listOf(
-			NavItem("소셜", FeedRoute.Social),
+			NavItem("소셜", FeedRoute.SocialListScreen),
 			NavItem("랭킹", FeedRoute.RankingScreen)
 		),
 		NavType.NONE to emptyList(),
@@ -40,7 +40,7 @@ object LayoutAsset {
 			NavItem("홈", MainRoute.HomeScreen, "home"),
 			NavItem("루틴", RoutineRoute.ExerciseScreen, "routine"),
 			NavItem("진단", DiagnosisRoute.ChatBotScreen, "diagnosis"),
-			NavItem("피드", FeedRoute.Social, "feed"),
+			NavItem("피드", FeedRoute.SocialListScreen, "feed"),
 			NavItem("마이페이지", MyPageRoute.MyPage, "mypage")
 		)
 	)
@@ -110,7 +110,7 @@ object LayoutAsset {
 		),
 		
 		//피드
-		FeedRoute.Social to ScreenConfig(
+		FeedRoute.SocialListScreen to ScreenConfig(
 			topBarType = NavType.TOP_FEED,
 			showBottomBar = true
 		),

@@ -1,6 +1,7 @@
 package com.cases.carefull.features.carefullcommon.navigation
 
 import com.cases.carefull.domain.model.exercise.ExerciseType
+import com.cases.carefull.domain.model.Post
 import kotlinx.serialization.Serializable
 
 
@@ -68,7 +69,13 @@ sealed interface DiagnosisRoute : Route {
 sealed interface FeedRoute : Route {
 	
 	@Serializable
-	data object Social : FeedRoute
+	data object SocialListScreen : FeedRoute
+	
+	@Serializable
+	data class PostDetailScreen(val postId:String) : FeedRoute
+	
+	@Serializable
+	data class CreatePostScreen(val postId: String? = null) : FeedRoute
 	
 	@Serializable
 	data object RankingScreen : FeedRoute
