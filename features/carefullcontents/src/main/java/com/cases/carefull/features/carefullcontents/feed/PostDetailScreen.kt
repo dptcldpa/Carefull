@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,6 +56,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -65,6 +68,7 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.cases.carefull.domain.model.Comment
 import com.cases.carefull.domain.model.Post
+import com.cases.carefull.features.carefullcommon.components.CustomTopAppBar
 import com.cases.carefull.features.carefullcommon.navigation.FeedRoute
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -148,46 +152,30 @@ fun PostDetailScreen(
 			}
 		)
 	}
-	
-	Scaffold(
-		topBar = {
-			TopAppBar(
-				title = { Text("게시글 상세") },
-				navigationIcon = {
-					IconButton(onClick = { navController.popBackStack() }) {
-						Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "뒤로 가기")
+	Column(modifier = Modifier.fillMaxSize()) {
+		CustomTopAppBar(
+			title = "게시글 상세",
+			navigationIcon = {
+				IconButton(onClick = { navController.popBackStack() }) {
+					Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "뒤로 가기")
+				}
+			},
+			actions = {
+				if (uiState.post?.userId == uiState.currentUserId) {
+					IconButton(onClick = {
+						navController.navigate(FeedRoute.CreatePostScreen(postId = uiState.post!!.id))
+					}) {
+						Icon(Icons.Default.Edit, contentDescription = "게시글 수정")
 					}
-				},
-				actions = {
-					if (uiState.post?.userId == uiState.currentUserId) {
-						IconButton(onClick = {
-							navController.navigate(FeedRoute.CreatePostScreen(postId = uiState.post!!.id))
-						}) {
-							Icon(Icons.Default.Edit, contentDescription = "게시글 수정")
-						}
-						IconButton(onClick = { showDeleteDialog = true }) {
-							Icon(Icons.Default.Delete, contentDescription = "게시글 삭제")
-						}
+					IconButton(onClick = { showDeleteDialog = true }) {
+						Icon(Icons.Default.Delete, contentDescription = "게시글 삭제")
 					}
 				}
-			)
-		},
-		bottomBar = {
-			CommentInputSection(
-				commentInput = commentInput,
-				onCommentInputChanged = { commentInput = it },
-				onSendComment = {
-					viewModel.addComment(commentInput)
-					commentInput = ""
-				},
-				isLoading = uiState.isLoading
-			)
-		}
-	) { paddingValues ->
+			}
+		)
 		Box(
 			modifier = Modifier
 				.fillMaxSize()
-				.padding(paddingValues)
 		) {
 			if (uiState.isLoading && uiState.post == null) {
 				CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -214,6 +202,15 @@ fun PostDetailScreen(
 				)
 			}
 		}
+		CommentInputSection(
+			commentInput = commentInput,
+			onCommentInputChanged = { commentInput = it },
+			onSendComment = {
+				viewModel.addComment(commentInput)
+				commentInput = ""
+			},
+			isLoading = uiState.isLoading
+		)
 	}
 }
 

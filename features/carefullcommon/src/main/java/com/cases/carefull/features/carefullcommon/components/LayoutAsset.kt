@@ -114,6 +114,14 @@ object LayoutAsset {
 			topBarType = NavType.TOP_FEED,
 			showBottomBar = true
 		),
+		FeedRoute.CreatePostScreen to ScreenConfig(
+			topBarType = NavType.TOP_FEED,
+			showBottomBar = true
+		),
+		FeedRoute.PostDetailScreen to ScreenConfig(
+			topBarType = NavType.TOP_FEED,
+			showBottomBar = true
+		),
 		FeedRoute.RankingScreen to ScreenConfig(
 			topBarType = NavType.TOP_FEED,
 			showBottomBar = true

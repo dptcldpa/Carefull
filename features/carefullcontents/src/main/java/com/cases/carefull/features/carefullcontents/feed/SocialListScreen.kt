@@ -2,7 +2,6 @@ package com.cases.carefull.features.carefullcontents.feed
 
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,10 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Comment
+import androidx.compose.material.icons.automirrored.filled.Comment
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Card
@@ -29,7 +28,6 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -71,18 +69,8 @@ fun SocialListScreen(
 			lifecycleOwner.lifecycle.removeObserver(observer)
 		}
 	}
-	Scaffold(
-		floatingActionButton = {
-			FloatingActionButton(
-				onClick = {
-					navController.navigate(FeedRoute.CreatePostScreen())
-				}
-			) {
-				Icon(Icons.Default.Create, contentDescription = "글쓰기")
-			}
-		}
-	) { paddingValues ->
-		Column(modifier = Modifier.padding(paddingValues)) {
+	Box(modifier = Modifier.fillMaxSize()) {
+		Column(modifier = Modifier.fillMaxSize()) {
 			CategoryFilterChips(
 				categories = categories,
 				selectedCategory = uiState.selectedCategory,
@@ -108,6 +96,17 @@ fun SocialListScreen(
 				}
 			}
 		}
+		FloatingActionButton(
+			onClick = {
+				navController.navigate(FeedRoute.CreatePostScreen())
+			},
+			modifier = Modifier
+				.align(Alignment.BottomEnd)
+				.padding(16.dp)
+		) {
+			Icon(Icons.Default.Create, contentDescription = "글쓰기")
+		}
+		
 	}
 }
 
@@ -166,7 +165,7 @@ fun PostItem(post: Post, onClick: () -> Unit) {
 				Spacer(modifier = Modifier.width(4.dp))
 				Text(text = post.likeCount.toString())
 				Spacer(modifier = Modifier.width(16.dp))
-				Icon(Icons.Filled.Comment, contentDescription = "댓글")
+				Icon(Icons.AutoMirrored.Filled.Comment, contentDescription = "댓글")
 				Spacer(modifier = Modifier.width(4.dp))
 				Text(text = post.commentCount.toString())
 				Spacer(modifier = Modifier.weight(1f))
@@ -189,15 +188,14 @@ fun CategoryFilterChips(
 	selectedCategory: String,
 	onCategorySelected: (String) -> Unit
 ) {
-	// Row를 수평 스크롤 가능하게 만듭니다.
-	Row(
+	LazyRow(
 		modifier = Modifier
 			.fillMaxWidth()
-			.horizontalScroll(rememberScrollState())
-			.padding(horizontal = 16.dp, vertical = 8.dp),
-		horizontalArrangement = Arrangement.spacedBy(8.dp)
+			.padding(vertical = 8.dp),
+		horizontalArrangement = Arrangement.spacedBy(8.dp),
+		contentPadding = PaddingValues(horizontal = 16.dp)
 	) {
-		categories.forEach { category ->
+		items(categories) { category ->
 			FilterChip(
 				selected = (category == selectedCategory),
 				onClick = { onCategorySelected(category) },

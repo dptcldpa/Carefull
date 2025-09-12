@@ -47,6 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import com.cases.carefull.features.carefullcommon.components.CustomTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,46 +86,54 @@ fun CreatePostScreen(
 		}
 	}
 	
-	Scaffold(
-		topBar = {
-			TopAppBar(
-				title = { Text(if (isEditMode) "글 수정" else "새 글 작성") },
-				navigationIcon = {
-					IconButton(onClick = { navController.popBackStack() }) {
-						Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "뒤로 가기")
+	Column(modifier = Modifier.fillMaxSize()) {
+		CustomTopAppBar(
+			title = if (uiState.initialPost != null) "글 수정" else "새 글 작성",
+			navigationIcon = {
+				IconButton(onClick = { navController.popBackStack() }) {
+					Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "뒤로 가기")
+				}
+			}
+		)
+		Card(
+			modifier = Modifier
+				.padding(16.dp)
+				.fillMaxWidth()
+				.height(200.dp)
+				.clickable { imagePickerLauncher.launch("image/*") },
+			shape = MaterialTheme.shapes.medium
+		) {
+			Box(
+				modifier = Modifier.fillMaxSize(),
+				contentAlignment = Alignment.Center
+			) {
+				val displayImage = imageUri ?: existingImageUrl
+				if (displayImage != null) {
+					AsyncImage(
+						model = displayImage,
+						contentDescription = "Post Image",
+						modifier = Modifier.fillMaxSize(),
+						contentScale = ContentScale.Crop
+					)
+				} else {
+					Column(horizontalAlignment = Alignment.CenterHorizontally) {
+						Icon(
+							Icons.Default.Image,
+							contentDescription = "이미지 선택",
+							modifier = Modifier.size(48.dp)
+						)
+						Text("이미지 선택 (선택 사항)")
 					}
 				}
-			)
+			}
 		}
-	) { paddingValues ->
 		Column(
 			modifier = Modifier
 				.fillMaxSize()
-				.padding(paddingValues)
 				.padding(16.dp)
 				.verticalScroll(scrollState),
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
-			OutlinedTextField(
-				value = title,
-				onValueChange = { title = it },
-				label = { Text("제목") },
-				modifier = Modifier.fillMaxWidth(),
-				keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
-			)
-			Spacer(modifier = Modifier.height(16.dp))
-			
-			OutlinedTextField(
-				value = content,
-				onValueChange = { content = it },
-				label = { Text("내용") },
-				modifier = Modifier
-					.fillMaxWidth()
-					.height(150.dp),
-				keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Default)
-			)
-			Spacer(modifier = Modifier.height(16.dp))
-			
 			ExposedDropdownMenuBox(
 				expanded = isCategoryDropdownExpanded,
 				onExpandedChange = { isCategoryDropdownExpanded = !isCategoryDropdownExpanded },
@@ -157,37 +166,26 @@ fun CreatePostScreen(
 			}
 			Spacer(modifier = Modifier.height(16.dp))
 			
-			Card(
+			OutlinedTextField(
+				value = title,
+				onValueChange = { title = it },
+				label = { Text("제목") },
+				modifier = Modifier.fillMaxWidth(),
+				keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
+			)
+			Spacer(modifier = Modifier.height(16.dp))
+			
+			OutlinedTextField(
+				value = content,
+				onValueChange = { content = it },
+				label = { Text("내용") },
 				modifier = Modifier
 					.fillMaxWidth()
-					.height(200.dp)
-					.clickable { imagePickerLauncher.launch("image/*") },
-				shape = MaterialTheme.shapes.medium
-			) {
-				Box(
-					modifier = Modifier.fillMaxSize(),
-					contentAlignment = Alignment.Center
-				) {
-					val displayImage = imageUri ?: existingImageUrl
-					if (displayImage != null) {
-						AsyncImage(
-							model = displayImage,
-							contentDescription = "Post Image",
-							modifier = Modifier.fillMaxSize(),
-							contentScale = ContentScale.Crop
-						)
-					} else {
-						Column(horizontalAlignment = Alignment.CenterHorizontally) {
-							Icon(
-								Icons.Default.Image,
-								contentDescription = "이미지 선택",
-								modifier = Modifier.size(48.dp)
-							)
-							Text("이미지 선택 (선택 사항)")
-						}
-					}
-				}
-			}
+					.height(150.dp),
+				keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Default)
+			)
+			Spacer(modifier = Modifier.height(16.dp))
+			
 			Button(
 				onClick = {
 					viewModel.submitPost(title, content, selectedCategory, imageUri)
@@ -201,7 +199,6 @@ fun CreatePostScreen(
 					Text(if (isEditMode) "수정 완료" else "게시글 작성")
 				}
 			}
-			
 			uiState.error?.let { errorMessage ->
 				Text(
 					text = errorMessage,
