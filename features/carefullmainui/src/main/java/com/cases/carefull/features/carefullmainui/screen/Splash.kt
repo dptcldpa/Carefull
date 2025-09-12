@@ -36,27 +36,22 @@ fun Splash(
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	
-	LaunchedEffect(key1 = uiState.isLoading) {
-		if (!uiState.isLoading) {
-			delay(1500L)
+	LaunchedEffect(uiState.isAuthenticating) {
+		if (!uiState.isAuthenticating) {
+			delay(1000L)
+			val destination = if (uiState.userInfo != null) {
+				MainRoute.HomeScreen
+			} else {
+				MainRoute.SigninScreen
+			}
 			
-			if (uiState.userInfo != null) {
-				navController.navigate(MainRoute.HomeScreen) {
-					popUpTo(MainRoute.Splash) { inclusive = true }
-					launchSingleTop = true
-				}
-			} else if (uiState.errorMessage == null) {
-				navController.navigate(MainRoute.SigninScreen) {
-					popUpTo(MainRoute.Splash) { inclusive = true }
-					launchSingleTop = true
-				}
+			navController.navigate(destination) {
+				popUpTo(MainRoute.Splash) { inclusive = true }
+				launchSingleTop = true
 			}
 		}
 	}
 	
-	LaunchedEffect(Unit) {
-		viewModel.checkLoggedInState()
-	}
 	Column(
 		modifier = Modifier.fillMaxSize(),
 		horizontalAlignment = Alignment.CenterHorizontally
