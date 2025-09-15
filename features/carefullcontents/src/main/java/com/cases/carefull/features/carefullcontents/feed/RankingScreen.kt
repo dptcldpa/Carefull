@@ -122,17 +122,17 @@ fun MyRankItem(myRankInfo: MyRankInfo) {
 			Text("${myRankInfo.rank}위", style = MaterialTheme.typography.titleLarge)
 			Spacer(modifier = Modifier.width(12.dp))
 			//더미 이미지
-			Image(
-				painter = painterResource(id = R.drawable.app_logo),
-				contentDescription = "프로필 사진",
-				modifier = Modifier
-					.size(40.dp)
-					.clip(CircleShape)
-			)
+//			Image(
+//				painter = painterResource(id = R.drawable.app_logo),
+//				contentDescription = "프로필 사진",
+//				modifier = Modifier
+//					.size(40.dp)
+//					.clip(CircleShape)
+//			)
 			Spacer(modifier = Modifier.width(12.dp))
 			Text(
 				myRankInfo.myRecord?.userId ?: "",
-				style = MaterialTheme.typography.bodyLarge
+				style = MaterialTheme.typography.titleMedium
 			)
 			Spacer(modifier = Modifier.weight(1f))
 			Text(

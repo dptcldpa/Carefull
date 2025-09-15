@@ -1,6 +1,7 @@
 package com.cases.carefull.features.carefullcontents.diagnosis.medicine
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -94,6 +95,7 @@ fun MedicineInfoScreen(
 			) {
 				tabs.forEachIndexed { index, title ->
 					Tab(
+						modifier = Modifier.padding(horizontal = 0.dp),
 						selected = selectedTab == index,
 						onClick = { selectedTab = index },
 						selectedContentColor = Color.White,
@@ -102,9 +104,12 @@ fun MedicineInfoScreen(
 							Box(
 								modifier = Modifier
 									.background(
-										color = if (selectedTab == index) Color(0xFF00C73C) else Color(
-											0xFFF5F5F5
-										),
+										color = if (selectedTab == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary,
+										shape = RoundedCornerShape(50)
+									)
+									.border(
+										width = 1.dp,
+										color = MaterialTheme.colorScheme.primary,
 										shape = RoundedCornerShape(50)
 									)
 									.padding(horizontal = 16.dp, vertical = 8.dp)

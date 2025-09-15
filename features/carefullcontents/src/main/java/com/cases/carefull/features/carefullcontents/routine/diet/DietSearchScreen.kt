@@ -393,7 +393,7 @@ fun CustomInputDialog(
 					OutlinedTextField(
 						value = calculatedKcal,
 						onValueChange = {},
-						label = { Text("자동 계산된 칼로리 (kcal)") },
+						label = { Text("칼로리 (kcal)") },
 						keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
 						readOnly = true,
 						enabled = false,

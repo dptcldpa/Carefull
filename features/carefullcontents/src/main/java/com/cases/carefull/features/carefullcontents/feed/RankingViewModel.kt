@@ -32,7 +32,7 @@ class RankingViewModel @Inject constructor(
 		viewModelScope.launch {
 			_uiState.update { it.copy(isLoading = true, selectedSport = sport, isError = false) }
 			val rankingListDeferred = async { rankingRepository.getRankingList(sport) }
-			val myRankDeferred = async { rankingRepository.getMyRanking("test", sport) }
+			val myRankDeferred = async { rankingRepository.getMyRanking("CareFull", sport) }
 			
 			val rankingListResult = rankingListDeferred.await()
 			val myRankResult = myRankDeferred.await()

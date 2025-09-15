@@ -59,7 +59,7 @@ fun SigninScreen(
 		Text(
 			modifier = Modifier
 				.padding(top = 50.dp),
-			text = stringResource(R.string.app_name),
+			text = "CareFull",
 			style = MaterialTheme.typography.titleLarge
 		)
 		Image(
@@ -99,7 +99,7 @@ fun SigninScreen(
 						modifier = Modifier.fillMaxSize()
 					)
 				}
-				Spacer(modifier = Modifier.height(50.dp))
+//				Spacer(modifier = Modifier.height(50.dp))
 				
 				// 로그인
 				Button(
@@ -115,7 +115,7 @@ fun SigninScreen(
 					)
 				) {
 					Text(
-						text = "다른 이메일로 시작하기",
+						text = "다른 방법으로 시작하기",
 						style = MaterialTheme.typography.bodySmall,
 						color = Color.Gray,
 						textDecoration = TextDecoration.Underline
@@ -125,24 +125,24 @@ fun SigninScreen(
 			}
 		}
 		// 일단 홈 화면으로 이동하는 버튼 구현
-		Button(
-			onClick = {
-				navController.navigate(MainRoute.HomeScreen) {
-					popUpTo(MainRoute.SigninScreen) {
-						inclusive = true
-					}
-				}
-			}, modifier = Modifier, colors = ButtonDefaults.buttonColors(
-				containerColor = Color.Transparent,
-				contentColor = Color.Black
-			)
-		) {
-			Text(
-				text = "홈 화면으로 이동",
-				style = MaterialTheme.typography.bodySmall,
-				color = Color.Gray,
-				textDecoration = TextDecoration.Underline
-			)
-		}
+//		Button(
+//			onClick = {
+//				navController.navigate(MainRoute.HomeScreen) {
+//					popUpTo(MainRoute.SigninScreen) {
+//						inclusive = true
+//					}
+//				}
+//			}, modifier = Modifier, colors = ButtonDefaults.buttonColors(
+//				containerColor = Color.Transparent,
+//				contentColor = Color.Black
+//			)
+//		) {
+//			Text(
+//				text = "홈 화면으로 이동",
+//				style = MaterialTheme.typography.bodySmall,
+//				color = Color.Gray,
+//				textDecoration = TextDecoration.Underline
+//			)
+//		}
 	}
 }

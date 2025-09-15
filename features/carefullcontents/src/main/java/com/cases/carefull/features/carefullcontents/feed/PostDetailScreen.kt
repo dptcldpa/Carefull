@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -175,7 +176,7 @@ fun PostDetailScreen(
 		)
 		Box(
 			modifier = Modifier
-				.fillMaxSize()
+				.weight(1f)
 		) {
 			if (uiState.isLoading && uiState.post == null) {
 				CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -357,7 +358,7 @@ fun CommentItem(
 					verticalAlignment = Alignment.CenterVertically
 				) {
 					Text(
-						text = comment.userId,
+						text = "CareFull",
 						style = MaterialTheme.typography.titleSmall,
 						modifier = Modifier.weight(1f, fill = false),
 						maxLines = 1
@@ -467,7 +468,8 @@ fun CommentInputSection(
 				modifier = Modifier.weight(1f),
 				maxLines = 3,
 				keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send),
-				keyboardActions = KeyboardActions(onSend = { onSendComment() })
+				keyboardActions = KeyboardActions(onSend = { onSendComment() }),
+				shape = RoundedCornerShape(16.dp)
 			)
 			Spacer(modifier = Modifier.width(8.dp))
 			IconButton(

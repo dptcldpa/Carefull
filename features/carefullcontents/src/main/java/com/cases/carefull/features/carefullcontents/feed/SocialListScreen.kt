@@ -173,7 +173,7 @@ fun PostItem(post: Post, onClick: () -> Unit) {
 				Spacer(modifier = Modifier.width(4.dp))
 				Text(text = post.likeCount.toString())
 				Spacer(modifier = Modifier.width(16.dp))
-				Icon(Icons.AutoMirrored.Filled.Comment, contentDescription = "댓글")
+				Icon(Icons.AutoMirrored.Filled.Comment, contentDescription = "댓글", tint = Color.Blue)
 				Spacer(modifier = Modifier.width(4.dp))
 				Text(text = post.commentCount.toString())
 				Spacer(modifier = Modifier.weight(1f))
@@ -198,7 +198,7 @@ fun CategoryFilterChips(
 ) {
 	Column(
 		modifier = Modifier
-			.padding(horizontal = 8.dp)
+			.padding(horizontal = 16.dp)
 	) {
 		LazyRow(
 			modifier = Modifier

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Carefull</string>
+    <string name="app_name">CareFull</string>
     <string name="email">이메일</string>
     <string name="email_input">이메일을 입력하세요.</string>
     <string name="password">비밀번호</string>

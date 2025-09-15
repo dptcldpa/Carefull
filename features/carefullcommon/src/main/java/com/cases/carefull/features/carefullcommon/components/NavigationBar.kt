@@ -56,7 +56,7 @@ fun SubTopNavigationBar(
 			Tab(
 				selected = item.isSelected,
 				onClick = { onTabSelected(item.spec.route) },
-				text = { Text(text = item.spec.title, style = MaterialTheme.typography.titleMedium) },
+				text = { Text(text = item.spec.title, style = MaterialTheme.typography.bodyLarge) },
 				selectedContentColor = MaterialTheme.colorScheme.primary,
 				unselectedContentColor = MaterialTheme.colorScheme.onSurface
 			)
