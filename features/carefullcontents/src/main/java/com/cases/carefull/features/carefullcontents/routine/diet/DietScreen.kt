@@ -2,6 +2,7 @@ package com.cases.carefull.features.carefullcontents.routine.diet
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +28,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -64,16 +66,16 @@ fun DietScreen(
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	val lazyListState = rememberLazyListState()
-
+	
 	LaunchedEffect(uiState.selectedDate) {
 		val targetIndex = uiState.dietSections.indexOfFirst { it.date == uiState.selectedDate }
 		if (targetIndex != -1) {
 			lazyListState.scrollToItem(index = targetIndex)
 		}
 	}
-
+	
 	if (uiState.isDatePickerVisible) {
-
+		
 		val calendarState = CalendarState(
 			selectedDate = uiState.selectedDate,
 			displayedYearMonth = uiState.datePickerDisplayedMonth,
@@ -93,7 +95,7 @@ fun DietScreen(
 			onGoToToday = { viewModel.onGoToToday() }
 		)
 	}
-
+	
 	LazyColumn(
 		modifier = Modifier.fillMaxSize(),
 		state = lazyListState
@@ -101,17 +103,17 @@ fun DietScreen(
 		item {
 			NutritionSummary(uiState = uiState)
 		}
-
+		
 		item {
 			val section = uiState.selectedDateSection
-
+			
 			DateHeader(
 				date = uiState.selectedDate,
 				totalCalories = section?.totalCalories ?: 0,
 				onCalendarClick = { viewModel.showDatePicker() }
 			)
 			HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
+			
 			Column(modifier = Modifier.padding(horizontal = 16.dp)) {
 				val mealsByTimeForDay = section?.meals?.groupBy {
 					try {
@@ -120,7 +122,7 @@ fun DietScreen(
 						MealType.SNACK
 					}
 				} ?: emptyMap()
-
+				
 				MealType.entries.forEach { mealType ->
 					val addedFoodsForMealType = mealsByTimeForDay[mealType] ?: emptyList()
 					MealSection(
@@ -154,7 +156,7 @@ fun DatePickerDialog(
 		initialPage = startPage,
 		pageCount = { Int.MAX_VALUE })
 	var previousPage by remember { mutableIntStateOf(startPage) }
-
+	
 	LaunchedEffect(pagerState) {
 		snapshotFlow { pagerState.currentPage }
 			.distinctUntilChanged()
@@ -195,56 +197,56 @@ fun DatePickerDialog(
 @Composable
 fun NutritionSummary(uiState: DietUiState) {
 	Column {
-		Text(
-			text = "선택된 날짜: ${formatDate(uiState.selectedDate)}",
-			style = MaterialTheme.typography.bodySmall,
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 16.dp),
-			textAlign = TextAlign.Center
-		)
-		Text(
-			text = "기초대사량 : ${uiState.bmrState.calculatedBmr}kcal",
-			style = MaterialTheme.typography.bodySmall,
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 16.dp),
-			textAlign = TextAlign.Center
-		)
-		Text(
-			text = "활동대사량 : ${uiState.bmrState.activityMetabolism}kcal",
-			style = MaterialTheme.typography.bodySmall,
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 16.dp),
-			textAlign = TextAlign.Center
-		)
-		Text(
-			text = "총 섭취 칼로리: ${uiState.totalCalories} kcal",
-			style = MaterialTheme.typography.bodyMedium,
-			fontWeight = FontWeight.Bold,
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 16.dp),
-			textAlign = TextAlign.Center
-		)
+//		Text(
+//			text = "선택된 날짜: ${formatDate(uiState.selectedDate)}",
+//			style = MaterialTheme.typography.bodySmall,
+//			modifier = Modifier
+//				.fillMaxWidth()
+//				.padding(horizontal = 16.dp),
+//			textAlign = TextAlign.Center
+//		)
+//		Text(
+//			text = "기초대사량 : ${uiState.bmrState.calculatedBmr}kcal",
+//			style = MaterialTheme.typography.bodySmall,
+//			modifier = Modifier
+//				.fillMaxWidth()
+//				.padding(horizontal = 16.dp),
+//			textAlign = TextAlign.Center
+//		)
+//		Text(
+//			text = "활동대사량 : ${uiState.bmrState.activityMetabolism}kcal",
+//			style = MaterialTheme.typography.bodySmall,
+//			modifier = Modifier
+//				.fillMaxWidth()
+//				.padding(horizontal = 16.dp),
+//			textAlign = TextAlign.Center
+//		)
+//		Text(
+//			text = "총 섭취 칼로리: ${uiState.totalCalories} kcal",
+//			style = MaterialTheme.typography.bodyMedium,
+//			fontWeight = FontWeight.Bold,
+//			modifier = Modifier
+//				.fillMaxWidth()
+//				.padding(horizontal = 16.dp),
+//			textAlign = TextAlign.Center
+//		)
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.Center
 		) {
 			Text(
 				text = "탄수화물 : ${uiState.totalCarbs}g",
-				style = MaterialTheme.typography.bodySmall,
+				style = MaterialTheme.typography.bodyLarge,
 				modifier = Modifier.padding(horizontal = 16.dp)
 			)
 			Text(
 				text = "단백질 : ${uiState.totalProteins}g",
-				style = MaterialTheme.typography.bodySmall,
+				style = MaterialTheme.typography.bodyLarge,
 				modifier = Modifier.padding(horizontal = 16.dp)
 			)
 			Text(
 				text = "지방 : ${uiState.totalFats}g",
-				style = MaterialTheme.typography.bodySmall,
+				style = MaterialTheme.typography.bodyLarge,
 				modifier = Modifier.padding(horizontal = 16.dp)
 			)
 		}
@@ -260,15 +262,17 @@ fun MealSection(
 	onAddClick: () -> Unit,
 	onRemoveClick: (DietCollection) -> Unit
 ) {
-	Card(
+	OutlinedCard(
+		border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(vertical = 12.dp),
+			.padding(vertical = 4.dp),
 		elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
 	) {
 		Column(
 			modifier = Modifier
-				.fillMaxWidth()
+				.fillMaxWidth(),
+			verticalArrangement = Arrangement.spacedBy(4.dp)
 		) {
 			Row(
 				modifier = Modifier
@@ -277,19 +281,19 @@ fun MealSection(
 				verticalAlignment = Alignment.CenterVertically
 			) {
 				Text(
-					text = mealType.time,
+					text = " ${mealType.time}",
 					style = MaterialTheme.typography.bodyLarge,
 					fontWeight = FontWeight.Bold
 				)
 				Spacer(modifier = Modifier.weight(1f))
-				IconButton(onClick = onCameraClick) {
-					Icon(
-						imageVector = Icons.Default.Camera,
-						contentDescription = "${mealType.time} 음식 추가",
-						tint = MaterialTheme.colorScheme.primary,
-						modifier = Modifier.size(28.dp)
-					)
-				}
+//				IconButton(onClick = onCameraClick) {
+//					Icon(
+//						imageVector = Icons.Default.Camera,
+//						contentDescription = "${mealType.time} 음식 추가",
+//						tint = MaterialTheme.colorScheme.primary,
+//						modifier = Modifier.size(28.dp)
+//					)
+//				}
 				IconButton(onClick = onAddClick) {
 					Icon(
 						imageVector = Icons.Default.Add,
@@ -301,12 +305,12 @@ fun MealSection(
 			}
 			HorizontalDivider(
 				thickness = 1.dp,
-				color = Color.Black
+				color = MaterialTheme.colorScheme.outline
 			)
 			if (addedFoods.isNotEmpty()) {
 				Column(
 					modifier = Modifier.fillMaxWidth(),
-					verticalArrangement = Arrangement.spacedBy(8.dp)
+					verticalArrangement = Arrangement.spacedBy(6.dp)
 				) {
 					addedFoods.forEach { addedFood ->
 						FoodItemRow(
@@ -340,16 +344,17 @@ fun FoodItemRow(
 	) {
 		Column(modifier = Modifier.weight(1f)) {
 			Text(
-				text = "${food.mealName} | ${food.weight}g",
+				text = "${food.mealName} (${food.weight}g)",
 				style = MaterialTheme.typography.bodyLarge
 			)
 		}
-		Text(text = "${food.kcal} kcal", style = MaterialTheme.typography.bodyMedium)
-
+		Text(text = "${food.kcal} kcal     ", style = MaterialTheme.typography.bodyMedium)
+		
 		IconButton(onClick = onRemove, modifier = Modifier.size(20.dp)) {
 			Icon(imageVector = Icons.Default.Close, contentDescription = "삭제")
 		}
 	}
+	Spacer(modifier = Modifier.width(4.dp))
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -379,7 +384,7 @@ fun DateHeader(
 			text = "총 $totalCalories kcal",
 			style = MaterialTheme.typography.bodyMedium
 		)
-
+		
 	}
 }
 
@@ -387,7 +392,7 @@ fun DateHeader(
 fun formatDate(date: LocalDate): String {
 	val today = LocalDate.now()
 	val yesterday = today.minusDays(1)
-
+	
 	return when {
 		date.isEqual(today) -> "오늘"
 		date.isEqual(yesterday) -> "어제"

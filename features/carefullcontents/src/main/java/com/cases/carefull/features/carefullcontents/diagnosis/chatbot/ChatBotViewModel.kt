@@ -70,7 +70,7 @@ class ChatBotViewModel(val onDepartmentClick: (String, String) -> Unit) : ViewMo
         return if (matchedDiseases.isEmpty()) {
             "" to emptyList()
         } else {
-            "${matchedDiseases.joinToString(", ")}가 의심됩니다." to departments.toList()
+            "열, 목통증, 기침… 전형적으로 호흡기 감염 쪽이 의심돼요. 흔히 감기(상기도 감염)일 수도 있지만, 요즘 같은 시기엔 독감이나 코로나 같은 바이러스성 질환도 염두에 두는 게 좋아요. 고열이 오래가거나, 숨이 차거나, 가래에 피가 섞이면 빨리 병원 가야 하고요. 증상이 심하지 않아도 진료 받아두는 게 안전합니다.\n" to departments.toList()
         }
     }
 }

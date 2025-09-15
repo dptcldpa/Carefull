@@ -29,7 +29,7 @@ fun CustomTopAppBar(
 		modifier = modifier
 			.fillMaxWidth()
 			.height(56.dp),
-		shadowElevation = 4.dp
+//		shadowElevation = 4.dp
 	) {
 		Box(
 			modifier = Modifier

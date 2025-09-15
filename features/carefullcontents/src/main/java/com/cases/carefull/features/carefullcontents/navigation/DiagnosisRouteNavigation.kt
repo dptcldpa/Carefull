@@ -16,8 +16,9 @@ import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineI
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineSearchScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineViewModel
 
-fun NavGraphBuilder.diagnosisGraph(viewModel: MedicineViewModel
-								   ,navController: NavHostController) {
+fun NavGraphBuilder.diagnosisGraph(
+	viewModel: MedicineViewModel, navController: NavHostController
+) {
 	composable<DiagnosisRoute.ChatBotScreen> {
 		ChatBotScreen(
 			onDepartmentClick = { department, diagnosis ->
@@ -45,7 +46,10 @@ fun NavGraphBuilder.diagnosisGraph(viewModel: MedicineViewModel
 		val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 		
 		uiState.selectedItem?.let { item ->
-			MedicineInfoScreen(medicineItem = item)
+			MedicineInfoScreen(
+				medicineItem = item,
+				navController = navController
+			)
 		}
 	}
 	// 검색 - 병원

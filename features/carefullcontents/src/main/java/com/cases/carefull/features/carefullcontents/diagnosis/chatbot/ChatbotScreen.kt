@@ -11,12 +11,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,20 +61,23 @@ fun ChatBotScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Row(modifier = Modifier.fillMaxWidth()) {
-            TextField(
+        Row(modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically) {
+            OutlinedTextField(
                 modifier = Modifier.weight(1f),
                 value = userInput,
                 onValueChange = { userInput = it },
-                placeholder = { Text("증상을 입력하세요") }
+                placeholder = { Text("증상을 입력하세요") },
+                shape = RoundedCornerShape(16.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Button(onClick = {
+            IconButton(onClick = {
                 viewModel.onUserMessage(userInput)
                 userInput = ""
             }) {
-                Text("전송")
+               Icon(
+                   imageVector = Icons.AutoMirrored.Filled.Send,
+                   contentDescription = "전송"
+               )
             }
         }
     }

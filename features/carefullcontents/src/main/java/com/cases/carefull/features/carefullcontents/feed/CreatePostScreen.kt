@@ -66,7 +66,7 @@ fun CreatePostScreen(
 	var imageUri by remember { mutableStateOf<Uri?>(null) }
 	val existingImageUrl by remember(initialPost) { mutableStateOf(initialPost?.imageUrl) }
 	
-	val categories = listOf("운동", "식단", "의료")
+	val categories = listOf("자유","운동", "식단", "의료")
 	
 	var isCategoryDropdownExpanded by remember { mutableStateOf(false) }
 	

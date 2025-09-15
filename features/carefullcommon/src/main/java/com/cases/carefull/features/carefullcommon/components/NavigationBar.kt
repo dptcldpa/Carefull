@@ -7,15 +7,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.cases.carefull.features.carefullcommon.model.NavItemUiModel
 import com.cases.carefull.features.carefullcommon.navigation.Route
+import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 
 //상단 바
 @Composable
@@ -34,7 +37,7 @@ fun TopNavigationBar(
 			Tab(
 				selected = item.isSelected,
 				onClick = { onTabSelected(item.spec.route) },
-				text = { Text(item.spec.title, style = MaterialTheme.typography.bodyMedium) },
+				text = { Text(item.spec.title, style = MaterialTheme.typography.titleMedium) },
 				selectedContentColor = MaterialTheme.colorScheme.primary,
 				unselectedContentColor = MaterialTheme.colorScheme.onSurface
 			)
@@ -53,7 +56,7 @@ fun SubTopNavigationBar(
 			Tab(
 				selected = item.isSelected,
 				onClick = { onTabSelected(item.spec.route) },
-				text = { Text(text = item.spec.title, style = MaterialTheme.typography.bodyMedium) },
+				text = { Text(text = item.spec.title, style = MaterialTheme.typography.titleMedium) },
 				selectedContentColor = MaterialTheme.colorScheme.primary,
 				unselectedContentColor = MaterialTheme.colorScheme.onSurface
 			)
@@ -78,10 +81,17 @@ fun BottomNavigationBar(
 					selected = item.isSelected,
 					onClick = { onTabSelected(item.spec.route) },
 					icon = { Icon(item.icon!!, contentDescription = item.spec.title) },
+					colors = NavigationBarItemDefaults.colors(
+						selectedIconColor = MaterialTheme.colorScheme.primary,
+						unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+						selectedTextColor = MaterialTheme.colorScheme.onSurface,
+						unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+						indicatorColor = Color.Transparent
+					),
 					label = {
 						Text(
 							text = item.spec.title,
-							style = MaterialTheme.typography.labelSmall
+							style = MaterialTheme.typography.bodyLarge
 						)
 					}
 				)

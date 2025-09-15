@@ -1,12 +1,15 @@
 package com.cases.carefull.features.carefullmainui.screen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -56,23 +59,25 @@ fun Splash(
 		modifier = Modifier.fillMaxSize(),
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-		Text(
-			modifier = Modifier
-				.padding(top = 150.dp),
-			text = stringResource(R.string.app_name),
-			style = MaterialTheme.typography.titleLarge
-		)
-		
-		Spacer(modifier = Modifier.height(50.dp))
-		
-		Image(
-			painter = painterResource(R.drawable.app_logo),
-			contentDescription = null,
-			modifier = Modifier
-				.padding(top = 50.dp)
-				.sizeIn(200.dp, 200.dp)
-				.clip(RoundedCornerShape(8.dp)),
-			contentScale = ContentScale.Crop,
-		)
+//		Text(
+//			modifier = Modifier
+//				.padding(top = 150.dp),
+//			text = stringResource(R.string.app_name),
+//			style = MaterialTheme.typography.titleLarge
+//		)
+
+//		Spacer(modifier = Modifier.height(50.dp))
+		Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+			
+			
+			Image(
+				painter = painterResource(R.drawable.app_logo),
+				contentDescription = null,
+				modifier = Modifier
+					.sizeIn(100.dp, 100.dp)
+					.clip(RoundedCornerShape(8.dp)),
+				contentScale = ContentScale.Crop,
+			)
+		}
 	}
 }

@@ -260,7 +260,7 @@ fun PostDetailContent(
 				Text(text = post.title, style = MaterialTheme.typography.headlineSmall)
 				Spacer(modifier = Modifier.height(8.dp))
 				Text(
-					text = "작성자: ${post.userId} | 카테고리: ${post.category}",
+					text = "${post.userId} | ${post.category}",
 					style = MaterialTheme.typography.bodyMedium
 				)
 				Spacer(modifier = Modifier.height(16.dp))

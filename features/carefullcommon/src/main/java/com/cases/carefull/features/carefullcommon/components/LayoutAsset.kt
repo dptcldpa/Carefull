@@ -29,7 +29,7 @@ object LayoutAsset {
 		NavType.SUB_DIAGNOSIS to listOf(
 			NavItem("챗봇", DiagnosisRoute.ChatBotScreen),
 			NavItem("병원 정보", DiagnosisRoute.HospitalInfoScreen),
-			NavItem("약 정보", DiagnosisRoute.MedicineInfoScreen)
+			NavItem("약 정보", DiagnosisRoute.MedicineSearchScreen)
 		),
 		NavType.SUB_SEARCH to listOf(
 			NavItem("병원", DiagnosisRoute.HospitalSearchScreen),
@@ -41,7 +41,7 @@ object LayoutAsset {
 			NavItem("루틴", RoutineRoute.ExerciseScreen, "routine"),
 			NavItem("진단", DiagnosisRoute.ChatBotScreen, "diagnosis"),
 			NavItem("피드", FeedRoute.SocialListScreen, "feed"),
-			NavItem("마이페이지", MyPageRoute.MyPage, "mypage")
+			NavItem("마이", MyPageRoute.MyPage, "mypage")
 		)
 	)
 	private val screenConfig = mapOf(
@@ -59,10 +59,12 @@ object LayoutAsset {
 		),
 		RoutineRoute.DietScreen to ScreenConfig(
 			topBarType = NavType.TOP_ROUTINE,
+			subTopBarType = NavType.NONE,
 			showBottomBar = true
 		),
 		RoutineRoute.DietSearchScreen to ScreenConfig(
 			topBarType = NavType.TOP_ROUTINE,
+			subTopBarType = NavType.NONE,
 			showBottomBar = true
 		),
 		RoutineRoute.FoodInformation to ScreenConfig(
@@ -80,7 +82,7 @@ object LayoutAsset {
 		//진단
 		DiagnosisRoute.ChatBotScreen to ScreenConfig(
 			topBarType = NavType.TOP_DIAGNOSIS,
-			subTopBarType = NavType.SUB_DIAGNOSIS,
+			subTopBarType = NavType.NONE,
 			showBottomBar = true
 		),
 		DiagnosisRoute.HospitalInfoScreen to ScreenConfig(
@@ -89,8 +91,8 @@ object LayoutAsset {
 			showBottomBar = true
 		),
 		DiagnosisRoute.MedicineInfoScreen to ScreenConfig(
-			topBarType = NavType.TOP_DIAGNOSIS,
-			subTopBarType = NavType.SUB_DIAGNOSIS,
+			topBarType = NavType.NONE,
+			subTopBarType = NavType.NONE,
 			showBottomBar = true
 		),
 		DiagnosisRoute.HospitalSearchScreen to ScreenConfig(
@@ -115,12 +117,10 @@ object LayoutAsset {
 			showBottomBar = true
 		),
 		FeedRoute.CreatePostScreen to ScreenConfig(
-			topBarType = NavType.TOP_FEED,
-			showBottomBar = true
+			showBottomBar = false
 		),
 		FeedRoute.PostDetailScreen to ScreenConfig(
-			topBarType = NavType.TOP_FEED,
-			showBottomBar = true
+			showBottomBar = false
 		),
 		FeedRoute.RankingScreen to ScreenConfig(
 			topBarType = NavType.TOP_FEED,
@@ -135,6 +135,10 @@ object LayoutAsset {
 				RoutineRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +
 				DiagnosisRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +
 				FeedRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +
+				listOf(
+					FeedRoute.PostDetailScreen(""),
+					FeedRoute.CreatePostScreen()
+				) +
 				MyPageRoute::class.sealedSubclasses.mapNotNull { it.objectInstance }
 	}
 	
@@ -144,9 +148,19 @@ object LayoutAsset {
 	
 	fun findRouteByString(routeString: String?): Route? {
 		if (routeString == null) return null
-		return routeMap[routeString]
+		
+		// '?' 이전의 문자열(순수 경로)만 사용하여 key로 사용
+		val pureRoute = routeString.substringBefore("?")
+		
+		// Kotlin 내부 클래스는 $로 구분되므로, 라이브러리가 생성한 경로 문자열과 맞추기 위해 .으로 변경
+		val formattedRoute = pureRoute.replace('$', '.')
+		
+		return routeMap[formattedRoute]
 	}
 	
 	fun getNavItems(type: NavType) = navItemConfig[type] ?: emptyList()
-	fun getScreenConfig(route: Route) = screenConfig[route]
+	fun getScreenConfig(route: Route): ScreenConfig? {
+		// screenConfig의 key와 route의 클래스 타입이 같은 첫 번째 항목을 찾습니다.
+		return screenConfig.entries.find { (key, _) -> key::class == route::class }?.value
+	}
 }

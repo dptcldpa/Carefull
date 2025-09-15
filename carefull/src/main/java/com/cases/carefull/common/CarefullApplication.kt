@@ -2,6 +2,7 @@ package com.cases.carefull.common
 
 import android.app.Application
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.cases.carefull.BuildConfig.kakao_native_app_key
 import com.google.firebase.Firebase

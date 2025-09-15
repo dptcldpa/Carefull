@@ -1,11 +1,14 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
+import android.R
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -32,6 +36,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -169,16 +174,19 @@ fun DietSearchScreen(
 			Row(modifier = Modifier.fillMaxWidth()) {
 				OutlinedButton(
 					onClick = { viewModel.showFavoritesDialog() },
-					modifier = Modifier.weight(1f)
+					modifier = Modifier.weight(0.5f),
+					shape = RoundedCornerShape(16.dp)
 				) {
 					Text("즐겨찾기")
 				}
-			}
-			OutlinedButton(
-				onClick = { showDirectInputDialog = true },
-				modifier = Modifier.fillMaxWidth()
-			) {
-				Text("직접 입력하기")
+				Spacer(modifier = Modifier.width(16.dp))
+				OutlinedButton(
+					onClick = { showDirectInputDialog = true },
+					modifier = Modifier.weight(0.5f),
+					shape = RoundedCornerShape(16.dp)
+				) {
+					Text("직접 입력하기")
+				}
 			}
 			
 			Column(modifier = Modifier.weight(1f)) {
@@ -213,29 +221,58 @@ fun FoodItemCard(
 	item: DietCollection,
 	onClick: () -> Unit,
 ) {
-	Card(
+	OutlinedCard(
 		onClick = onClick,
+		border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(vertical = 4.dp),
 		elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
 	) {
-		Column(modifier = Modifier.padding(16.dp)) {
-			Row(modifier = Modifier.fillMaxSize()) {
-				Text(text = item.mealName, style = MaterialTheme.typography.titleMedium)
-				
-				Column(
-					modifier = Modifier.fillMaxSize(),
-					horizontalAlignment = Alignment.End
+		Surface(color = Color.White) {
+			Column(
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(16.dp),
+				verticalArrangement = Arrangement.spacedBy(8.dp)
+			) {
+				Row(
+					modifier = Modifier.fillMaxWidth(),
+					verticalAlignment = Alignment.Bottom
 				) {
-					Text("1회 제공량: ${item.weight}g")
-					Text("칼로리: ${item.kcal} kcal")
+					Text(
+						text = item.mealName,
+						style = MaterialTheme.typography.titleMedium
+					)
+					
+					Text(
+						"(${item.weight}g)",
+						style = MaterialTheme.typography.bodySmall
+					)
+					Spacer(modifier = Modifier.weight(1f))
+					
+					Text(
+						"${item.kcal} kcal",
+						style = MaterialTheme.typography.titleMedium
+					)
 				}
-			}
-			Row(modifier = Modifier.fillMaxSize()) {
-				Text("탄수화물: ${item.carbohydrate}g ")
-				Text("단백질: ${item.protein}g ")
-				Text("지방: ${item.fat}g")
+				Column(
+					modifier = Modifier.fillMaxWidth(),
+					verticalArrangement = Arrangement.SpaceBetween
+				) {
+					Text(
+						"탄수화물: ${item.carbohydrate}g ",
+						style = MaterialTheme.typography.bodyMedium
+					)
+					Text(
+						"단백질: ${item.protein}g ",
+						style = MaterialTheme.typography.bodyMedium
+					)
+					Text(
+						"지방: ${item.fat}g",
+						style = MaterialTheme.typography.bodyMedium
+					)
+				}
 			}
 		}
 	}
@@ -424,16 +461,17 @@ fun SearchBar(
 		OutlinedTextField(
 			value = value,
 			onValueChange = onValueChange,
+			textStyle = MaterialTheme.typography.bodyLarge,
 			label = { Text("음식 검색") },
 			modifier = Modifier.weight(1f),
 			singleLine = true,
-			placeholder = { Text("음식을 검색하세요.") },
-			leadingIcon = {
-				Icon(
-					imageVector = Icons.Default.Search,
-					contentDescription = "검색 아이콘"
-				)
-			},
+			placeholder = { Text("음식을 입력하세요.") },
+//			leadingIcon = {
+//				Icon(
+//					imageVector = Icons.Default.Search,
+//					contentDescription = "검색 아이콘"
+//				)
+//			},
 			trailingIcon = {
 				if (value.isNotBlank()) {
 					IconButton(onClick = { onValueChange("") }) {
@@ -448,10 +486,12 @@ fun SearchBar(
 			keyboardActions = KeyboardActions(onSearch = {
 				onSearch()
 				keyboardController?.hide()
-			})
+			}
+			),
+			shape = RoundedCornerShape(16.dp)
 		)
-		Spacer(modifier = Modifier.width(8.dp))
 		IconButton(
+			modifier = Modifier.padding(top = 10.dp),
 			onClick = {
 				onSearch()
 				keyboardController?.hide()
@@ -538,7 +578,9 @@ fun RecentMealSearchesSection(
 		}
 	} else {
 		Column(
-			modifier = Modifier.fillMaxWidth(),
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(horizontal = 12.dp),
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
 			Row(
@@ -546,15 +588,16 @@ fun RecentMealSearchesSection(
 			) {
 				Text(
 					"최근 검색",
-					style = MaterialTheme.typography.titleMedium
+					style = MaterialTheme.typography.bodyMedium
 				)
 				Spacer(modifier = Modifier.weight(1f))
 				TextButton(
-					onClick = { onDeleteAllRecentMealSearches() }
+					onClick = { onDeleteAllRecentMealSearches() },
+					contentPadding = PaddingValues(0.dp)
 				) {
 					Text(
 						"모두 삭제하기",
-						style = MaterialTheme.typography.titleSmall,
+						style = MaterialTheme.typography.bodySmall,
 						color = Color.Gray
 					)
 				}

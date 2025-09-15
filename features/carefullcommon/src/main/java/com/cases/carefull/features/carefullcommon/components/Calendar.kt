@@ -171,14 +171,14 @@ private fun CalendarHeader(
 				.align(Alignment.CenterEnd)
 				.padding(end = 4.dp)
 		) {
-			IconButton(onClick = onToggleViewType) {
-				Icon(
-					imageVector = if (calendarState.viewType == CalendarViewType.WEEKLY)
-						Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
-					contentDescription = "달력 펼치기/접기",
-					modifier = Modifier.size(22.dp)
-				)
-			}
+//			IconButton(onClick = onToggleViewType) {
+//				Icon(
+//					imageVector = if (calendarState.viewType == CalendarViewType.WEEKLY)
+//						Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
+//					contentDescription = "달력 펼치기/접기",
+//					modifier = Modifier.size(22.dp)
+//				)
+//			}
 			IconButton(onClick = onMonthPickerClick) {
 				Icon(
 					imageVector = Icons.Default.CalendarMonth,

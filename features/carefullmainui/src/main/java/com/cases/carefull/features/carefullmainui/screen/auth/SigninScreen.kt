@@ -65,7 +65,7 @@ fun SigninScreen(
 		Image(
 			modifier = Modifier
 				.padding(top = 50.dp)
-				.sizeIn(100.dp, 100.dp)
+				.sizeIn(50.dp, 50.dp)
 				.clip(RoundedCornerShape(8.dp)),
 			painter = painterResource(R.drawable.app_logo),
 			contentDescription = null,

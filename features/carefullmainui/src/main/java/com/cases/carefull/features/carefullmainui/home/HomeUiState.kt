@@ -12,7 +12,7 @@ import java.time.YearMonth
 data class HomeUiState(
 	val selectedDate: LocalDate = LocalDate.now(),
 	val displayedYearMonth: YearMonth = YearMonth.now(),
-	val viewType: CalendarViewType = CalendarViewType.WEEKLY,
+	val viewType: CalendarViewType = CalendarViewType.MONTHLY,
 	val calendarDates: List<LocalDate> = emptyList(),
 	val isYearMonthPickerVisible: Boolean = false,
 	val selectedDateInfo: String = "오늘",

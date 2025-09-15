@@ -27,6 +27,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -83,15 +84,15 @@ fun ExerciseScreen(
 			.padding(horizontal = 16.dp),
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-		Text(
-			text = "운동을 선택하세요.",
-			style = MaterialTheme.typography.titleLarge,
-			fontWeight = FontWeight.Bold,
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(top = 8.dp, bottom = 8.dp),
-			textAlign = TextAlign.Start
-		)
+//		Text(
+//			text = "운동을 선택하세요.",
+//			style = MaterialTheme.typography.titleLarge,
+//			fontWeight = FontWeight.Bold,
+//			modifier = Modifier
+//				.fillMaxWidth()
+//				.padding(top = 8.dp, bottom = 8.dp),
+//			textAlign = TextAlign.Start
+//		)
 		if (uiState.isLoading) {
 			CircularProgressIndicator()
 		} else if (uiState.dailyExercise.isNotEmpty()) {
@@ -149,21 +150,24 @@ fun ExerciseCard(
 	val cardModifier = if (isTodayExercise) {
 		modifier
 			.fillMaxWidth()
+			.padding(vertical = 4.dp)
 			.then(
 				Modifier.border(
-					BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+					BorderStroke(3.dp, MaterialTheme.colorScheme.primary),
 					RoundedCornerShape(16.dp)
 				)
 			)
 	} else {
-		modifier.fillMaxWidth()
+		modifier
+			.fillMaxWidth()
+			.padding(vertical = 4.dp)
 	}
 	
-	Card(
+	OutlinedCard(
 		onClick = onClick,
 		modifier = cardModifier,
 		shape = RoundedCornerShape(16.dp),
-		elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+		elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
 	) {
 		Row(
 			modifier = Modifier
@@ -209,7 +213,7 @@ fun ExerciseCard(
 					Text(
 						text = "총 ${uiModel.totalCount}회",
 						style = MaterialTheme.typography.bodySmall,
-						color = MaterialTheme.colorScheme.primary,
+						color = MaterialTheme.colorScheme.onSurface,
 						fontWeight = FontWeight.SemiBold
 					)
 				}

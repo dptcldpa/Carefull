@@ -1,6 +1,7 @@
 package com.cases.carefull.features.carefullcontents.feed
 
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,8 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -56,7 +59,7 @@ fun SocialListScreen(
 	viewModel: SocialListViewModel = hiltViewModel()
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-	val categories = listOf("전체", "운동", "식단", "의료")
+	val categories = listOf("전체", "자유", "운동", "식단", "의료")
 	val lifecycleOwner = LocalLifecycleOwner.current
 	DisposableEffect(lifecycleOwner) {
 		val observer = LifecycleEventObserver { _, event ->
@@ -120,7 +123,7 @@ fun PostList(posts: List<Post>, onPostClick: (String) -> Unit) {
 		LazyColumn(
 			modifier = Modifier.fillMaxSize(),
 			contentPadding = PaddingValues(16.dp),
-			verticalArrangement = Arrangement.spacedBy(16.dp)
+			verticalArrangement = Arrangement.spacedBy(2.dp)
 		) {
 			items(posts) { post ->
 				PostItem(post = post, onClick = { onPostClick(post.id) })
@@ -131,13 +134,21 @@ fun PostList(posts: List<Post>, onPostClick: (String) -> Unit) {
 
 @Composable
 fun PostItem(post: Post, onClick: () -> Unit) {
-	Card(
+	OutlinedCard(
+		onClick = onClick,
+		border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
 		modifier = Modifier
 			.fillMaxWidth()
-			.clickable(onClick = onClick),
-		elevation = CardDefaults.cardElevation(4.dp)
+			.padding(vertical = 4.dp),
+		elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
 	) {
-		Column(modifier = Modifier.padding(16.dp)) {
+		
+		Column(
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(16.dp),
+			verticalArrangement = Arrangement.spacedBy(8.dp)
+		) {
 			post.imageUrl?.let {
 				AsyncImage(
 					model = it,
@@ -150,14 +161,11 @@ fun PostItem(post: Post, onClick: () -> Unit) {
 				Spacer(modifier = Modifier.height(8.dp))
 			}
 			Text(text = post.title, style = MaterialTheme.typography.titleLarge)
-			Spacer(modifier = Modifier.height(4.dp))
 			Text(
-				text = "작성자: ${post.userId} | 카테고리: ${post.category}",
+				text = "${post.userId} | ${post.category}",
 				style = MaterialTheme.typography.bodySmall
 			)
-			Spacer(modifier = Modifier.height(8.dp))
 			Text(text = post.content, style = MaterialTheme.typography.bodyMedium, maxLines = 3)
-			Spacer(modifier = Modifier.height(8.dp))
 			Row(
 				verticalAlignment = Alignment.CenterVertically
 			) {
@@ -188,19 +196,24 @@ fun CategoryFilterChips(
 	selectedCategory: String,
 	onCategorySelected: (String) -> Unit
 ) {
-	LazyRow(
+	Column(
 		modifier = Modifier
-			.fillMaxWidth()
-			.padding(vertical = 8.dp),
-		horizontalArrangement = Arrangement.spacedBy(8.dp),
-		contentPadding = PaddingValues(horizontal = 16.dp)
+			.padding(horizontal = 8.dp)
 	) {
-		items(categories) { category ->
-			FilterChip(
-				selected = (category == selectedCategory),
-				onClick = { onCategorySelected(category) },
-				label = { Text(category) }
-			)
+		LazyRow(
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(vertical = 8.dp),
+			horizontalArrangement = Arrangement.spacedBy(8.dp),
+			contentPadding = PaddingValues(vertical = 8.dp)
+		) {
+			items(categories) { category ->
+				FilterChip(
+					selected = (category == selectedCategory),
+					onClick = { onCategorySelected(category) },
+					label = { Text(category) }
+				)
+			}
 		}
 	}
 }
