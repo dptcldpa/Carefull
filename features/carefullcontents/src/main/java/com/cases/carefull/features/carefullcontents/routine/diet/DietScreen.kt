@@ -29,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -112,7 +113,7 @@ fun DietScreen(
 				totalCalories = section?.totalCalories ?: 0,
 				onCalendarClick = { viewModel.showDatePicker() }
 			)
-			HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+			HorizontalDivider(modifier = Modifier.padding(bottom = 8.dp))
 			
 			Column(modifier = Modifier.padding(horizontal = 16.dp)) {
 				val mealsByTimeForDay = section?.meals?.groupBy {
@@ -250,7 +251,7 @@ fun NutritionSummary(uiState: DietUiState) {
 				modifier = Modifier.padding(horizontal = 16.dp)
 			)
 		}
-		HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+		HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
 	}
 }
 
@@ -262,22 +263,24 @@ fun MealSection(
 	onAddClick: () -> Unit,
 	onRemoveClick: (DietCollection) -> Unit
 ) {
-	OutlinedCard(
+	Card(
 		border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(vertical = 4.dp),
-		elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+		elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+		colors = CardDefaults.cardColors(
+			containerColor = Color.White
+		)
 	) {
 		Column(
 			modifier = Modifier
-				.fillMaxWidth(),
-			verticalArrangement = Arrangement.spacedBy(4.dp)
+				.fillMaxWidth()
 		) {
 			Row(
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(8.dp),
+					.padding(horizontal = 8.dp),
 				verticalAlignment = Alignment.CenterVertically
 			) {
 				Text(
@@ -299,18 +302,20 @@ fun MealSection(
 						imageVector = Icons.Default.Add,
 						contentDescription = "${mealType.time} 음식 검색",
 						tint = MaterialTheme.colorScheme.primary,
-						modifier = Modifier.size(28.dp)
+						modifier = Modifier.size(20.dp)
 					)
 				}
 			}
 			HorizontalDivider(
 				thickness = 1.dp,
-				color = MaterialTheme.colorScheme.outline
+				color = MaterialTheme.colorScheme.outline,
+				modifier = Modifier.padding(bottom = 4.dp)
 			)
+
 			if (addedFoods.isNotEmpty()) {
 				Column(
 					modifier = Modifier.fillMaxWidth(),
-					verticalArrangement = Arrangement.spacedBy(6.dp)
+					verticalArrangement = Arrangement.spacedBy(4.dp)
 				) {
 					addedFoods.forEach { addedFood ->
 						FoodItemRow(
@@ -320,12 +325,16 @@ fun MealSection(
 					}
 				}
 			} else {
-				Text(
-					text = "아직 추가된 음식이 없습니다.",
-					style = MaterialTheme.typography.bodyMedium,
-					color = Color.Gray,
-					modifier = Modifier.padding(8.dp)
-				)
+				Column(
+					modifier = Modifier.fillMaxWidth()
+						.padding(bottom = 8.dp)
+				) {
+					Text(
+						text = "   아직 추가된 음식이 없습니다.",
+						style = MaterialTheme.typography.bodyMedium,
+						color = Color.Gray
+					)
+				}
 			}
 		}
 	}
@@ -336,25 +345,28 @@ fun FoodItemRow(
 	food: DietCollection,
 	onRemove: () -> Unit
 ) {
-	Row(
-		modifier = Modifier
-			.fillMaxWidth()
-			.padding(horizontal = 16.dp, vertical = 8.dp),
-		verticalAlignment = Alignment.CenterVertically
+	Column(
+		modifier = Modifier.padding(bottom = 8.dp)
 	) {
-		Column(modifier = Modifier.weight(1f)) {
+		Row(
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(horizontal = 16.dp, vertical = 8.dp),
+			verticalAlignment = Alignment.CenterVertically
+		) {
 			Text(
 				text = "${food.mealName} (${food.weight}g)",
-				style = MaterialTheme.typography.bodyLarge
+				style = MaterialTheme.typography.bodyMedium
 			)
-		}
-		Text(text = "${food.kcal} kcal     ", style = MaterialTheme.typography.bodyMedium)
-		
-		IconButton(onClick = onRemove, modifier = Modifier.size(20.dp)) {
-			Icon(imageVector = Icons.Default.Close, contentDescription = "삭제")
+			Spacer(modifier = Modifier.weight(1f))
+			Text(text = "${food.kcal} kcal  ", style = MaterialTheme.typography.bodySmall)
+			
+			IconButton(onClick = onRemove, modifier = Modifier.size(16.dp)) {
+				Icon(imageVector = Icons.Default.Close, contentDescription = "삭제")
+			}
+			Spacer(modifier = Modifier.width(5.dp))
 		}
 	}
-	Spacer(modifier = Modifier.width(4.dp))
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -364,27 +376,31 @@ fun DateHeader(
 	totalCalories: Int,
 	onCalendarClick: () -> Unit
 ) {
-	Row(
-		modifier = Modifier
-			.fillMaxWidth()
-			.padding(horizontal = 16.dp),
-		verticalAlignment = Alignment.CenterVertically
+	Surface(
+		color = Color.White
 	) {
-		IconButton(onClick = onCalendarClick) {
-			Icon(imageVector = Icons.Default.CalendarToday, contentDescription = "날짜 선택")
+		Row(
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(horizontal = 16.dp),
+			verticalAlignment = Alignment.CenterVertically
+		) {
+			IconButton(onClick = onCalendarClick) {
+				Icon(imageVector = Icons.Default.CalendarToday, contentDescription = "날짜 선택")
+			}
+			Spacer(modifier = Modifier.width(16.dp))
+			Text(
+				text = formatDate(date),
+				style = MaterialTheme.typography.titleMedium,
+				fontWeight = FontWeight.Bold,
+				modifier = Modifier.weight(1f)
+			)
+			Text(
+				text = "총 $totalCalories kcal",
+				style = MaterialTheme.typography.bodyMedium
+			)
+			
 		}
-		Spacer(modifier = Modifier.width(16.dp))
-		Text(
-			text = formatDate(date),
-			style = MaterialTheme.typography.titleMedium,
-			fontWeight = FontWeight.Bold,
-			modifier = Modifier.weight(1f)
-		)
-		Text(
-			text = "총 $totalCalories kcal",
-			style = MaterialTheme.typography.bodyMedium
-		)
-		
 	}
 }
 

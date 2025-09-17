@@ -76,6 +76,7 @@ fun ChatBotScreen(
             }) {
                Icon(
                    imageVector = Icons.AutoMirrored.Filled.Send,
+                   tint = MaterialTheme.colorScheme.primary,
                    contentDescription = "전송"
                )
             }
@@ -103,7 +104,6 @@ fun ChatBubble(message: ChatBotInfo) {
                     text = message.message,
                     color = textColor
                 )
-
                 if (!message.clickableDepartments.isNullOrEmpty()) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(

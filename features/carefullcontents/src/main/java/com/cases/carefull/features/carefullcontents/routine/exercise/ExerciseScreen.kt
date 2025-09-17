@@ -84,15 +84,6 @@ fun ExerciseScreen(
 			.padding(horizontal = 16.dp),
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-//		Text(
-//			text = "운동을 선택하세요.",
-//			style = MaterialTheme.typography.titleLarge,
-//			fontWeight = FontWeight.Bold,
-//			modifier = Modifier
-//				.fillMaxWidth()
-//				.padding(top = 8.dp, bottom = 8.dp),
-//			textAlign = TextAlign.Start
-//		)
 		if (uiState.isLoading) {
 			CircularProgressIndicator()
 		} else if (uiState.dailyExercise.isNotEmpty()) {
@@ -120,7 +111,7 @@ fun ExerciseScreen(
 		
 		LazyColumn(
 			modifier = Modifier.fillMaxSize(),
-			verticalArrangement = Arrangement.spacedBy(12.dp)
+			verticalArrangement = Arrangement.spacedBy(4.dp)
 		) {
 			items(
 				items = uiState.exerciseList,
@@ -163,11 +154,15 @@ fun ExerciseCard(
 			.padding(vertical = 4.dp)
 	}
 	
-	OutlinedCard(
+	Card(
 		onClick = onClick,
 		modifier = cardModifier,
 		shape = RoundedCornerShape(16.dp),
-		elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+		elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+		colors = CardDefaults.cardColors(
+			containerColor = Color.White,
+			contentColor = 	MaterialTheme.colorScheme.primary,
+		)
 	) {
 		Row(
 			modifier = Modifier
@@ -188,7 +183,7 @@ fun ExerciseCard(
 			Column(modifier = Modifier.weight(1f)) {
 				Text(
 					text = uiModel.name,
-					style = MaterialTheme.typography.titleLarge
+					style = MaterialTheme.typography.bodyLarge
 				)
 				Spacer(modifier = Modifier.height(4.dp))
 				Text(

@@ -2,6 +2,7 @@ package com.cases.carefull.navigation
 
 import android.app.Activity
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
@@ -48,6 +49,7 @@ fun MainNavigation(
 	val currentRoute: Route? by remember(navBackStackEntry) {
 		derivedStateOf {
 			val routeString = navBackStackEntry?.destination?.route
+			Log.d("NAVIGATION_DEBUG", "NavHost가 제공한 실제 routeString: $routeString")
 			LayoutAsset.findRouteByString(routeString)
 		}
 	}

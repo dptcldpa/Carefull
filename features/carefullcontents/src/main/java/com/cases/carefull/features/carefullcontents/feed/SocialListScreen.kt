@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -134,19 +135,21 @@ fun PostList(posts: List<Post>, onPostClick: (String) -> Unit) {
 
 @Composable
 fun PostItem(post: Post, onClick: () -> Unit) {
-	OutlinedCard(
+	Card(
 		onClick = onClick,
-		border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(vertical = 4.dp),
-		elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+			.padding(vertical = 3.dp),
+		elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+		colors = CardDefaults.cardColors(
+			containerColor = Color.White
+		)
 	) {
 		
 		Column(
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(16.dp),
+				.padding(12.dp),
 			verticalArrangement = Arrangement.spacedBy(8.dp)
 		) {
 			post.imageUrl?.let {
@@ -160,22 +163,38 @@ fun PostItem(post: Post, onClick: () -> Unit) {
 				)
 				Spacer(modifier = Modifier.height(8.dp))
 			}
-			Text(text = post.title, style = MaterialTheme.typography.titleLarge)
+			Text(text = post.title, style = MaterialTheme.typography.bodyLarge)
 			Text(
-				text = "${post.userId} | ${post.category}",
+				text = "${post.userId} - ${post.category}",
 				style = MaterialTheme.typography.bodySmall
 			)
-			Text(text = post.content, style = MaterialTheme.typography.bodyMedium, maxLines = 3)
+			Text(text = post.content, style = MaterialTheme.typography.labelLarge, maxLines = 3)
 			Row(
 				verticalAlignment = Alignment.CenterVertically
 			) {
-				Icon(Icons.Filled.Favorite, contentDescription = "좋아요", tint = Color.Red)
+				Icon(
+					Icons.Filled.Favorite,
+					contentDescription = "좋아요",
+					modifier = Modifier.size(12.dp),
+					tint = Color.Red
+				)
 				Spacer(modifier = Modifier.width(4.dp))
-				Text(text = post.likeCount.toString())
+				Text(
+					text = post.likeCount.toString(),
+					style = MaterialTheme.typography.bodySmall
+				)
 				Spacer(modifier = Modifier.width(16.dp))
-				Icon(Icons.AutoMirrored.Filled.Comment, contentDescription = "댓글", tint = Color.Blue)
+				Icon(
+					Icons.AutoMirrored.Filled.Comment,
+					contentDescription = "댓글",
+					modifier = Modifier.size(12.dp),
+					tint = Color.Blue
+				)
 				Spacer(modifier = Modifier.width(4.dp))
-				Text(text = post.commentCount.toString())
+				Text(
+					text = post.commentCount.toString(),
+					style = MaterialTheme.typography.bodySmall
+				)
 				Spacer(modifier = Modifier.weight(1f))
 				Text(
 					text = SimpleDateFormat(
@@ -202,8 +221,7 @@ fun CategoryFilterChips(
 	) {
 		LazyRow(
 			modifier = Modifier
-				.fillMaxWidth()
-				.padding(vertical = 8.dp),
+				.fillMaxWidth(),
 			horizontalArrangement = Arrangement.spacedBy(8.dp),
 			contentPadding = PaddingValues(vertical = 8.dp)
 		) {

@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -221,8 +222,11 @@ fun DietInfoCard(
 	Card(
 		modifier = Modifier.fillMaxWidth(),
 		shape = RoundedCornerShape(16.dp),
-		border = BorderStroke(1.dp, Color.LightGray),
-		onClick = onClick
+		border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+		onClick = onClick,
+		colors = CardDefaults.cardColors(
+			containerColor = Color.White
+		)
 	) {
 		Row(
 			modifier = Modifier
@@ -272,8 +276,11 @@ fun WorkoutInfoCard(
 	Card(
 		modifier = Modifier.fillMaxWidth(),
 		shape = RoundedCornerShape(16.dp),
-		border = BorderStroke(1.dp, Color.LightGray),
-		onClick = onClick
+		border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+		onClick = onClick,
+		colors = CardDefaults.cardColors(
+			containerColor = Color.White
+		)
 	) {
 		Row(
 			modifier = Modifier
@@ -301,15 +308,14 @@ fun WorkoutInfoCard(
 							withStyle(
 								style = SpanStyle(
 									fontWeight = FontWeight.Bold,
-									color = MaterialTheme.colorScheme.primary
+									fontSize = 22.sp
 								)
 							) {
 								append("$todayCount")
 							}
 							append(" / $goalCount 회")
 						},
-						style = MaterialTheme.typography.bodyMedium,
-						color = Color.Gray
+						style = MaterialTheme.typography.bodyLarge
 					)
 				}
 			}

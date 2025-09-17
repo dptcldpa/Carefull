@@ -2,14 +2,16 @@ package com.cases.carefull.features.carefullmainui.screen.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cases.carefull.domain.model.UserInfo
 import com.cases.carefull.domain.repository.UserRepository
 import com.cases.carefull.domain.util.DataResourceResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,36 +22,24 @@ class OAuthViewModel @Inject constructor(
 	private val _uiState = MutableStateFlow(UserUiState())
 	val uiState = _uiState.asStateFlow()
 	
-	init {
-		checkAuthenticationState()
-	}
+	private var currentUser: UserInfo? = null
 	
 	fun loginWithKakao() {
-		viewModelScope.launch {
+		viewModelScope.launch(Dispatchers.IO) {
 			userRepository.login().collectLatest { result ->
-				_uiState.update { currentState ->
-					when (result) {
+				withContext(Dispatchers.Main) {
+					_uiState.value = when (result) {
 						is DataResourceResult.Success -> {
-							currentState.copy(
-								isLoading = false,
-								userInfo = result.data,
-								errorMessage = null
-							)
+							currentUser = result.data
+							UserUiState(userInfo = result.data)
 						}
-						
-						is DataResourceResult.Error -> {
-							currentState.copy(
-								isLoading = false,
-								errorMessage = result.exception.message
-							)
-						}
-						
-						is DataResourceResult.Loading -> {
-							currentState.copy(
-								isLoading = true,
-								errorMessage = null
-							)
-						}
+						is DataResourceResult.Error -> UserUiState(
+							errorMessage = result.exception.message
+						)
+						is DataResourceResult.Loading -> _uiState.value.copy(
+							isLoading = true,
+							errorMessage = null
+						)
 					}
 				}
 			}
@@ -57,30 +47,48 @@ class OAuthViewModel @Inject constructor(
 	}
 	
 	fun logoutWithKakao() {
-		viewModelScope.launch {
+		viewModelScope.launch(Dispatchers.IO) {
 			userRepository.logout().collectLatest { result ->
-				_uiState.update { currentState ->
-					when (result) {
+				withContext(Dispatchers.Main) {
+					_uiState.value = when (result) {
 						is DataResourceResult.Success -> {
-							currentState.copy(
-								isLoading = false,
-								userInfo = null,
-								errorMessage = null
-							)
+							currentUser = null
+							UserUiState()
+						} // 모든 상태 초기화
+						is DataResourceResult.Error -> UserUiState(
+							errorMessage = result.exception.message
+						)
+						is DataResourceResult.Loading -> _uiState.value.copy(
+							isLoading = true,
+							errorMessage = null
+						)
+					}
+				}
+			}
+		}
+	}
+	
+	fun checkLoggedInState() {
+		viewModelScope.launch(Dispatchers.IO) {
+			userRepository.isLoggedIn().collectLatest { result ->
+				withContext(Dispatchers.Main) {
+					_uiState.value = when (result) {
+						is DataResourceResult.Success -> {
+							if (result.data) {
+								loadCurrentUserAfterKakaoLogin()
+								_uiState.value.copy(isLoading = true)
+							} else {
+								// 로그인 상태가 아니라면 로딩 종료
+//                            _uiState.value = UserUiState(isLoading = false)
+								UserUiState(isLoading = false, userInfo = null)
+							}
 						}
 						
 						is DataResourceResult.Error -> {
-							currentState.copy(
-								isLoading = false,
-								errorMessage = result.exception.message
-							)
+							UserUiState(errorMessage = result.exception.message)
 						}
-						
 						is DataResourceResult.Loading -> {
-							currentState.copy(
-								isLoading = true,
-								errorMessage = null
-							)
+							UserUiState(isLoading = true)
 						}
 					}
 				}
@@ -88,42 +96,27 @@ class OAuthViewModel @Inject constructor(
 		}
 	}
 	
-	fun checkAuthenticationState() {
-		viewModelScope.launch {
+	fun loadCurrentUserAfterKakaoLogin() {
+		viewModelScope.launch(Dispatchers.IO) {
 			userRepository.getCurrentUser().collectLatest { result ->
-				_uiState.update { currentState ->
-					when (result) {
-						is DataResourceResult.Success -> {
-							currentState.copy(
-								isAuthenticating = false,
-								userInfo = result.data,
-							)
-						}
-						
-						is DataResourceResult.Error -> {
-							currentState.copy(
-								isAuthenticating = false,
-								userInfo = null,
-							)
-						}
-						
-						is DataResourceResult.Loading -> {
-							currentState.copy(
-								isAuthenticating = true
-							)
-							
-						}
+				_uiState.value = when (result) {
+					is DataResourceResult.Success -> {
+						currentUser = result.data
+						UserUiState(userInfo = result.data)
 					}
+					is DataResourceResult.Error -> UserUiState(
+						errorMessage = result.exception.message
+					)
+					is DataResourceResult.Loading -> _uiState.value.copy(
+						isLoading = true,
+						errorMessage = null)
+					
 				}
 			}
 		}
 	}
 	
 	fun errorMessageShown() {
-		_uiState.update {
-			it.copy(
-				errorMessage = null
-			)
-		}
+		_uiState.value = _uiState.value.copy(errorMessage = null)
 	}
 }

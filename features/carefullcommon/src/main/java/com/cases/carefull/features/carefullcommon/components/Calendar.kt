@@ -23,12 +23,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddLocation
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ControlCamera
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
@@ -91,7 +94,7 @@ fun Calendar(
 				}
 			},
 		shape = RoundedCornerShape(16.dp),
-		border = BorderStroke(1.dp, Color.LightGray),
+		border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
 		color = Color.White
 	) {
 		Column(modifier = Modifier.animateContentSize()) {
@@ -188,7 +191,7 @@ private fun CalendarHeader(
 			}
 			IconButton(onClick = onGoToToday) {
 				Icon(
-					imageVector = Icons.Default.AddLocation,
+					imageVector = Icons.Default.ControlCamera,
 					contentDescription = "오늘로 이동",
 					modifier = Modifier.size(26.dp)
 				)
@@ -288,22 +291,46 @@ private fun CalendarFooter(
 				content()
 			}
 		}
-		
-		Row(
+		Box(
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(top = 8.dp),
-			horizontalArrangement = Arrangement.End
+				.padding(top = 8.dp)
 		) {
-			Text(
-				text = selectedDateInfo,
-				style = MaterialTheme.typography.bodySmall,
-				color = Color.Gray
-			)
+			Row(
+				// 이 Row를 Box의 중앙에 배치합니다.
+				modifier = Modifier.align(Alignment.Center),
+				horizontalArrangement = Arrangement.spacedBy(4.dp), // 아이콘과 텍스트 사이 간격
+				verticalAlignment = Alignment.CenterVertically
+			) {
+				Icon(
+					imageVector = Icons.Default.CheckCircle,
+					contentDescription = "오늘의 운동 완료",
+					modifier = Modifier.size(12.dp),
+					tint = MaterialTheme.colorScheme.onErrorContainer
+				)
+				Text(
+					text = "운동기록",
+					style = MaterialTheme.typography.bodySmall,
+					color = Color.Gray
+				)
+				Spacer(modifier = Modifier.width(8.dp))
+				Icon(
+					imageVector = Icons.Default.CheckCircle,
+					contentDescription = "식단 기록 완료",
+					modifier = Modifier.size(12.dp),
+					tint = Color(0xFF4CAF50)
+				)
+				Text(
+					text = "식단기록",
+					style = MaterialTheme.typography.bodySmall,
+					color = Color.Gray
+				)
+			}
 		}
 		Spacer(modifier = Modifier.height(12.dp))
 	}
 }
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun RowScope.CalendarDayBox(

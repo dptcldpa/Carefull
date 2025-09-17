@@ -31,7 +31,8 @@ fun TopNavigationBar(
 		modifier = Modifier.statusBarsPadding(),
 		indicator = {},
 		divider = {},
-		edgePadding = 0.dp
+		edgePadding = 0.dp,
+		containerColor = Color.White
 	) {
 		items.forEach { item ->
 			Tab(
@@ -39,7 +40,7 @@ fun TopNavigationBar(
 				onClick = { onTabSelected(item.spec.route) },
 				text = { Text(item.spec.title, style = MaterialTheme.typography.titleMedium) },
 				selectedContentColor = MaterialTheme.colorScheme.primary,
-				unselectedContentColor = MaterialTheme.colorScheme.onSurface
+				unselectedContentColor = MaterialTheme.colorScheme.onSurface,
 			)
 		}
 	}
@@ -51,7 +52,10 @@ fun SubTopNavigationBar(
 	items: List<NavItemUiModel>,
 	onTabSelected: (Route) -> Unit
 ) {
-	TabRow(selectedTabIndex = items.indexOfFirst { it.isSelected }.coerceAtLeast(0)) {
+	TabRow(
+		selectedTabIndex = items.indexOfFirst { it.isSelected }.coerceAtLeast(0),
+		containerColor = Color.White
+	) {
 		items.forEach { item ->
 			Tab(
 				selected = item.isSelected,

@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -160,7 +161,7 @@ fun DietSearchScreen(
 	
 	Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
 		Column(
-			modifier = Modifier.padding(16.dp),
+			modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
 			SearchBar(
@@ -175,7 +176,11 @@ fun DietSearchScreen(
 				OutlinedButton(
 					onClick = { viewModel.showFavoritesDialog() },
 					modifier = Modifier.weight(0.5f),
-					shape = RoundedCornerShape(16.dp)
+					shape = RoundedCornerShape(16.dp),
+					colors = ButtonDefaults.outlinedButtonColors(
+						contentColor = MaterialTheme.colorScheme.primary,
+						containerColor = Color.White
+					)
 				) {
 					Text("즐겨찾기")
 				}
@@ -183,7 +188,11 @@ fun DietSearchScreen(
 				OutlinedButton(
 					onClick = { showDirectInputDialog = true },
 					modifier = Modifier.weight(0.5f),
-					shape = RoundedCornerShape(16.dp)
+					shape = RoundedCornerShape(16.dp),
+					colors = ButtonDefaults.outlinedButtonColors(
+						contentColor = MaterialTheme.colorScheme.primary,
+						containerColor = Color.White
+					)
 				) {
 					Text("직접 입력하기")
 				}

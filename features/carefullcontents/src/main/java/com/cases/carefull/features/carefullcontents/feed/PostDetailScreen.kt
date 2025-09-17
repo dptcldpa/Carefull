@@ -1,5 +1,6 @@
 package com.cases.carefull.features.carefullcontents.feed
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -155,7 +156,7 @@ fun PostDetailScreen(
 	}
 	Column(modifier = Modifier.fillMaxSize()) {
 		CustomTopAppBar(
-			title = "게시글 상세",
+			title = "게시글",
 			navigationIcon = {
 				IconButton(onClick = { navController.popBackStack() }) {
 					Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "뒤로 가기")
@@ -264,9 +265,8 @@ fun PostDetailContent(
 					text = "${post.userId} | ${post.category}",
 					style = MaterialTheme.typography.bodyMedium
 				)
-				Spacer(modifier = Modifier.height(16.dp))
+				Spacer(modifier = Modifier.height(8.dp))
 				Text(text = post.content, style = MaterialTheme.typography.bodyLarge)
-				Spacer(modifier = Modifier.height(16.dp))
 				Row(
 					modifier = Modifier.fillMaxWidth(),
 					verticalAlignment = Alignment.CenterVertically,
@@ -306,11 +306,11 @@ fun PostDetailContent(
 					)
 				}
 				HorizontalDivider(
-					modifier = Modifier.padding(vertical = 16.dp),
+					modifier = Modifier.padding(vertical = 4.dp),
 					thickness = DividerDefaults.Thickness,
 					color = DividerDefaults.color
 				)
-				Text("댓글 (${comments.size})", style = MaterialTheme.typography.titleMedium)
+				Text("댓글 (${comments.size})", style = MaterialTheme.typography.labelLarge)
 				Spacer(modifier = Modifier.height(8.dp))
 			}
 		}
@@ -340,12 +340,16 @@ fun CommentItem(
 	
 	Card(
 		modifier = Modifier.fillMaxWidth(),
-		colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+		border = BorderStroke(1.dp, Color.LightGray),
+		colors = CardDefaults.cardColors(
+			containerColor = Color.White,
+			contentColor = Color.Black
+		)
 	) {
 		Row(
 			modifier = Modifier
 				.fillMaxWidth(),
-			verticalAlignment = Alignment.Top
+			verticalAlignment = Alignment.CenterVertically
 		) {
 			Column(
 				modifier = Modifier
@@ -359,7 +363,7 @@ fun CommentItem(
 				) {
 					Text(
 						text = "CareFull",
-						style = MaterialTheme.typography.titleSmall,
+						style = MaterialTheme.typography.bodySmall,
 						modifier = Modifier.weight(1f, fill = false),
 						maxLines = 1
 					)
@@ -368,12 +372,14 @@ fun CommentItem(
 							"MM.dd HH:mm",
 							Locale.getDefault()
 						).format(comment.createdAt),
-						style = MaterialTheme.typography.bodySmall,
-						color = MaterialTheme.colorScheme.onSurfaceVariant
+						style = MaterialTheme.typography.bodySmall
 					)
 				}
 				Spacer(modifier = Modifier.height(4.dp))
-				Text(text = comment.content, style = MaterialTheme.typography.bodyMedium)
+				Text(
+					text = comment.content,
+					style = MaterialTheme.typography.titleSmall
+				)
 			}
 			
 			if (isOwnComment) {
@@ -448,36 +454,35 @@ fun CommentInputSection(
 	onSendComment: () -> Unit,
 	isLoading: Boolean
 ) {
-	Surface(
+	Row(
 		modifier = Modifier
 			.fillMaxWidth()
-			.navigationBarsPadding(),
-		shadowElevation = 8.dp,
-		color = MaterialTheme.colorScheme.surface
+			.padding(8.dp),
+		verticalAlignment = Alignment.CenterVertically
 	) {
-		Row(
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(8.dp),
-			verticalAlignment = Alignment.CenterVertically
+		OutlinedTextField(
+			value = commentInput,
+			onValueChange = onCommentInputChanged,
+			label = { Text("댓글 입력") },
+			modifier = Modifier.weight(1f),
+			maxLines = 3,
+//			keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send),
+//			keyboardActions = KeyboardActions(onSend = { onSendComment() }),
+			shape = RoundedCornerShape(16.dp)
+		)
+		Spacer(modifier = Modifier.width(8.dp))
+		IconButton(
+			onClick = onSendComment,
+			enabled = commentInput.isNotBlank() && !isLoading
 		) {
-			OutlinedTextField(
-				value = commentInput,
-				onValueChange = onCommentInputChanged,
-				label = { Text("댓글 입력") },
-				modifier = Modifier.weight(1f),
-				maxLines = 3,
-				keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send),
-				keyboardActions = KeyboardActions(onSend = { onSendComment() }),
-				shape = RoundedCornerShape(16.dp)
+			Icon(
+				Icons.AutoMirrored.Filled.Send,
+				tint = if (commentInput.isNotBlank() && !isLoading)
+					MaterialTheme.colorScheme.primary
+				else
+					Color.Gray,
+				contentDescription = "댓글 전송"
 			)
-			Spacer(modifier = Modifier.width(8.dp))
-			IconButton(
-				onClick = onSendComment,
-				enabled = commentInput.isNotBlank() && !isLoading
-			) {
-				Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "댓글 전송")
-			}
 		}
 	}
 }

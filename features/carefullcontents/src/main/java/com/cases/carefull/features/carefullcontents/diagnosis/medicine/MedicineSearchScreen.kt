@@ -166,35 +166,36 @@ private fun RecentSearchSection(
 			.padding(horizontal = 12.dp),
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-		Row(
-			verticalAlignment = Alignment.CenterVertically
-		) {
-			Text(
-				"최근 검색",
-				style = MaterialTheme.typography.bodyMedium
-			)
-			Spacer(modifier = Modifier.weight(1f))
-			TextButton(
-				onClick = { onClearAll() },
-				contentPadding = PaddingValues(0.dp)
-			) {
-				Text(
-					"모두 삭제하기",
-					style = MaterialTheme.typography.bodySmall,
-					color = Color.Gray
-				)
-			}
-		}
-		HorizontalDivider(
-			modifier = Modifier.padding(vertical = 1.dp),
-			color = Color.Black
-		)
-		
 		if (recentSearches.isEmpty()) {
 			Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 				Text("최근 검색 기록이 없습니다.", color = Color.Gray)
 			}
 		} else {
+			Row(
+				verticalAlignment = Alignment.CenterVertically
+			) {
+				Text(
+					"최근 검색",
+					style = MaterialTheme.typography.bodyMedium
+				)
+				Spacer(modifier = Modifier.weight(1f))
+				TextButton(
+					onClick = { onClearAll() },
+					contentPadding = PaddingValues(0.dp)
+				) {
+					Text(
+						"모두 삭제하기",
+						style = MaterialTheme.typography.bodySmall,
+						color = Color.Gray
+					)
+				}
+			}
+			HorizontalDivider(
+				modifier = Modifier.padding(vertical = 1.dp),
+				color = Color.Black
+			)
+			
+			
 			LazyColumn(modifier = Modifier.fillMaxWidth()) {
 				items(recentSearches) { term ->
 					Row(
@@ -276,7 +277,8 @@ private fun SearchResultSection(
 						.clickable {
 							onItemClick(item)
 						},
-					elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+					elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+					colors = CardDefaults.cardColors(containerColor = Color.White),
 				) {
 					Column(Modifier.padding(16.dp)) {
 						Text(item.itemName ?: "정보 없음", style = MaterialTheme.typography.titleMedium)

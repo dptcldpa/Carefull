@@ -1,6 +1,8 @@
 package com.cases.carefull.features.carefullcontents.feed
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -69,13 +72,13 @@ fun RankingScreen(
 				)
 			}
 		}
-		HorizontalDivider(thickness = 2.dp)
+		HorizontalDivider(thickness = 1.dp)
 		
 		if (!uiState.isLoading && uiState.myRankInfo?.myRecord != null) {
 			MyRankItem(myRankInfo = uiState.myRankInfo!!)
 		}
 		
-		HorizontalDivider(thickness = 2.dp)
+		HorizontalDivider(thickness = 1.dp)
 		if (uiState.isLoading) {
 			Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 				CircularProgressIndicator()
@@ -149,7 +152,11 @@ fun RankListItem(
 	rankData: Ranker
 ) {
 	Card(
-		modifier = Modifier.fillMaxWidth(),
+		modifier = Modifier
+			.fillMaxWidth()
+,
+		colors = CardDefaults.cardColors(containerColor = Color.White),
+		border = BorderStroke(1.dp, color = Color.LightGray)
 	) {
 		Row(
 			modifier = Modifier
@@ -159,7 +166,7 @@ fun RankListItem(
 		) {
 			Text(
 				text = "${rankNumber}위",
-				style = MaterialTheme.typography.titleLarge,
+				style = MaterialTheme.typography.titleMedium,
 				fontWeight = FontWeight.Bold,
 				modifier = Modifier.width(40.dp)
 			)
