@@ -21,14 +21,16 @@ fun NavGraphBuilder.diagnosisGraph(
 ) {
 	composable<DiagnosisRoute.ChatBotScreen> {
 		ChatBotScreen(
-			onDepartmentClick = { department, diagnosis ->
-				val encodedDept = Uri.encode(department)
-				val encodedDiag = Uri.encode(diagnosis)
-				navController.navigate("hospital_info/$encodedDept/$encodedDiag")
-			}
-//						navController.navigate(DiagnosisRoute.HospitalInfoScreen)
+			navController = navController
 		)
 	}
+
+//								department, diagnosis ->
+//				val encodedDept = Uri.encode(department)
+//				val encodedDiag = Uri.encode(diagnosis)
+//				navController.navigate("hospital_info/$encodedDept/$encodedDiag")
+//						navController.navigate(DiagnosisRoute.HospitalInfoScreen)
+
 	
 	// 진료 - 병원
 	composable<DiagnosisRoute.HospitalInfoScreen> {

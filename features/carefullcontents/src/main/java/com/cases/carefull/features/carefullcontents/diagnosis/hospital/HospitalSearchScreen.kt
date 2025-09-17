@@ -54,7 +54,6 @@ fun HospitalSearchScreen() {
             factory = { mapView },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(250.dp)
                 .clip(RoundedCornerShape(12.dp))
         )
     }

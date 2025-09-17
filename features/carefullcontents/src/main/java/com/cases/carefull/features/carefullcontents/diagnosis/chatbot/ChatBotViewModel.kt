@@ -3,8 +3,12 @@ package com.cases.carefull.chatbot
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.cases.carefull.domain.model.ChatBotInfo
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ChatBotViewModel(val onDepartmentClick: (String, String) -> Unit) : ViewModel() {
+@HiltViewModel
+class ChatBotViewModel @Inject constructor(
+) : ViewModel() {
     val chatMessages = mutableStateListOf<ChatBotInfo>()
 
     init {
@@ -27,10 +31,7 @@ class ChatBotViewModel(val onDepartmentClick: (String, String) -> Unit) : ViewMo
                     message = fullMessage,
                     isUser = false,
                     clickableDepartments = department,
-                    onClickDepartment = { dept ->
-                        if (department.contains(dept)) {
-                            onDepartmentClick(dept, diagnosis)
-                        }
+                    onClickDepartment = {
                     }
                 )
             )
