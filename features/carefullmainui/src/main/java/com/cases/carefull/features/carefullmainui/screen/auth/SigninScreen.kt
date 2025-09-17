@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -56,16 +57,17 @@ fun SigninScreen(
 			.fillMaxSize(),
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-		Text(
-			modifier = Modifier
-				.padding(top = 50.dp),
-			text = "CareFull",
-			style = MaterialTheme.typography.titleLarge
-		)
+//		Text(
+//			modifier = Modifier
+//				.padding(top = 50.dp),
+//			text = "CareFull",
+//			style = MaterialTheme.typography.titleLarge
+//		)
+		Spacer(modifier = Modifier.height(50.dp))
 		Image(
 			modifier = Modifier
 				.padding(top = 50.dp)
-				.sizeIn(50.dp, 50.dp)
+				.size(200.dp)
 				.clip(RoundedCornerShape(8.dp)),
 			painter = painterResource(R.drawable.app_logo),
 			contentDescription = null,

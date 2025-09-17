@@ -70,10 +70,13 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import coil3.compose.AsyncImage
 import com.cases.carefull.domain.model.Comment
 import com.cases.carefull.domain.model.Post
+import com.cases.carefull.features.carefullcommon.components.BottomNavigationBar
 import com.cases.carefull.features.carefullcommon.components.CustomTopAppBar
+import com.cases.carefull.features.carefullcommon.components.TopNavigationBar
 import com.cases.carefull.features.carefullcommon.navigation.FeedRoute
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -157,14 +160,8 @@ fun PostDetailScreen(
             }
         )
     }
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .navigationBarsPadding()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-//				.padding(bottom = 80.dp) // 공간을 확보해서 댓글 입력란을 하단에 위치시킴
-        ) {
+    Scaffold(
+        topBar = {
             CustomTopAppBar(
                 title = "게시글",
                 navigationIcon = {
@@ -185,10 +182,29 @@ fun PostDetailScreen(
                     }
                 }
             )
-//			Box(
-//				modifier = Modifier
-//					.weight(1f)
-//			) {
+        },
+            bottomBar = {
+                val focusManager = LocalFocusManager.current
+                CommentInputSection(
+                    modifier = Modifier
+                        .navigationBarsPadding(),
+
+                    commentInput = commentInput,
+                    onCommentInputChanged = { commentInput = it },
+                    onSendComment = {
+                        viewModel.addComment(commentInput)
+                        commentInput = ""
+                        focusManager.clearFocus() // 전송 후 키보드 숨기기
+                    },
+                    isLoading = uiState.isLoading
+                )
+            }
+            ) { innerPadding ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
             if (uiState.isLoading && uiState.post == null) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
@@ -218,20 +234,6 @@ fun PostDetailScreen(
                 )
             }
         }
-        val focusManager = LocalFocusManager.current
-        CommentInputSection(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .imePadding(), // 키보드가 올라올 때 이 컴포저블에만 패딩을 추가, // Box의 하단에 배치
-            commentInput = commentInput,
-            onCommentInputChanged = { commentInput = it },
-            onSendComment = {
-                viewModel.addComment(commentInput)
-                commentInput = ""
-                focusManager.clearFocus() // 전송 후 키보드 숨기기
-            },
-            isLoading = uiState.isLoading
-        )
     }
 }
 

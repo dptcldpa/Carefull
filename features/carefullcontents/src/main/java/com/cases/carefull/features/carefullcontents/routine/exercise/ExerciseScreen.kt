@@ -63,21 +63,21 @@ fun ExerciseScreen(
 	val todayExercise = uiState.dailyExercise.firstOrNull()
 	
 	
-	if (uiState.showDialog && uiState.selectedExercise != null) {
-		ExerciseCountDialog(
-			exerciseName = uiState.selectedExercise!!,
-			onDismiss = { viewModel.onDialogDismiss() },
-			onConfirm = { count ->
-				viewModel.onDialogConfirm()
-				navController.navigate(
-					RoutineRoute.WorkOutScreen(
-						exerciseType = uiState.selectedExercise!!,
-						count = count
-					)
-				)
-			}
-		)
-	}
+//	if (uiState.showDialog && uiState.selectedExercise != null) {
+//		ExerciseCountDialog(
+//			exerciseName = uiState.selectedExercise!!,
+//			onDismiss = { viewModel.onDialogDismiss() },
+//			onConfirm = { count ->
+//				viewModel.onDialogConfirm()
+//				navController.navigate(
+//					RoutineRoute.WorkOutScreen(
+//						exerciseType = uiState.selectedExercise!!,
+//						count = count
+//					)
+//				)
+//			}
+//		)
+//	}
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
@@ -122,7 +122,13 @@ fun ExerciseScreen(
 					uiModel = exerciseUiModel,
 					isTodayExercise = isTodayExercise,
 					onClick = {
-						viewModel.onExerciseSelected(exerciseUiModel.type)
+						navController.navigate(
+							RoutineRoute.WorkOutScreen(
+								exerciseType = exerciseUiModel.type,
+								count = 10
+							)
+						)
+//						viewModel.onExerciseSelected(exerciseUiModel.type)
 					}
 				)
 			}
