@@ -36,6 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
 					AppDatabase::class.java,
 					"carefull_database"
 				)
+					.fallbackToDestructiveMigration(false)
 					.build()
 				INSTANCE = instance
 				instance

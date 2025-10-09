@@ -11,10 +11,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import com.cases.carefull.domain.model.NavType
 import com.cases.carefull.domain.model.ScreenConfig
+import com.cases.carefull.features.carefullcommon.model.AppNavigationProvider
 import com.cases.carefull.features.carefullcommon.model.MainUiState
 import com.cases.carefull.features.carefullcommon.model.NavItem
 import com.cases.carefull.features.carefullcommon.model.NavItemUiModel
-import com.cases.carefull.features.carefullcommon.model.NavigationRepository
 import com.cases.carefull.features.carefullcommon.navigation.DiagnosisRoute
 import com.cases.carefull.features.carefullcommon.navigation.FeedRoute
 import com.cases.carefull.features.carefullcommon.navigation.MainRoute
@@ -31,7 +31,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-	private val repository: NavigationRepository
+	private val navigationProvider: AppNavigationProvider
 ) : ViewModel() {
 
 	private val _uiState = MutableStateFlow(MainUiState())
@@ -39,20 +39,20 @@ class MainViewModel @Inject constructor(
 	
 	fun onRouteChanged(currentRoute: Route?) {
 		if (currentRoute == null) return
-		val screenConfig = repository.getScreenConfig(currentRoute) ?: ScreenConfig()
+		val screenConfig = navigationProvider.getScreenConfig(currentRoute) ?: ScreenConfig()
 		
 		_uiState.update {
 			it.copy(
 				topNavItems = createUiModels(
-					repository.getNavItems(screenConfig.topBarType),
+					navigationProvider.getNavItems(screenConfig.topBarType),
 					currentRoute
 				),
 				subTopNavItems = createUiModels(
-					repository.getNavItems(screenConfig.subTopBarType),
+					navigationProvider.getNavItems(screenConfig.subTopBarType),
 					currentRoute
 				),
 				bottomNavItems = createUiModels(
-					repository.getNavItems(NavType.BOTTOM_MAIN),
+					navigationProvider.getNavItems(NavType.BOTTOM_MAIN),
 					currentRoute
 				),
 				showBottomBar = screenConfig.showBottomBar

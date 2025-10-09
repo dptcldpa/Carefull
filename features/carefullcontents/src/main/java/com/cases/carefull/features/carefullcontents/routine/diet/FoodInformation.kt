@@ -194,10 +194,10 @@ fun FoodSearchResultItem(
                     )
                 }
             }
-            
+
             // 2. 구분선
             HorizontalDivider()
-            
+
             // 3. 나머지 추가 정보 나열
             Row(
                 modifier = Modifier.fillMaxWidth(),

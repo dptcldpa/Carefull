@@ -20,10 +20,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -43,8 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.cases.carefull.domain.model.diet.BmrActivity
+import com.cases.carefull.domain.model.diet.BmrMovementLevel
 import com.cases.carefull.domain.model.diet.Gender
 import com.cases.carefull.features.carefullcommon.R
 
@@ -64,7 +63,7 @@ fun BmrScreen(
 		onHeightChanged = viewModel::onHeightChanged,
 		onWeightChanged = viewModel::onWeightChanged,
 		onAgeChanged = viewModel::onAgeChanged,
-		onActivitySelected = viewModel::onActivitySelected,
+		onmovementLevelSelected = viewModel::onMovementLevelSelected,
 		onSaveClicked = viewModel::onSaveClicked
 	)
 }
@@ -114,11 +113,11 @@ fun BasalMetabolicRateContent(
 	onHeightChanged: (String) -> Unit,
 	onWeightChanged: (String) -> Unit,
 	onAgeChanged: (String) -> Unit,
-	onActivitySelected: (BmrActivity) -> Unit,
+	onmovementLevelSelected: (BmrMovementLevel) -> Unit,
 	onSaveClicked: () -> Unit
 ) {
 	
-	var isActivityMenuExpanded by remember { mutableStateOf(false) }
+	var isMovementLevelMenuExpanded by remember { mutableStateOf(false) }
 	val scrollState = rememberScrollState()
 	Column(
 		modifier = Modifier
@@ -168,16 +167,16 @@ fun BasalMetabolicRateContent(
 		)
 		Spacer(modifier = Modifier.height(24.dp))
 		ExposedDropdownMenuBox(
-			expanded = isActivityMenuExpanded,
-			onExpandedChange = { isActivityMenuExpanded = !isActivityMenuExpanded },
+			expanded = isMovementLevelMenuExpanded,
+			onExpandedChange = { isMovementLevelMenuExpanded = !isMovementLevelMenuExpanded },
 			modifier = Modifier.padding(horizontal = 32.dp)
 		) {
 			OutlinedTextField(
-				value = bmrState.activity.description,
+				value = bmrState.movementLevel.description,
 				onValueChange = {},
 				readOnly = true,
-				label = { Text(stringResource(R.string.activity_setting)) },
-				trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isActivityMenuExpanded) },
+				label = { Text(stringResource(R.string.movementlevel_setting)) },
+				trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isMovementLevelMenuExpanded) },
 				modifier = Modifier
 					.menuAnchor(type = MenuAnchorType.PrimaryEditable)
 					.fillMaxWidth(),
@@ -186,15 +185,15 @@ fun BasalMetabolicRateContent(
 				)
 			)
 			ExposedDropdownMenu(
-				expanded = isActivityMenuExpanded,
-				onDismissRequest = { isActivityMenuExpanded = false }
+				expanded = isMovementLevelMenuExpanded,
+				onDismissRequest = { isMovementLevelMenuExpanded = false }
 			) {
-				BmrActivity.entries.forEach { activity ->
+				BmrMovementLevel.entries.forEach { movementLevel ->
 					DropdownMenuItem(
-						text = { Text(text = activity.description) },
+						text = { Text(text = movementLevel.description) },
 						onClick = {
-							onActivitySelected(activity)
-							isActivityMenuExpanded = false
+							onmovementLevelSelected(movementLevel)
+							isMovementLevelMenuExpanded = false
 						}
 					)
 				}
@@ -208,7 +207,7 @@ fun BasalMetabolicRateContent(
 		Spacer(modifier = Modifier.height(16.dp))
 		ResultRow(
 			label = stringResource(R.string.total_daily_energy),
-			value = bmrState.activityMetabolism.toString(),
+			value = bmrState.movementLevelMetabolism.toString(),
 			isHighlighted = true
 		)
 		Spacer(modifier = Modifier.weight(1f))

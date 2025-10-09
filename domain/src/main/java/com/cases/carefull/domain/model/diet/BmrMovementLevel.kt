@@ -1,6 +1,6 @@
 package com.cases.carefull.domain.model.diet
 
-enum class BmrActivity(
+enum class BmrMovementLevel(
 	val multiplier: Double,
 	val description: String
 ) {

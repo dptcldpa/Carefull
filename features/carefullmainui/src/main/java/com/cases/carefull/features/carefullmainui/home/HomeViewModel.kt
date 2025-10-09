@@ -112,7 +112,7 @@ class HomeViewModel @Inject constructor(
 		viewModelScope.launch {
 			dietRepository.getMyBmr("test").collect { bmr ->
 				if (bmr != null) {
-					_uiState.update { it.copy(activityMetabolism = bmr.activityBmr) }
+					_uiState.update { it.copy(movementLevelMetabolism = bmr.movementLevelBmr) }
 				}
 			}
 		}

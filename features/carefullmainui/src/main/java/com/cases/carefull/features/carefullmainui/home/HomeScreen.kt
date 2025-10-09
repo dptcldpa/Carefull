@@ -189,8 +189,8 @@ fun HomeScreen(
 			) {
 				DietInfoCard(
 					todayCalories = uiState.todayTotalCalories,
-					targetCalories = uiState.activityMetabolism,
-					onClick = { navController.navigate(RoutineRoute.DietScreen) }
+					targetCalories = uiState.movementLevelMetabolism,
+					onClick = { navController.navigate(RoutineRoute.DietRoute) }
 				)
 				if (todayExercise != null) {
 					WorkoutInfoCard(

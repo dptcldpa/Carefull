@@ -22,7 +22,7 @@
     <string name="height">신장</string>
     <string name="age">나이(만)</string>
     <string name="basal_metabolic_rate">기초대사량</string>
-    <string name="activity_setting">활동량 설정</string>
+    <string name="movementlevel_setting">활동량 설정</string>
     <string name="total_daily_energy">일일대사량</string>
     <string name="kcal">kcal</string>
     <string name="notification_setting">알림 설정</string>

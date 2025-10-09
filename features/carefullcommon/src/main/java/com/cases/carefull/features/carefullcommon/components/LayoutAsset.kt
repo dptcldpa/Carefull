@@ -16,7 +16,7 @@ object LayoutAsset {
 	private val navItemConfig = mapOf(
 		NavType.TOP_ROUTINE to listOf(
 			NavItem("운동", RoutineRoute.ExerciseScreen),
-			NavItem("식단", RoutineRoute.DietScreen)
+			NavItem("식단", RoutineRoute.DietRoute)
 		),
 		NavType.TOP_DIAGNOSIS to listOf(
 			NavItem("진료", DiagnosisRoute.ChatBotScreen),
@@ -59,7 +59,7 @@ object LayoutAsset {
 			topBarType = NavType.TOP_ROUTINE,
 			showBottomBar = true
 		),
-		RoutineRoute.DietScreen to ScreenConfig(
+		RoutineRoute.DietRoute to ScreenConfig(
 			topBarType = NavType.TOP_ROUTINE,
 			subTopBarType = NavType.NONE,
 			showBottomBar = true

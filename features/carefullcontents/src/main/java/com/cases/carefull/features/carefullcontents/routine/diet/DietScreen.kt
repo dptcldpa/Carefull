@@ -18,17 +18,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -43,7 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -54,29 +51,55 @@ import com.cases.carefull.domain.model.diet.MealType
 import com.cases.carefull.features.carefullcommon.components.Calendar
 import com.cases.carefull.features.carefullcommon.components.CalendarState
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
+import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 import kotlinx.coroutines.flow.distinctUntilChanged
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DietScreen(
+fun DietRoute(
 	viewModel: DietViewModel = hiltViewModel(),
 	navController: NavController
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+	DietScreen(
+		uiState = uiState,
+		onDateSelected = viewModel::onDateSelected,
+		onShowDatePicker = viewModel::showDatePicker,
+		onHideDatePicker = viewModel::hideDatePicker,
+		onDatePickerMonthChanged = viewModel::onDatePickerMonthChanged,
+		onGoToToday = viewModel::onGoToToday,
+		onAddMealClick = { mealType ->
+			navController.navigate(RoutineRoute.DietSearchScreen(mealType = mealType.name))
+		},
+		onRemoveMealClick = viewModel::onRemoveMeal
+	)
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun DietScreen(
+	uiState: DietUiState,
+	onDateSelected: (LocalDate) -> Unit,
+	onShowDatePicker: () -> Unit,
+	onHideDatePicker: () -> Unit,
+	onDatePickerMonthChanged: (Long) -> Unit,
+	onGoToToday: () -> Unit,
+	onAddMealClick: (MealType) -> Unit,
+	onRemoveMealClick: (DietCollection) -> Unit
+) {
 	val lazyListState = rememberLazyListState()
-	
+
 	LaunchedEffect(uiState.selectedDate) {
 		val targetIndex = uiState.dietSections.indexOfFirst { it.date == uiState.selectedDate }
 		if (targetIndex != -1) {
 			lazyListState.scrollToItem(index = targetIndex)
 		}
 	}
-	
+
 	if (uiState.isDatePickerVisible) {
-		
 		val calendarState = CalendarState(
 			selectedDate = uiState.selectedDate,
 			displayedYearMonth = uiState.datePickerDisplayedMonth,
@@ -88,15 +111,15 @@ fun DietScreen(
 		DatePickerDialog(
 			calendarState = calendarState,
 			onDateSelected = {
-				viewModel.onDateSelected(it)
-				viewModel.hideDatePicker()
+				onDateSelected(it)
+				onHideDatePicker()
 			},
-			onDismiss = { viewModel.hideDatePicker() },
-			onMonthChanged = { viewModel.onDatePickerMonthChanged(it) },
-			onGoToToday = { viewModel.onGoToToday() }
+			onDismiss = onHideDatePicker,
+			onMonthChanged = onDatePickerMonthChanged,
+			onGoToToday = onGoToToday
 		)
 	}
-	
+
 	LazyColumn(
 		modifier = Modifier.fillMaxSize(),
 		state = lazyListState
@@ -104,38 +127,30 @@ fun DietScreen(
 		item {
 			NutritionSummary(uiState = uiState)
 		}
-		
+
 		item {
 			val section = uiState.selectedDateSection
-			
+
 			DateHeader(
 				date = uiState.selectedDate,
 				totalCalories = section?.totalCalories ?: 0,
-				onCalendarClick = { viewModel.showDatePicker() }
+				onCalendarClick = onShowDatePicker
 			)
 			HorizontalDivider(modifier = Modifier.padding(bottom = 8.dp))
-			
+
 			Column(modifier = Modifier.padding(horizontal = 16.dp)) {
 				val mealsByTimeForDay = section?.meals?.groupBy {
-					try {
-						MealType.valueOf(it.mealType)
-					} catch (e: IllegalArgumentException) {
-						MealType.SNACK
-					}
+					try { MealType.valueOf(it.mealType) } catch (e: IllegalArgumentException) { MealType.SNACK }
 				} ?: emptyMap()
-				
+
 				MealType.entries.forEach { mealType ->
 					val addedFoodsForMealType = mealsByTimeForDay[mealType] ?: emptyList()
 					MealSection(
 						mealType = mealType,
 						addedFoods = addedFoodsForMealType,
-						onCameraClick = {},
-						onAddClick = {
-							navController.navigate(RoutineRoute.DietSearchScreen(mealType = mealType.name))
-						},
-						onRemoveClick = { mealToRemove ->
-							viewModel.onRemoveMeal(mealToRemove)
-						}
+//						onCameraClick = {},
+						onAddClick = { onAddMealClick(mealType) },
+						onRemoveClick = onRemoveMealClick
 					)
 				}
 			}
@@ -198,39 +213,6 @@ fun DatePickerDialog(
 @Composable
 fun NutritionSummary(uiState: DietUiState) {
 	Column {
-//		Text(
-//			text = "선택된 날짜: ${formatDate(uiState.selectedDate)}",
-//			style = MaterialTheme.typography.bodySmall,
-//			modifier = Modifier
-//				.fillMaxWidth()
-//				.padding(horizontal = 16.dp),
-//			textAlign = TextAlign.Center
-//		)
-//		Text(
-//			text = "기초대사량 : ${uiState.bmrState.calculatedBmr}kcal",
-//			style = MaterialTheme.typography.bodySmall,
-//			modifier = Modifier
-//				.fillMaxWidth()
-//				.padding(horizontal = 16.dp),
-//			textAlign = TextAlign.Center
-//		)
-//		Text(
-//			text = "활동대사량 : ${uiState.bmrState.activityMetabolism}kcal",
-//			style = MaterialTheme.typography.bodySmall,
-//			modifier = Modifier
-//				.fillMaxWidth()
-//				.padding(horizontal = 16.dp),
-//			textAlign = TextAlign.Center
-//		)
-//		Text(
-//			text = "총 섭취 칼로리: ${uiState.totalCalories} kcal",
-//			style = MaterialTheme.typography.bodyMedium,
-//			fontWeight = FontWeight.Bold,
-//			modifier = Modifier
-//				.fillMaxWidth()
-//				.padding(horizontal = 16.dp),
-//			textAlign = TextAlign.Center
-//		)
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.Center
@@ -259,7 +241,7 @@ fun NutritionSummary(uiState: DietUiState) {
 fun MealSection(
 	mealType: MealType,
 	addedFoods: List<DietCollection>,
-	onCameraClick: () -> Unit,
+//	onCameraClick: () -> Unit,
 	onAddClick: () -> Unit,
 	onRemoveClick: (DietCollection) -> Unit
 ) {
@@ -415,5 +397,40 @@ fun formatDate(date: LocalDate): String {
 		else -> {
 			date.format(DateTimeFormatter.ofPattern("M월 d일"))
 		}
+	}
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+fun DietScreenPreview() {
+	val fakeUiState = DietUiState(
+		selectedDate = LocalDate.now(),
+		totalCalories = 1250,
+		totalCarbs = 150,
+		totalProteins = 80,
+		totalFats = 45,
+		selectedDateSection = DietDateSection(
+			date = LocalDate.now(),
+			meals = listOf(
+				DietCollection(mealName = "닭가슴살", weight = 100, kcal = 110, mealType = MealType.LUNCH.name),
+				DietCollection(mealName = "현미밥", weight = 210, kcal = 350, mealType = MealType.LUNCH.name),
+				DietCollection(mealName = "프로틴 쉐이크", weight = 30, kcal = 120, mealType = MealType.SNACK.name)
+			),
+			totalCalories = 580,
+		),
+	)
+
+	CarefullTheme {
+		DietScreen(
+			uiState = fakeUiState,
+			onDateSelected = {},
+			onShowDatePicker = {},
+			onHideDatePicker = {},
+			onDatePickerMonthChanged = {},
+			onGoToToday = {},
+			onAddMealClick = {},
+			onRemoveMealClick = {}
+		)
 	}
 }

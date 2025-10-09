@@ -22,7 +22,7 @@ data class HomeUiState(
 	val dailyExercise: List<ExerciseType> = emptyList(),
 
 	val todayTotalCalories: Int = 0,
-	val activityMetabolism: Int = 0,
+	val movementLevelMetabolism: Int = 0,
 
 	val loggedMealDates: Set<LocalDate> = emptySet(),
 
