@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize) apply false
     alias(libs.plugins.google.gms.google.services) apply false
     alias(libs.plugins.secrets.gradle.plugin) apply false
+    alias(libs.plugins.kapt) apply false
     
     id("com.google.dagger.hilt.android") version "2.57.1" apply  false
 }
