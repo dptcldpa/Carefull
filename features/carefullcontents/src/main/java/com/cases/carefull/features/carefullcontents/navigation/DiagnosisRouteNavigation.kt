@@ -24,12 +24,7 @@ fun NavGraphBuilder.diagnosisGraph(medicineViewModel: MedicineViewModel
                                    , navController: NavHostController) {
 	composable<DiagnosisRoute.ChatBotScreen> {
 		ChatBotScreen(
-			onDepartmentClick = { department, diagnosis ->
-				val encodedDept = Uri.encode(department)
-				val encodedDiag = Uri.encode(diagnosis)
-				navController.navigate("hospital_info/$encodedDept/$encodedDiag")
-			}
-//						navController.navigate(DiagnosisRoute.HospitalInfoScreen)
+            navController = navController
 		)
 	}
 	

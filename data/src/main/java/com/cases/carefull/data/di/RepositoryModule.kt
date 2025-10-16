@@ -72,7 +72,7 @@ abstract class RepositoryModule {
 	): SocialRepository
 
 	@Binds
-	@Singleton
+	@ViewModelScoped
 	abstract fun bindHospitalRepository(
 		hospitalRepositoryImpl: HospitalRepositoryImpl
 	): HospitalRepository
