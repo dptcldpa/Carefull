@@ -11,6 +11,7 @@ import com.cases.carefull.domain.model.exercise.ExerciseType
 import com.cases.carefull.domain.repository.CalendarRepository
 import com.cases.carefull.domain.repository.DietRepository
 import com.cases.carefull.domain.repository.ExerciseRepository
+import com.cases.carefull.domain.usecase.bmr.GetSavedBmrUseCase
 import com.cases.carefull.domain.util.DataResourceResult
 import com.cases.carefull.features.carefullmainui.home.HomeUiState.Companion.START_PAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,7 +36,8 @@ import java.time.temporal.TemporalAdjusters
 class HomeViewModel @Inject constructor(
     private val calendarRepository: CalendarRepository,
     private val exerciseRepository: ExerciseRepository,
-    private val dietRepository: DietRepository
+    private val dietRepository: DietRepository,
+	private val getSavedBmrUseCase: GetSavedBmrUseCase,
 ) : ViewModel() {
 	private val _uiState = MutableStateFlow(HomeUiState())
 	val uiState = _uiState.asStateFlow()
@@ -110,7 +112,7 @@ class HomeViewModel @Inject constructor(
 			_uiState.update { it.copy(dailyExercise = dailyExercises) }
 		}
 		viewModelScope.launch {
-			dietRepository.getMyBmr("test").collect { bmr ->
+			getSavedBmrUseCase("test").collect { bmr ->
 				if (bmr != null) {
 					_uiState.update { it.copy(movementLevelMetabolism = bmr.movementLevelBmr) }
 				}

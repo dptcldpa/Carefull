@@ -59,218 +59,228 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DietRoute(
-	viewModel: DietViewModel = hiltViewModel(),
-	navController: NavController
+    dietViewModel: DietViewModel = hiltViewModel(),
+    navController: NavController
 ) {
-	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-	DietScreen(
-		uiState = uiState,
-		onDateSelected = viewModel::onDateSelected,
-		onShowDatePicker = viewModel::showDatePicker,
-		onHideDatePicker = viewModel::hideDatePicker,
-		onDatePickerMonthChanged = viewModel::onDatePickerMonthChanged,
-		onGoToToday = viewModel::onGoToToday,
-		onAddMealClick = { mealType ->
-			navController.navigate(RoutineRoute.DietSearchScreen(mealType = mealType.name))
-		},
-		onRemoveMealClick = viewModel::onRemoveMeal
-	)
+    val uiState by dietViewModel.uiState.collectAsStateWithLifecycle()
+    DietScreen(
+        uiState = uiState,
+        onDateSelected = dietViewModel::onDateSelected,
+        onShowDatePicker = dietViewModel::showDatePicker,
+        onHideDatePicker = dietViewModel::hideDatePicker,
+        onDatePickerMonthChanged = dietViewModel::onDatePickerMonthChanged,
+        onGoToToday = dietViewModel::onGoToToday,
+        onAddMealClick = { mealType ->
+            val dateString = uiState.dateDietState.selectedDate.toString()
+            navController.navigate(
+                RoutineRoute.DietSearchScreen(
+                    mealType = mealType.name,
+                    date = dateString
+                )
+            )
+        },
+        onRemoveMealClick = dietViewModel::onRemoveMeal
+    )
 }
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DietScreen(
-	uiState: DietUiState,
-	onDateSelected: (LocalDate) -> Unit,
-	onShowDatePicker: () -> Unit,
-	onHideDatePicker: () -> Unit,
-	onDatePickerMonthChanged: (Long) -> Unit,
-	onGoToToday: () -> Unit,
-	onAddMealClick: (MealType) -> Unit,
-	onRemoveMealClick: (DietCollection) -> Unit
+    uiState: MainDietUiState,
+    onDateSelected: (LocalDate) -> Unit,
+    onShowDatePicker: () -> Unit,
+    onHideDatePicker: () -> Unit,
+    onDatePickerMonthChanged: (Long) -> Unit,
+    onGoToToday: () -> Unit,
+    onAddMealClick: (MealType) -> Unit,
+    onRemoveMealClick: (DietCollection) -> Unit
 ) {
-	val lazyListState = rememberLazyListState()
+    val lazyListState = rememberLazyListState()
 
-	LaunchedEffect(uiState.selectedDate) {
-		val targetIndex = uiState.dietSections.indexOfFirst { it.date == uiState.selectedDate }
-		if (targetIndex != -1) {
-			lazyListState.scrollToItem(index = targetIndex)
-		}
-	}
+    LaunchedEffect(uiState.dateDietState.selectedDate) {
+        val targetIndex =
+            uiState.dateDietState.dietSections.indexOfFirst { it.date == uiState.dateDietState.selectedDate }
+        if (targetIndex != -1) {
+            lazyListState.scrollToItem(index = targetIndex)
+        }
+    }
 
-	if (uiState.isDatePickerVisible) {
-		val calendarState = CalendarState(
-			selectedDate = uiState.selectedDate,
-			displayedYearMonth = uiState.datePickerDisplayedMonth,
-			viewType = CalendarViewType.MONTHLY,
-			calendarDates = uiState.datePickerCalendarDates,
-			selectedDateInfo = "",
-			markedDates = uiState.allMealLoggedDates
-		)
-		DatePickerDialog(
-			calendarState = calendarState,
-			onDateSelected = {
-				onDateSelected(it)
-				onHideDatePicker()
-			},
-			onDismiss = onHideDatePicker,
-			onMonthChanged = onDatePickerMonthChanged,
-			onGoToToday = onGoToToday
-		)
-	}
+    if (uiState.dateDietState.isDatePickerVisible) {
+        val calendarState = CalendarState(
+            selectedDate = uiState.dateDietState.selectedDate,
+            displayedYearMonth = uiState.dateDietState.datePickerDisplayedMonth,
+            viewType = CalendarViewType.MONTHLY,
+            calendarDates = uiState.dateDietState.datePickerCalendarDates,
+            selectedDateInfo = "",
+            markedDates = uiState.dateDietState.allMealLoggedDates
+        )
+        DatePickerDialog(
+            calendarState = calendarState,
+            onDateSelected = {
+                onDateSelected(it)
+                onHideDatePicker()
+            },
+            onDismiss = onHideDatePicker,
+            onMonthChanged = onDatePickerMonthChanged,
+            onGoToToday = onGoToToday
+        )
+    }
 
-	LazyColumn(
-		modifier = Modifier.fillMaxSize(),
-		state = lazyListState
-	) {
-		item {
-			NutritionSummary(uiState = uiState)
-		}
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = lazyListState
+    ) {
+        item {
+            NutritionSummary(uiState = uiState)
+        }
 
-		item {
-			val section = uiState.selectedDateSection
+        item {
+            val section = uiState.dateDietState.selectedDateSection
 
-			DateHeader(
-				date = uiState.selectedDate,
-				totalCalories = section?.totalCalories ?: 0,
-				onCalendarClick = onShowDatePicker
-			)
-			HorizontalDivider(modifier = Modifier.padding(bottom = 8.dp))
+            DateHeader(
+                date = uiState.dateDietState.selectedDate,
+                totalCalories = section?.totalCalories ?: 0,
+                todayCalories = uiState.bmrState.movementLevelMetabolism,
+                onCalendarClick = onShowDatePicker
+            )
+            HorizontalDivider(modifier = Modifier.padding(bottom = 8.dp))
 
-			Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-				val mealsByTimeForDay = section?.meals?.groupBy {
-					try { MealType.valueOf(it.mealType) } catch (e: IllegalArgumentException) { MealType.SNACK }
-				} ?: emptyMap()
+            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                val mealsByTimeForDay = section?.meals?.groupBy {
+                    try {
+                        MealType.valueOf(it.mealType)
+                    } catch (e: IllegalArgumentException) {
+                        MealType.SNACK
+                    }
+                } ?: emptyMap()
 
-				MealType.entries.forEach { mealType ->
-					val addedFoodsForMealType = mealsByTimeForDay[mealType] ?: emptyList()
-					MealSection(
-						mealType = mealType,
-						addedFoods = addedFoodsForMealType,
+                MealType.entries.forEach { mealType ->
+                    val addedFoodsForMealType = mealsByTimeForDay[mealType] ?: emptyList()
+                    MealSection(
+                        mealType = mealType,
+                        addedFoods = addedFoodsForMealType,
 //						onCameraClick = {},
-						onAddClick = { onAddMealClick(mealType) },
-						onRemoveClick = onRemoveMealClick
-					)
-				}
-			}
-		}
-	}
+                        onAddClick = { onAddMealClick(mealType) },
+                        onRemoveClick = onRemoveMealClick
+                    )
+                }
+            }
+        }
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DatePickerDialog(
-	calendarState: CalendarState,
-	onDateSelected: (LocalDate) -> Unit,
-	onDismiss: () -> Unit,
-	onMonthChanged: (Long) -> Unit,
-	onGoToToday: () -> Unit
+    calendarState: CalendarState,
+    onDateSelected: (LocalDate) -> Unit,
+    onDismiss: () -> Unit,
+    onMonthChanged: (Long) -> Unit,
+    onGoToToday: () -> Unit
 ) {
-	val startPage = Int.MAX_VALUE / 2
-	val pagerState = rememberPagerState(
-		initialPage = startPage,
-		pageCount = { Int.MAX_VALUE })
-	var previousPage by remember { mutableIntStateOf(startPage) }
-	
-	LaunchedEffect(pagerState) {
-		snapshotFlow { pagerState.currentPage }
-			.distinctUntilChanged()
-			.collect { currentPage ->
-				val monthDifference = (currentPage - previousPage).toLong()
-				if (monthDifference != 0L) {
-					onMonthChanged(monthDifference)
-				}
-				previousPage = currentPage
-			}
-	}
-	
-	AlertDialog(
-		onDismissRequest = onDismiss,
-		title = { Text("날짜 선택") },
-		text = {
-			Calendar(
-				calendarState = calendarState,
-				pagerState = pagerState,
-				onDateClick = { date ->
-					onDateSelected(date)
-				},
-				onToggleViewType = {},
-				onMonthPickerClick = {},
-				onGoToToday = { onGoToToday() }
-			)
-		},
-		confirmButton = {
-			TextButton(onClick = onDismiss) {
-				Text("닫기")
-			}
-		}
-	)
-}
+    val startPage = Int.MAX_VALUE / 2
+    val pagerState = rememberPagerState(
+        initialPage = startPage,
+        pageCount = { Int.MAX_VALUE })
+    var previousPage by remember { mutableIntStateOf(startPage) }
 
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }
+            .distinctUntilChanged()
+            .collect { currentPage ->
+                val monthDifference = (currentPage - previousPage).toLong()
+                if (monthDifference != 0L) {
+                    onMonthChanged(monthDifference)
+                }
+                previousPage = currentPage
+            }
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("날짜 선택") },
+        text = {
+            Calendar(
+                calendarState = calendarState,
+                pagerState = pagerState,
+                onDateClick = { date ->
+                    onDateSelected(date)
+                },
+                onToggleViewType = {},
+                onMonthPickerClick = {},
+                onGoToToday = { onGoToToday() }
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("닫기")
+            }
+        }
+    )
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NutritionSummary(uiState: DietUiState) {
-	Column {
-		Row(
-			modifier = Modifier.fillMaxWidth(),
-			horizontalArrangement = Arrangement.Center
-		) {
-			Text(
-				text = "탄수화물 : ${uiState.totalCarbs}g",
-				style = MaterialTheme.typography.bodyLarge,
-				modifier = Modifier.padding(horizontal = 16.dp)
-			)
-			Text(
-				text = "단백질 : ${uiState.totalProteins}g",
-				style = MaterialTheme.typography.bodyLarge,
-				modifier = Modifier.padding(horizontal = 16.dp)
-			)
-			Text(
-				text = "지방 : ${uiState.totalFats}g",
-				style = MaterialTheme.typography.bodyLarge,
-				modifier = Modifier.padding(horizontal = 16.dp)
-			)
-		}
-		HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
-	}
+fun NutritionSummary(uiState: MainDietUiState) {
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "탄수화물 : ${uiState.dateDietState.selectedDateSection?.totalCarbs ?: 0}g",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+            Text(
+                text = "단백질 : ${uiState.dateDietState.selectedDateSection?.totalProteins ?: 0}g",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+            Text(
+                text = "지방 : ${uiState.dateDietState.selectedDateSection?.totalFats ?: 0}g",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+        HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+    }
 }
 
 @Composable
 fun MealSection(
-	mealType: MealType,
-	addedFoods: List<DietCollection>,
+    mealType: MealType,
+    addedFoods: List<DietCollection>,
 //	onCameraClick: () -> Unit,
-	onAddClick: () -> Unit,
-	onRemoveClick: (DietCollection) -> Unit
+    onAddClick: () -> Unit,
+    onRemoveClick: (DietCollection) -> Unit
 ) {
-	Card(
-		border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-		modifier = Modifier
-			.fillMaxWidth()
-			.padding(vertical = 4.dp),
-		elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-		colors = CardDefaults.cardColors(
-			containerColor = Color.White
-		)
-	) {
-		Column(
-			modifier = Modifier
-				.fillMaxWidth()
-		) {
-			Row(
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(horizontal = 8.dp),
-				verticalAlignment = Alignment.CenterVertically
-			) {
-				Text(
-					text = " ${mealType.time}",
-					style = MaterialTheme.typography.bodyLarge,
-					fontWeight = FontWeight.Bold
-				)
-				Spacer(modifier = Modifier.weight(1f))
+    Card(
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = " ${mealType.time}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.weight(1f))
 //				IconButton(onClick = onCameraClick) {
 //					Icon(
 //						imageVector = Icons.Default.Camera,
@@ -279,158 +289,191 @@ fun MealSection(
 //						modifier = Modifier.size(28.dp)
 //					)
 //				}
-				IconButton(onClick = onAddClick) {
-					Icon(
-						imageVector = Icons.Default.Add,
-						contentDescription = "${mealType.time} 음식 검색",
-						tint = MaterialTheme.colorScheme.primary,
-						modifier = Modifier.size(20.dp)
-					)
-				}
-			}
-			HorizontalDivider(
-				thickness = 1.dp,
-				color = MaterialTheme.colorScheme.outline,
-				modifier = Modifier.padding(bottom = 4.dp)
-			)
+                IconButton(onClick = onAddClick) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "${mealType.time} 음식 검색",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
 
-			if (addedFoods.isNotEmpty()) {
-				Column(
-					modifier = Modifier.fillMaxWidth(),
-					verticalArrangement = Arrangement.spacedBy(4.dp)
-				) {
-					addedFoods.forEach { addedFood ->
-						FoodItemRow(
-							food = addedFood,
-							onRemove = { onRemoveClick(addedFood) }
-						)
-					}
-				}
-			} else {
-				Column(
-					modifier = Modifier.fillMaxWidth()
-						.padding(bottom = 8.dp)
-				) {
-					Text(
-						text = "   아직 추가된 음식이 없습니다.",
-						style = MaterialTheme.typography.bodyMedium,
-						color = Color.Gray
-					)
-				}
-			}
-		}
-	}
+            if (addedFoods.isNotEmpty()) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    addedFoods.forEach { addedFood ->
+                        FoodItemRow(
+                            food = addedFood,
+                            onRemove = { onRemoveClick(addedFood) }
+                        )
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                ) {
+                    Text(
+                        text = "   아직 추가된 음식이 없습니다.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
 fun FoodItemRow(
-	food: DietCollection,
-	onRemove: () -> Unit
+    food: DietCollection,
+    onRemove: () -> Unit
 ) {
-	Column(
-		modifier = Modifier.padding(bottom = 8.dp)
-	) {
-		Row(
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 16.dp, vertical = 8.dp),
-			verticalAlignment = Alignment.CenterVertically
-		) {
-			Text(
-				text = "${food.mealName} (${food.weight}g)",
-				style = MaterialTheme.typography.bodyMedium
-			)
-			Spacer(modifier = Modifier.weight(1f))
-			Text(text = "${food.kcal} kcal  ", style = MaterialTheme.typography.bodySmall)
-			
-			IconButton(onClick = onRemove, modifier = Modifier.size(16.dp)) {
-				Icon(imageVector = Icons.Default.Close, contentDescription = "삭제")
-			}
-			Spacer(modifier = Modifier.width(5.dp))
-		}
-	}
+    Column(
+        modifier = Modifier.padding(bottom = 8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "${food.mealName} (${food.weight}g)",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = "${food.kcal} kcal  ", style = MaterialTheme.typography.bodySmall)
+
+            IconButton(onClick = onRemove, modifier = Modifier.size(16.dp)) {
+                Icon(imageVector = Icons.Default.Close, contentDescription = "삭제")
+            }
+            Spacer(modifier = Modifier.width(5.dp))
+        }
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DateHeader(
-	date: LocalDate,
-	totalCalories: Int,
-	onCalendarClick: () -> Unit
+    date: LocalDate,
+    totalCalories: Int,
+    todayCalories: Int,
+    onCalendarClick: () -> Unit
 ) {
-	Surface(
-		color = Color.White
-	) {
-		Row(
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 16.dp),
-			verticalAlignment = Alignment.CenterVertically
-		) {
-			IconButton(onClick = onCalendarClick) {
-				Icon(imageVector = Icons.Default.CalendarToday, contentDescription = "날짜 선택")
-			}
-			Spacer(modifier = Modifier.width(16.dp))
-			Text(
-				text = formatDate(date),
-				style = MaterialTheme.typography.titleMedium,
-				fontWeight = FontWeight.Bold,
-				modifier = Modifier.weight(1f)
-			)
-			Text(
-				text = "총 $totalCalories kcal",
-				style = MaterialTheme.typography.bodyMedium
-			)
-			
-		}
-	}
+    Surface(
+        color = Color.White
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onCalendarClick) {
+                Icon(imageVector = Icons.Default.CalendarToday, contentDescription = "날짜 선택")
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = formatDate(date),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = "총 $totalCalories / $todayCalories kcal",
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+        }
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun formatDate(date: LocalDate): String {
-	val today = LocalDate.now()
-	val yesterday = today.minusDays(1)
-	
-	return when {
-		date.isEqual(today) -> "오늘"
-		date.isEqual(yesterday) -> "어제"
-		else -> {
-			date.format(DateTimeFormatter.ofPattern("M월 d일"))
-		}
-	}
+    val today = LocalDate.now()
+    val yesterday = today.minusDays(1)
+
+    return when {
+        date.isEqual(today) -> "오늘"
+        date.isEqual(yesterday) -> "어제"
+        else -> {
+            date.format(DateTimeFormatter.ofPattern("M월 d일"))
+        }
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun DietScreenPreview() {
-	val fakeUiState = DietUiState(
-		selectedDate = LocalDate.now(),
-		totalCalories = 1250,
-		totalCarbs = 150,
-		totalProteins = 80,
-		totalFats = 45,
-		selectedDateSection = DietDateSection(
-			date = LocalDate.now(),
-			meals = listOf(
-				DietCollection(mealName = "닭가슴살", weight = 100, kcal = 110, mealType = MealType.LUNCH.name),
-				DietCollection(mealName = "현미밥", weight = 210, kcal = 350, mealType = MealType.LUNCH.name),
-				DietCollection(mealName = "프로틴 쉐이크", weight = 30, kcal = 120, mealType = MealType.SNACK.name)
-			),
-			totalCalories = 580,
-		),
-	)
 
-	CarefullTheme {
-		DietScreen(
-			uiState = fakeUiState,
-			onDateSelected = {},
-			onShowDatePicker = {},
-			onHideDatePicker = {},
-			onDatePickerMonthChanged = {},
-			onGoToToday = {},
-			onAddMealClick = {},
-			onRemoveMealClick = {}
-		)
-	}
+    val fakeDateDietState = DateDietState(
+        selectedDate = LocalDate.now(),
+        selectedDateSection = DietDateSection(
+            date = LocalDate.now(),
+            meals = listOf(
+                DietCollection(
+                    mealName = "닭가슴살",
+                    weight = 100,
+                    kcal = 110,
+                    mealType = MealType.LUNCH.name
+                ),
+                DietCollection(
+                    mealName = "현미밥",
+                    weight = 210,
+                    kcal = 350,
+                    mealType = MealType.LUNCH.name
+                ),
+                DietCollection(
+                    mealName = "프로틴 쉐이크",
+                    weight = 30,
+                    kcal = 120,
+                    mealType = MealType.SNACK.name
+                )
+            ),
+            totalCalories = 580,
+            totalCarbs = 70,
+            totalProteins = 60,
+            totalFats = 15
+        ),
+        totalCalories = 1250,
+        totalCarbs = 150,
+        totalProteins = 80,
+        totalFats = 45,
+        allMealLoggedDates = setOf(LocalDate.now(), LocalDate.now().minusDays(2))
+    )
+
+    val fakeUiState = MainDietUiState(
+        isLoading = false,
+        isError = false,
+        dateDietState = fakeDateDietState,
+
+        bmrState = BmrUiState(calculatedBmr = 2000, movementLevelMetabolism = 2500),
+        favoriteState = FavoriteState(),
+        dietSearchState = DietSearchState()
+    )
+
+
+    CarefullTheme {
+        DietScreen(
+            uiState = fakeUiState,
+            onDateSelected = {},
+            onShowDatePicker = {},
+            onHideDatePicker = {},
+            onDatePickerMonthChanged = {},
+            onGoToToday = {},
+            onAddMealClick = {},
+            onRemoveMealClick = {}
+        )
+    }
 }

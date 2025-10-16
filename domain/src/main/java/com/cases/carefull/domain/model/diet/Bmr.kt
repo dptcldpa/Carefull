@@ -10,3 +10,5 @@ data class Bmr(
 	val bmr: Int,
 	val movementLevelBmr: Int
 )
+
+data class BmrCalculationResult(val bmr: Int, val tdee: Int)

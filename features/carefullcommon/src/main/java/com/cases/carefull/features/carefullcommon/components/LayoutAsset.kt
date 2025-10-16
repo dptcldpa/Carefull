@@ -1,6 +1,5 @@
 package com.cases.carefull.features.carefullcommon.components
 
-import android.util.Log
 import com.cases.carefull.domain.model.NavType
 import com.cases.carefull.domain.model.ScreenConfig
 import com.cases.carefull.domain.model.exercise.ExerciseType
@@ -69,16 +68,12 @@ object LayoutAsset {
 			subTopBarType = NavType.NONE,
 			showBottomBar = true
 		),
-		RoutineRoute.FoodInformation to ScreenConfig(
-			topBarType = NavType.TOP_ROUTINE,
-			showBottomBar = true
-		),
 		RoutineRoute.WorkOutScreen to ScreenConfig(
 			topBarType = NavType.NONE,
 			subTopBarType = NavType.NONE,
 			showBottomBar = false
 		),
-		RoutineRoute.BmrScreen to ScreenConfig(
+		RoutineRoute.BmrRoute to ScreenConfig(
 			topBarType = NavType.NONE,
 			showBottomBar = false
 		),
@@ -156,35 +151,16 @@ object LayoutAsset {
 	private val routeMap: Map<String, Route> by lazy {
 		allRoutes.associateBy { it::class.qualifiedName!!.replace('$', '.') }
 	}
-	
-	//	val map = allRoutes.associateBy { it::class.qualifiedName!!.replace('$', '.') }
-//		Log.d("NAVIGATION_DEBUG", "--- routeMap의 모든 Key 목록 ---")
-//		map.keys.forEach { key ->
-//			Log.d("NAVIGATION_DEBUG", "Key: $key")
-//		}
-//		Log.d("NAVIGATION_DEBUG", "---------------------------------")
-//		map
-//	}
-//		allRoutes.associateBy { it::class.qualifiedName!! }
-//		allRoutes.associateBy { it::class.qualifiedName!!.replace('$', '.') }
-//	}
-//
+
 	fun findRouteByString(routeString: String?): Route? {
 		if (routeString == null) return null
-		
-		// '?' 이전의 문자열(순수 경로)만 사용하여 key로 사용
 		val pureRoute = routeString.split('?', '/').first()
 		
 		return routeMap[pureRoute]
-		// Kotlin 내부 클래스는 $로 구분되므로, 라이브러리가 생성한 경로 문자열과 맞추기 위해 .으로 변경
-//		val formattedRoute = pureRoute.replace('$', '.')
-//
-//		return routeMap[formattedRoute]
 	}
 	
 	fun getNavItems(type: NavType) = navItemConfig[type] ?: emptyList()
 	fun getScreenConfig(route: Route): ScreenConfig? {
-		// screenConfig의 key와 route의 클래스 타입이 같은 첫 번째 항목을 찾습니다.
 		return screenConfig.entries.find { (key, _) -> key::class == route::class }?.value
 	}
 }

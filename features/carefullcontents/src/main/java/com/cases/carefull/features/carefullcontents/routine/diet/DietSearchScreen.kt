@@ -56,7 +56,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -66,6 +65,7 @@ import com.cases.carefull.domain.model.diet.FavoriteMeal
 import com.cases.carefull.domain.model.diet.MealType
 import com.cases.carefull.domain.model.diet.RecentMealSearch
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
+import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -76,12 +76,24 @@ fun DietSearchScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val route = navController.currentBackStackEntry?.toRoute<RoutineRoute.DietSearchScreen>()
     val mealType = route?.mealType
+
+    val selectedDate = remember(route?.date) {
+        route?.date?.let { LocalDate.parse(it) }
+    }
+
     var foodToEdit by remember { mutableStateOf<DietCollection?>(null) }
     var showDirectInputDialog by remember { mutableStateOf(false) }
     val searchQuery by viewModel.searchQuery.collectAsState()
 
-    if (mealType == null) {
+    if (mealType == null || selectedDate == null) {
         return
+    }
+    LaunchedEffect(
+        uiState.customInputState.carbohydrate,
+        uiState.customInputState.protein,
+        uiState.customInputState.fat
+    ) {
+        viewModel.calculateCustomInputKcal()
     }
 
     LaunchedEffect(Unit) {
@@ -101,6 +113,7 @@ fun DietSearchScreen(
                 viewModel.onAddMeal(
                     dietCollection = food,
                     mealType = MealType.valueOf(mealType),
+                    date = selectedDate,
                     updateWeight = newWeight
                 )
                 foodToEdit = null
@@ -112,9 +125,9 @@ fun DietSearchScreen(
         )
     }
 
-    if (uiState.isFavoritesDialogVisible) {
+    if (uiState.favoriteState.isFavoritesDialogVisible) {
         FavoritesDialog(
-            favorites = uiState.favoriteMeals,
+            favorites = uiState.favoriteState.favoriteMeals,
             onDismiss = { viewModel.hideFavoritesDialog() },
             onSelect = { favorite ->
                 viewModel.onFavoriteMealClicked(favorite)
@@ -123,7 +136,7 @@ fun DietSearchScreen(
         )
     }
 
-    uiState.selectedFavoriteForEditing?.let { favoriteMeal ->
+    uiState.favoriteState.selectedFavoriteForEditing?.let { favoriteMeal ->
         val dietCollectionForItem = DietCollection(
             mealName = favoriteMeal.name,
             weight = favoriteMeal.weight,
@@ -136,7 +149,11 @@ fun DietSearchScreen(
         EditWeightDialog(
             item = dietCollectionForItem,
             onConfirm = { newWeight ->
-                viewModel.onFavoriteMealWeightConfirmed(newWeight, MealType.valueOf(mealType))
+                viewModel.onFavoriteMealWeightConfirmed(
+                    updatedWeight = newWeight,
+                    mealType = MealType.valueOf(mealType),
+                    date = selectedDate
+                )
             },
             onDismiss = {
                 viewModel.dismissEditWeightDialog()
@@ -144,18 +161,19 @@ fun DietSearchScreen(
         )
     }
 
-    if (showDirectInputDialog) {
+    if (uiState.customInputState.isDialogVisible) {
         CustomInputDialog(
-            onConfirm = { newFood, isFavorite ->
-                viewModel.onCustomMealConfirmed(
-                    meal = newFood,
-                    isFavorite = isFavorite
-                )
-                showDirectInputDialog = false
+            state = uiState.customInputState,
+            onNameChanged = viewModel::onCustomInputNameChanged,
+            onWeightChanged = viewModel::onCustomInputWeightChanged,
+            onCarbsChanged = viewModel::onCustomInputCarbsChanged,
+            onProteinChanged = viewModel::onCustomInputProteinChanged,
+            onFatChanged = viewModel::onCustomInputFatChanged,
+            onFavoriteChanged = viewModel::onCustomInputFavoriteChanged,
+            onConfirm = {
+                viewModel.onCustomMealConfirm(selectedDate)
             },
-            onDismiss = {
-                showDirectInputDialog = false
-            }
+            onDismiss = viewModel::hideCustomInputDialog
         )
     }
 
@@ -186,7 +204,7 @@ fun DietSearchScreen(
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 OutlinedButton(
-                    onClick = { showDirectInputDialog = true },
+                    onClick = { viewModel.showCustomInputDialog() },
                     modifier = Modifier.weight(0.5f),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
@@ -202,16 +220,16 @@ fun DietSearchScreen(
                 if (uiState.isLoading) {
                     CircularProgressIndicator()
                 } else {
-                    if (uiState.searchResults.isEmpty() && searchQuery.isBlank()) {
+                    if (uiState.dietSearchState.searchResults.isEmpty() && searchQuery.isBlank()) {
                         RecentMealSearchesSection(
-                            searches = uiState.recentSearches,
+                            searches = uiState.dietSearchState.recentSearches,
                             onDeleteAllRecentMealSearches = { viewModel.onClearAllRecentMealSearches() },
                             onItemClick = { name -> viewModel.onRecentSearchClicked(name) },
                             onItemDelete = { search -> viewModel.onDeleteRecentSearch(search) }
                         )
                     } else {
                         LazyColumn(modifier = Modifier.fillMaxSize()) {
-                            items(uiState.searchResults) { foodItem ->
+                            items(uiState.dietSearchState.searchResults) { foodItem ->
                                 FoodItemCard(
                                     item = foodItem,
                                     onClick = { foodToEdit = foodItem }
@@ -234,15 +252,15 @@ fun FoodItemCard(
         onClick = onClick,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier
-			.fillMaxWidth()
-			.padding(vertical = 4.dp),
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Surface(color = Color.White) {
             Column(
                 modifier = Modifier
-					.fillMaxWidth()
-					.padding(16.dp),
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Row(
@@ -333,32 +351,16 @@ fun EditWeightDialog(
 
 @Composable
 fun CustomInputDialog(
-    onConfirm: (DietCollection, Boolean) -> Unit,
+    state: CustomInputState,
+    onNameChanged: (String) -> Unit,
+    onWeightChanged: (String) -> Unit,
+    onCarbsChanged: (String) -> Unit,
+    onProteinChanged: (String) -> Unit,
+    onFatChanged: (String) -> Unit,
+    onFavoriteChanged: (Boolean) -> Unit,
+    onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-    var weight by remember { mutableStateOf("") }
-    var carbohydrate by remember { mutableStateOf("") }
-    var protein by remember { mutableStateOf("") }
-    var fat by remember { mutableStateOf("") }
-    var calculatedKcal by remember { mutableStateOf("") }
-    var isFavorite by remember { mutableStateOf(false) }
-    val isConfirmEnabled =
-        name.isNotBlank() &&
-                weight.isDigitsOnly() &&
-                calculatedKcal.isDigitsOnly() &&
-                carbohydrate.isDigitsOnly() &&
-                protein.isDigitsOnly() &&
-                fat.isDigitsOnly()
-
-    LaunchedEffect(carbohydrate, protein, fat) {
-        val carbsGram = carbohydrate.toIntOrNull() ?: 0
-        val proteinGram = protein.toIntOrNull() ?: 0
-        val fatGram = fat.toIntOrNull() ?: 0
-        val totalKcal = (carbsGram * 4) + (proteinGram * 4) + (fatGram * 9)
-        calculatedKcal = totalKcal.toString()
-    }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(text = "음식 정보 직접 입력") },
@@ -366,41 +368,41 @@ fun CustomInputDialog(
             LazyColumn {
                 item {
                     OutlinedTextField(
-                        value = name,
-                        onValueChange = { name = it },
+                        value = state.name,
+                        onValueChange = onNameChanged,
                         label = { Text("음식 이름") },
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
-                        value = weight,
-                        onValueChange = { weight = it },
+                        value = state.weight,
+                        onValueChange = onWeightChanged,
                         label = { Text("중량 (g)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
-                        value = carbohydrate,
-                        onValueChange = { carbohydrate = it },
+                        value = state.carbohydrate,
+                        onValueChange = onCarbsChanged,
                         label = { Text("탄수화물 (g)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
-                        value = protein,
-                        onValueChange = { protein = it },
+                        value = state.protein,
+                        onValueChange = onProteinChanged,
                         label = { Text("단백질 (g)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
-                        value = fat,
-                        onValueChange = { fat = it },
+                        value = state.fat,
+                        onValueChange = onFatChanged,
                         label = { Text("지방 (g)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
-                        value = calculatedKcal,
+                        value = state.calculatedKcal,
                         onValueChange = {},
                         label = { Text("칼로리 (kcal)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -417,18 +419,8 @@ fun CustomInputDialog(
         },
         confirmButton = {
             Button(
-                onClick = {
-                    val newMeal = DietCollection(
-                        mealName = name,
-                        weight = weight.toInt(),
-                        kcal = calculatedKcal.toInt(),
-                        carbohydrate = carbohydrate.toInt(),
-                        protein = protein.toInt(),
-                        fat = fat.toInt()
-                    )
-                    onConfirm(newMeal, isFavorite)
-                },
-                enabled = isConfirmEnabled
+                onClick = onConfirm,
+                enabled = state.isConfirmEnabled
             ) {
                 Text("등록하기")
             }
@@ -440,16 +432,14 @@ fun CustomInputDialog(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Checkbox(
-                    checked = isFavorite,
-                    onCheckedChange = { isFavorite = it }
+                    checked = state.isFavorite,
+                    onCheckedChange = onFavoriteChanged
                 )
-                Text("즐겨찾기", modifier = Modifier.clickable { isFavorite = !isFavorite })
+                Text("즐겨찾기", modifier = Modifier.clickable { onFavoriteChanged(!state.isFavorite) })
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Button(onClick = onDismiss) {
-                    Text("취소")
-                }
+                Button(onClick = onDismiss) { Text("취소") }
             }
         }
     )
@@ -555,9 +545,9 @@ private fun FavoriteItemRow(
 ) {
     Row(
         modifier = Modifier
-			.fillMaxWidth()
-			.clickable(onClick = onSelect)
-			.padding(vertical = 8.dp),
+            .fillMaxWidth()
+            .clickable(onClick = onSelect)
+            .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
@@ -588,8 +578,8 @@ fun RecentMealSearchesSection(
     } else {
         Column(
             modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 12.dp),
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
@@ -636,9 +626,9 @@ private fun RecentSearchItem(
 ) {
     Row(
         modifier = Modifier
-			.fillMaxWidth()
-			.clickable(onClick = onClick)
-			.padding(vertical = 12.dp),
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(

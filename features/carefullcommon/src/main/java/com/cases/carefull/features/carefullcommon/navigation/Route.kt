@@ -1,7 +1,6 @@
 package com.cases.carefull.features.carefullcommon.navigation
 
 import com.cases.carefull.domain.model.exercise.ExerciseType
-import com.cases.carefull.domain.model.Post
 import kotlinx.serialization.Serializable
 
 
@@ -33,13 +32,10 @@ sealed interface RoutineRoute : Route {
 	data object DietRoute : RoutineRoute
 	
 	@Serializable
-	data class DietSearchScreen(val mealType: String? = null) : RoutineRoute
+	data class DietSearchScreen(val mealType: String? = null,val date: String? = null) : RoutineRoute
 	
 	@Serializable
-	data object FoodInformation : RoutineRoute
-	
-	@Serializable
-	data object BmrScreen : RoutineRoute
+	data object BmrRoute : RoutineRoute
 }
 
 @Serializable
