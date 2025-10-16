@@ -81,5 +81,7 @@ dependencies {
     ksp(libs.hilt.compiler)
     
     implementation(libs.bundles.hilt.runtime)
-
+    
+    implementation(libs.androidx.runtime.livedata)
+    
 }

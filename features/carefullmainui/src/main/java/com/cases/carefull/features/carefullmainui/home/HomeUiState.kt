@@ -12,7 +12,7 @@ import java.time.YearMonth
 data class HomeUiState(
 	val selectedDate: LocalDate = LocalDate.now(),
 	val displayedYearMonth: YearMonth = YearMonth.now(),
-	val viewType: CalendarViewType = CalendarViewType.WEEKLY,
+	val viewType: CalendarViewType = CalendarViewType.MONTHLY,
 	val calendarDates: List<LocalDate> = emptyList(),
 	val isYearMonthPickerVisible: Boolean = false,
 	val selectedDateInfo: String = "오늘",
@@ -22,7 +22,7 @@ data class HomeUiState(
 	val dailyExercise: List<ExerciseType> = emptyList(),
 
 	val todayTotalCalories: Int = 0,
-	val activityMetabolism: Int = 0,
+	val movementLevelMetabolism: Int = 0,
 
 	val loggedMealDates: Set<LocalDate> = emptySet(),
 

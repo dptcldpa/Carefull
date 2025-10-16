@@ -10,9 +10,9 @@ fun BmrCollection.toDomainModel(): Bmr {
 		age = this.age,
 		height = this.height,
 		weight = this.weight,
-		activity = this.activity,
+		movementLevel = this.movementLevel,
 		bmr = this.bmr,
-		activityBmr = this.activityBmr
+		movementLevelBmr = this.movementLevelBmr
 	)
 }
 
@@ -23,8 +23,8 @@ fun Bmr.toDataModel(): BmrCollection {
 		age = this.age,
 		height = this.height,
 		weight = this.weight,
-		activity = this.activity,
+		movementLevel = this.movementLevel,
 		bmr = this.bmr,
-		activityBmr = this.activityBmr
+		movementLevelBmr = this.movementLevelBmr
 	)
 }

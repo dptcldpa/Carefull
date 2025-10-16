@@ -59,36 +59,14 @@ fun HospitalInfoScreen(
             .padding(16.dp)
     ) {
         Text(
-            text = "예상 병명",
-            style = MaterialTheme.typography.headlineSmall
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = diagnosis, //  챗봇에서 전달된 병명
-            style = MaterialTheme.typography.bodyLarge
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "진료 과목",
+            text = "진료 과목: 내과",
             style = MaterialTheme.typography.titleMedium
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = department, //  챗봇에서 전달된 진료과
-            style = MaterialTheme.typography.bodyLarge
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         AndroidView(
             factory = { mapView },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(250.dp)
+                .height(500.dp)
                 .clip(RoundedCornerShape(12.dp))
         )
 
@@ -125,7 +103,8 @@ fun HospitalInfoScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    showAllHospitals = !showAllHospitals
+                    showBestHospitals = !showBestHospitals
+                    if (showBestHospitals) showAllHospitals = true
                 },
             verticalAlignment = Alignment.CenterVertically
         ) {

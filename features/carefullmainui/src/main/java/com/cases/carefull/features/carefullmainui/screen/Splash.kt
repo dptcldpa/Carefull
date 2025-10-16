@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -61,21 +62,21 @@ fun Splash(
 		modifier = Modifier.fillMaxSize(),
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-		Text(
-			modifier = Modifier
-				.padding(top = 150.dp),
-			text = stringResource(R.string.app_name),
-			style = MaterialTheme.typography.titleLarge
-		)
-		
-		Spacer(modifier = Modifier.height(50.dp))
+//		Text(
+//			modifier = Modifier
+//				.padding(top = 150.dp),
+//			text = stringResource(R.string.app_name),
+//			style = MaterialTheme.typography.titleLarge
+//		)
+//
+		Spacer(modifier = Modifier.height(250.dp))
 		
 		Image(
 			painter = painterResource(R.drawable.app_logo),
 			contentDescription = null,
 			modifier = Modifier
 				.padding(top = 50.dp)
-				.sizeIn(200.dp, 200.dp)
+				.size(200.dp)
 				.clip(RoundedCornerShape(8.dp)),
 			contentScale = ContentScale.Crop,
 		)

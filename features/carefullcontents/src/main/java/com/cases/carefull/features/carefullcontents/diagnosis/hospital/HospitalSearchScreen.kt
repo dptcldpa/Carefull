@@ -291,6 +291,6 @@ private fun getCurrentLocation(context: Context, useFineAccuracy: Boolean, onRes
             .addOnFailureListener { exception ->
             }
     } catch (e: SecurityException) {
-
+      
     }
 }

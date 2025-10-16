@@ -49,7 +49,10 @@ fun NavGraphBuilder.diagnosisGraph(medicineViewModel: MedicineViewModel
 		val uiState by medicineViewModel.uiState.collectAsStateWithLifecycle()
 		
 		uiState.selectedItem?.let { item ->
-			MedicineInfoScreen(medicineItem = item)
+			MedicineInfoScreen(
+				medicineItem = item,
+				navController = navController
+			)
 		}
 	}
 	// 검색 - 병원

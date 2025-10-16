@@ -27,6 +27,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -62,36 +63,27 @@ fun ExerciseScreen(
 	val todayExercise = uiState.dailyExercise.firstOrNull()
 	
 	
-	if (uiState.showDialog && uiState.selectedExercise != null) {
-		ExerciseCountDialog(
-			exerciseName = uiState.selectedExercise!!,
-			onDismiss = { viewModel.onDialogDismiss() },
-			onConfirm = { count ->
-				viewModel.onDialogConfirm()
-				navController.navigate(
-					RoutineRoute.WorkOutScreen(
-						exerciseType = uiState.selectedExercise!!,
-						count = count
-					)
-				)
-			}
-		)
-	}
+//	if (uiState.showDialog && uiState.selectedExercise != null) {
+//		ExerciseCountDialog(
+//			exerciseName = uiState.selectedExercise!!,
+//			onDismiss = { viewModel.onDialogDismiss() },
+//			onConfirm = { count ->
+//				viewModel.onDialogConfirm()
+//				navController.navigate(
+//					RoutineRoute.WorkOutScreen(
+//						exerciseType = uiState.selectedExercise!!,
+//						count = count
+//					)
+//				)
+//			}
+//		)
+//	}
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
 			.padding(horizontal = 16.dp),
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-		Text(
-			text = "운동을 선택하세요.",
-			style = MaterialTheme.typography.titleLarge,
-			fontWeight = FontWeight.Bold,
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(top = 8.dp, bottom = 8.dp),
-			textAlign = TextAlign.Start
-		)
 		if (uiState.isLoading) {
 			CircularProgressIndicator()
 		} else if (uiState.dailyExercise.isNotEmpty()) {
@@ -119,7 +111,7 @@ fun ExerciseScreen(
 		
 		LazyColumn(
 			modifier = Modifier.fillMaxSize(),
-			verticalArrangement = Arrangement.spacedBy(12.dp)
+			verticalArrangement = Arrangement.spacedBy(4.dp)
 		) {
 			items(
 				items = uiState.exerciseList,
@@ -130,7 +122,13 @@ fun ExerciseScreen(
 					uiModel = exerciseUiModel,
 					isTodayExercise = isTodayExercise,
 					onClick = {
-						viewModel.onExerciseSelected(exerciseUiModel.type)
+						navController.navigate(
+							RoutineRoute.WorkOutScreen(
+								exerciseType = exerciseUiModel.type,
+								count = 10
+							)
+						)
+//						viewModel.onExerciseSelected(exerciseUiModel.type)
 					}
 				)
 			}
@@ -149,21 +147,28 @@ fun ExerciseCard(
 	val cardModifier = if (isTodayExercise) {
 		modifier
 			.fillMaxWidth()
+			.padding(vertical = 4.dp)
 			.then(
 				Modifier.border(
-					BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+					BorderStroke(3.dp, MaterialTheme.colorScheme.primary),
 					RoundedCornerShape(16.dp)
 				)
 			)
 	} else {
-		modifier.fillMaxWidth()
+		modifier
+			.fillMaxWidth()
+			.padding(vertical = 4.dp)
 	}
 	
 	Card(
 		onClick = onClick,
 		modifier = cardModifier,
 		shape = RoundedCornerShape(16.dp),
-		elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+		elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+		colors = CardDefaults.cardColors(
+			containerColor = Color.White,
+			contentColor = 	MaterialTheme.colorScheme.primary,
+		)
 	) {
 		Row(
 			modifier = Modifier
@@ -184,7 +189,7 @@ fun ExerciseCard(
 			Column(modifier = Modifier.weight(1f)) {
 				Text(
 					text = uiModel.name,
-					style = MaterialTheme.typography.titleLarge
+					style = MaterialTheme.typography.bodyLarge
 				)
 				Spacer(modifier = Modifier.height(4.dp))
 				Text(
@@ -209,7 +214,7 @@ fun ExerciseCard(
 					Text(
 						text = "총 ${uiModel.totalCount}회",
 						style = MaterialTheme.typography.bodySmall,
-						color = MaterialTheme.colorScheme.primary,
+						color = MaterialTheme.colorScheme.onSurface,
 						fontWeight = FontWeight.SemiBold
 					)
 				}

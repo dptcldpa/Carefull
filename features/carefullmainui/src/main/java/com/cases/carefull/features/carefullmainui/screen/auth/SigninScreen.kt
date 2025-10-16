@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -56,16 +57,17 @@ fun SigninScreen(
 			.fillMaxSize(),
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-		Text(
-			modifier = Modifier
-				.padding(top = 50.dp),
-			text = stringResource(R.string.app_name),
-			style = MaterialTheme.typography.titleLarge
-		)
+//		Text(
+//			modifier = Modifier
+//				.padding(top = 50.dp),
+//			text = "CareFull",
+//			style = MaterialTheme.typography.titleLarge
+//		)
+		Spacer(modifier = Modifier.height(50.dp))
 		Image(
 			modifier = Modifier
 				.padding(top = 50.dp)
-				.sizeIn(100.dp, 100.dp)
+				.size(200.dp)
 				.clip(RoundedCornerShape(8.dp)),
 			painter = painterResource(R.drawable.app_logo),
 			contentDescription = null,
@@ -99,7 +101,7 @@ fun SigninScreen(
 						modifier = Modifier.fillMaxSize()
 					)
 				}
-				Spacer(modifier = Modifier.height(50.dp))
+//				Spacer(modifier = Modifier.height(50.dp))
 				
 				// 로그인
 				Button(
@@ -115,7 +117,7 @@ fun SigninScreen(
 					)
 				) {
 					Text(
-						text = "다른 이메일로 시작하기",
+						text = "다른 방법으로 시작하기",
 						style = MaterialTheme.typography.bodySmall,
 						color = Color.Gray,
 						textDecoration = TextDecoration.Underline
@@ -125,24 +127,24 @@ fun SigninScreen(
 			}
 		}
 		// 일단 홈 화면으로 이동하는 버튼 구현
-		Button(
-			onClick = {
-				navController.navigate(MainRoute.HomeScreen) {
-					popUpTo(MainRoute.SigninScreen) {
-						inclusive = true
-					}
-				}
-			}, modifier = Modifier, colors = ButtonDefaults.buttonColors(
-				containerColor = Color.Transparent,
-				contentColor = Color.Black
-			)
-		) {
-			Text(
-				text = "홈 화면으로 이동",
-				style = MaterialTheme.typography.bodySmall,
-				color = Color.Gray,
-				textDecoration = TextDecoration.Underline
-			)
-		}
+//		Button(
+//			onClick = {
+//				navController.navigate(MainRoute.HomeScreen) {
+//					popUpTo(MainRoute.SigninScreen) {
+//						inclusive = true
+//					}
+//				}
+//			}, modifier = Modifier, colors = ButtonDefaults.buttonColors(
+//				containerColor = Color.Transparent,
+//				contentColor = Color.Black
+//			)
+//		) {
+//			Text(
+//				text = "홈 화면으로 이동",
+//				style = MaterialTheme.typography.bodySmall,
+//				color = Color.Gray,
+//				textDecoration = TextDecoration.Underline
+//			)
+//		}
 	}
 }

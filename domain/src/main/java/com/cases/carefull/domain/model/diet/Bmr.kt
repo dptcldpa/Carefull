@@ -6,7 +6,9 @@ data class Bmr(
 	val age: Int,
 	val height: Int,
 	val weight: Int,
-	val activity: BmrActivity = BmrActivity.NONE,
+	val movementLevel: BmrMovementLevel = BmrMovementLevel.NONE,
 	val bmr: Int,
-	val activityBmr: Int
+	val movementLevelBmr: Int
 )
+
+data class BmrCalculationResult(val bmr: Int, val tdee: Int)

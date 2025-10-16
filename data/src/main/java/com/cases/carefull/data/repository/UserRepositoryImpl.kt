@@ -13,70 +13,70 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val kakaoDataSource: KaKaoDataSource,
-    private val userDataSource: UserDataSource
+	@ApplicationContext private val context: Context,
+	private val kakaoDataSource: KaKaoDataSource,
+	private val userDataSource: UserDataSource
 ) : UserRepository {
-    override suspend fun getUser(userId: String): Flow<DataResourceResult<UserInfo?>> = flow {//
-        emit(DataResourceResult.Loading)
-        emit(userDataSource.readUser(userId))
-    }.catch {
-        emit(DataResourceResult.Error(it))
-    }
-
-    override suspend fun updateUser(user: UserInfo): Flow<DataResourceResult<Unit>> = flow {//
-        emit(DataResourceResult.Loading)
-        emit(userDataSource.updateUser(user))
-    }.catch {
-        emit(DataResourceResult.Error(it))
-    }
-
-    override suspend fun getCurrentUser(): Flow<DataResourceResult<UserInfo>> = flow {
-        emit(DataResourceResult.Loading)
-        val kakaoUserResult = kakaoDataSource.getCurrentUser()
-        if (kakaoUserResult is DataResourceResult.Success) {
-            userDataSource.createUser(kakaoUserResult.data)
-        }
-        emit(kakaoUserResult)
-    }.catch {
-        emit(DataResourceResult.Error(it))
-    }
-
-    override suspend fun login(): Flow<DataResourceResult<UserInfo>> = flow {
-        emit(DataResourceResult.Loading)
-
-        when (val kakaoResult = kakaoDataSource.login(context)) {
-            is DataResourceResult.Success -> {
-                val userInfo = kakaoResult.data
-                when (val firestoreResult = userDataSource.createUser(userInfo)) {
-                    is DataResourceResult.Success -> {
-                        emit(DataResourceResult.Success(userInfo))
-                    }
-                    is DataResourceResult.Error -> {
-                        emit(DataResourceResult.Error(firestoreResult.exception))
-                    }
-                    DataResourceResult.Loading -> {}
-                }
-            }
-            is DataResourceResult.Error -> {
-                emit(DataResourceResult.Error(kakaoResult.exception))
-            }
-            DataResourceResult.Loading -> {}
-        }
-    }.catch { emit(DataResourceResult.Error(it)) }
-
-    override suspend fun logout(): Flow<DataResourceResult<Unit>> = flow {
-        emit(DataResourceResult.Loading)
-        emit(kakaoDataSource.logout())
-    }.catch {
-        emit(DataResourceResult.Error(it))
-    }
-
-    override suspend fun isLoggedIn(): Flow<DataResourceResult<Boolean>> = flow {
-        emit(DataResourceResult.Loading)
-        val result = kakaoDataSource.isLoggedIn()
-        emit(DataResourceResult.Success(result))
-    }.catch {
-        emit(DataResourceResult.Error(it))
-    }
+	override suspend fun getUser(userId: String): Flow<DataResourceResult<UserInfo?>> = flow {//
+		emit(DataResourceResult.Loading)
+		emit(userDataSource.readUser(userId))
+	}.catch {
+		emit(DataResourceResult.Error(it))
+	}
+	
+	override suspend fun updateUser(user: UserInfo): Flow<DataResourceResult<Unit>> = flow {//
+		emit(DataResourceResult.Loading)
+		emit(userDataSource.updateUser(user))
+	}.catch {
+		emit(DataResourceResult.Error(it))
+	}
+	
+	override suspend fun getCurrentUser(): Flow<DataResourceResult<UserInfo>> = flow {
+		emit(DataResourceResult.Loading)
+		val kakaoUserResult = kakaoDataSource.getCurrentUser()
+		if (kakaoUserResult is DataResourceResult.Success) {
+			userDataSource.createUser(kakaoUserResult.data)
+		}
+		emit(kakaoUserResult)
+	}.catch {
+		emit(DataResourceResult.Error(it))
+	}
+	
+	override suspend fun login(): Flow<DataResourceResult<UserInfo>> = flow {
+		emit(DataResourceResult.Loading)
+		
+		when (val kakaoResult = kakaoDataSource.login(context)) {
+			is DataResourceResult.Success -> {
+				val userInfo = kakaoResult.data
+				when (val firestoreResult = userDataSource.createUser(userInfo)) {
+					is DataResourceResult.Success -> {
+						emit(DataResourceResult.Success(userInfo))
+					}
+					is DataResourceResult.Error -> {
+						emit(DataResourceResult.Error(firestoreResult.exception))
+					}
+					DataResourceResult.Loading -> {}
+				}
+			}
+			is DataResourceResult.Error -> {
+				emit(DataResourceResult.Error(kakaoResult.exception))
+			}
+			DataResourceResult.Loading -> {}
+		}
+	}.catch { emit(DataResourceResult.Error(it)) }
+	
+	override suspend fun logout(): Flow<DataResourceResult<Unit>> = flow {
+		emit(DataResourceResult.Loading)
+		emit(kakaoDataSource.logout())
+	}.catch {
+		emit(DataResourceResult.Error(it))
+	}
+	
+	override suspend fun isLoggedIn(): Flow<DataResourceResult<Boolean>> = flow {
+		emit(DataResourceResult.Loading)
+		val result = kakaoDataSource.isLoggedIn()
+		emit(DataResourceResult.Success(result))
+	}.catch {
+		emit(DataResourceResult.Error(it))
+	}
 }

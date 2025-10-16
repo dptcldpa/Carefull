@@ -1,6 +1,7 @@
 package com.cases.carefull.features.carefullcontents.diagnosis.medicine
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
@@ -26,14 +31,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.cases.carefull.domain.model.MedicineItem
 import com.cases.carefull.features.carefullcommon.R
+import com.cases.carefull.features.carefullcommon.components.CustomTopAppBar
 
 
 @Composable
 fun MedicineInfoScreen(
-	medicineItem: MedicineItem
+	medicineItem: MedicineItem,
+	navController: NavController
 ) {
 	val scrollState = rememberScrollState()
 	
@@ -44,88 +52,104 @@ fun MedicineInfoScreen(
 		modifier = Modifier
 			.fillMaxSize()
 			.verticalScroll(scrollState)
-			.padding(20.dp)
 	) {
-		Text(
-			text =  medicineItem.itemName ?: "정보 없음",
-			style = MaterialTheme.typography.titleLarge
+		CustomTopAppBar(
+			title = medicineItem.itemName ?: "정보 없음",
+			navigationIcon = {
+				IconButton(onClick = { navController.popBackStack() }) {
+					Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "뒤로 가기")
+				}
+			},
 		)
-		
-		Spacer(modifier = Modifier.height(13.dp))
-		
-		AsyncImage(
-			model = medicineItem.itemImage,
-			contentDescription = medicineItem.itemName,
+		Column(
 			modifier = Modifier
-				.fillMaxWidth()
-				.clip(RoundedCornerShape(12.dp))
-				.background(Color.LightGray),
-			contentScale = ContentScale.FillWidth,
-			error = painterResource(id = R.drawable.ic_launcher_background)
-		)
-		
-		Spacer(modifier = Modifier.height(16.dp))
-		
-		ScrollableTabRow(
-			selectedTabIndex = selectedTab,
-			edgePadding = 0.dp,
-			containerColor = Color.Transparent,
-			contentColor = Color.Transparent,
-			indicator = {},
-			divider = {}
+				.padding(20.dp)
 		) {
-			tabs.forEachIndexed { index, title ->
-				Tab(
-					selected = selectedTab == index,
-					onClick = { selectedTab = index },
-					selectedContentColor = Color.White,
-					unselectedContentColor = Color.Black,
-					text = {
-						Box(
-							modifier = Modifier
-								.background(
-									color = if (selectedTab == index) Color(0xFF00C73C) else Color(
-										0xFFF5F5F5
-									),
-									shape = RoundedCornerShape(50)
+
+//		Text(
+//			text =  medicineItem.itemName ?: "정보 없음",
+//			style = MaterialTheme.typography.titleLarge
+//		)
+//			Spacer(modifier = Modifier.height(13.dp))
+			
+			AsyncImage(
+				model = medicineItem.itemImage,
+				contentDescription = medicineItem.itemName,
+				modifier = Modifier
+					.fillMaxWidth()
+					.clip(RoundedCornerShape(12.dp))
+					.background(Color.LightGray),
+				contentScale = ContentScale.FillWidth,
+				error = painterResource(id = R.drawable.ic_launcher_background)
+			)
+			
+			Spacer(modifier = Modifier.height(16.dp))
+			
+			ScrollableTabRow(
+				selectedTabIndex = selectedTab,
+				edgePadding = 0.dp,
+				containerColor = Color.Transparent,
+				contentColor = Color.Transparent,
+				indicator = {},
+				divider = {}
+			) {
+				tabs.forEachIndexed { index, title ->
+					Tab(
+						modifier = Modifier.padding(horizontal = 0.dp),
+						selected = selectedTab == index,
+						onClick = { selectedTab = index },
+						selectedContentColor = Color.White,
+						unselectedContentColor = Color.Black,
+						text = {
+							Box(
+								modifier = Modifier
+									.background(
+										color = if (selectedTab == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary,
+										shape = RoundedCornerShape(50)
+									)
+									.border(
+										width = 1.dp,
+										color = MaterialTheme.colorScheme.primary,
+										shape = RoundedCornerShape(50)
+									)
+									.padding(horizontal = 16.dp, vertical = 8.dp)
+							) {
+								Text(
+									text = title,
+									color = if (selectedTab == index) Color.White else Color.Black
 								)
-								.padding(horizontal = 16.dp, vertical = 8.dp)
-						) {
-							Text(
-								text = title,
-								color = if (selectedTab == index) Color.White else Color.Black
-							)
+							}
 						}
-					}
-				)
-			}
-		}
-		
-		Spacer(modifier = Modifier.height(8.dp))
-		
-		when (selectedTab) {
-			0 -> {
-				InfoBlock(label = "사용 방법", value = medicineItem.useMethodQesitm)
+					)
+				}
 			}
 			
-			1 -> {
-				InfoBlock(label = "주의 사항", value = medicineItem.atpnQesitm)
-			}
+			Spacer(modifier = Modifier.height(8.dp))
 			
-			2 -> {
-				InfoBlock(label = "상호작용", value = medicineItem.intrcQesitm)
-			}
-			
-			3 -> {
-				InfoBlock(label = "부작용", value = medicineItem.seQesitm)
-			}
-			
-			4 -> {
-				InfoBlock(label = "보관 방법", value = medicineItem.depositMethodQesitm)
-			}
-			
-			5 -> {
-				InfoBlock(label = "효능효과", value = medicineItem.efcyQesitm)
+			when (selectedTab) {
+				0 -> {
+					InfoBlock(label = "사용 방법", value = medicineItem.useMethodQesitm)
+				}
+				
+				1 -> {
+					InfoBlock(label = "주의 사항", value = medicineItem.atpnQesitm)
+				}
+				
+				2 -> {
+					InfoBlock(label = "상호작용", value = medicineItem.intrcQesitm)
+				}
+				
+				3 -> {
+					InfoBlock(label = "부작용", value = medicineItem.seQesitm)
+				}
+				
+				4 -> {
+					InfoBlock(label = "보관 방법", value = medicineItem.depositMethodQesitm)
+				}
+				
+				5 -> {
+					InfoBlock(label = "효능효과", value = medicineItem.efcyQesitm)
+				}
 			}
 		}
 	}

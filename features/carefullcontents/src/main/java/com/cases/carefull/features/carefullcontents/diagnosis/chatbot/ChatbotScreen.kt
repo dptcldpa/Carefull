@@ -11,12 +11,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,21 +29,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.cases.carefull.chatbot.ChatBotViewModel
 import com.cases.carefull.domain.model.ChatBotInfo
+import com.cases.carefull.features.carefullcommon.navigation.DiagnosisRoute
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun ChatBotScreen(
-    modifier: Modifier = Modifier,
-    onDepartmentClick: (department: String, diagnosis: String) -> Unit
+    navController: NavController,
+    viewModel: ChatBotViewModel = hiltViewModel()
 ) {
-    val viewModel = remember { ChatBotViewModel(onDepartmentClick) }
+//    val viewModel = remember { ChatBotViewModel(onDepartmentClick) }
 
     var userInput by remember { mutableStateOf("") }
     val messages = viewModel.chatMessages.reversed()
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
@@ -50,37 +58,45 @@ fun ChatBotScreen(
             reverseLayout = true
         ) {
             items(messages) { message ->
-                ChatBubble(message)
+                ChatBubble(navController,message)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Row(modifier = Modifier.fillMaxWidth()) {
-            TextField(
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            OutlinedTextField(
                 modifier = Modifier.weight(1f),
                 value = userInput,
                 onValueChange = { userInput = it },
-                placeholder = { Text("증상을 입력하세요") }
+                placeholder = { Text("증상을 입력하세요") },
+                shape = RoundedCornerShape(16.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Button(onClick = {
+            IconButton(onClick = {
                 viewModel.onUserMessage(userInput)
                 userInput = ""
             }) {
-                Text("전송")
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Send,
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = "전송"
+                )
             }
         }
     }
 }
 
 @Composable
-fun ChatBubble(message: ChatBotInfo) {
+fun ChatBubble(navController: NavController,message: ChatBotInfo) {
     val alignment = if (message.isUser) Alignment.CenterEnd else Alignment.CenterStart
-    val bgColor = if (message.isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
-    val textColor = if (message.isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+    val bgColor =
+        if (message.isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
+    val textColor =
+        if (message.isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -96,7 +112,6 @@ fun ChatBubble(message: ChatBotInfo) {
                     text = message.message,
                     color = textColor
                 )
-
                 if (!message.clickableDepartments.isNullOrEmpty()) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
@@ -112,7 +127,7 @@ fun ChatBubble(message: ChatBotInfo) {
 
                         message.clickableDepartments?.forEach { dept ->
                             AssistChip(
-                                onClick = { message.onClickDepartment?.invoke(dept) },
+                                onClick = { navController.navigate(DiagnosisRoute.HospitalInfoScreen)},
                                 label = { Text(dept) },
                                 modifier = Modifier.padding(end = 8.dp)
                             )

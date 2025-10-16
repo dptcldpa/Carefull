@@ -52,6 +52,10 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase.libraries)
+    
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.storage)
+    
 
     implementation(libs.bundles.retrofit)
 

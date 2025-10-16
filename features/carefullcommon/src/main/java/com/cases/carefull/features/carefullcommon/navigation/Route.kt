@@ -29,16 +29,13 @@ sealed interface RoutineRoute : Route {
 	data class WorkOutScreen(val exerciseType: ExerciseType, val count: Int) : RoutineRoute
 	
 	@Serializable
-	data object DietScreen : RoutineRoute
+	data object DietRoute : RoutineRoute
 	
 	@Serializable
-	data class DietSearchScreen(val mealType: String? = null) : RoutineRoute
+	data class DietSearchScreen(val mealType: String? = null,val date: String? = null) : RoutineRoute
 	
 	@Serializable
-	data object FoodInformation : RoutineRoute
-	
-	@Serializable
-	data object BmrScreen : RoutineRoute
+	data object BmrRoute : RoutineRoute
 }
 
 @Serializable
@@ -68,7 +65,13 @@ sealed interface DiagnosisRoute : Route {
 sealed interface FeedRoute : Route {
 	
 	@Serializable
-	data object Social : FeedRoute
+	data object SocialListScreen : FeedRoute
+	
+	@Serializable
+	data class PostDetailScreen(val postId:String) : FeedRoute
+	
+	@Serializable
+	data class CreatePostScreen(val postId: String? = null) : FeedRoute
 	
 	@Serializable
 	data object RankingScreen : FeedRoute

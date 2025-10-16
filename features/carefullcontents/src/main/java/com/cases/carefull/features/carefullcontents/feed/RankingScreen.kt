@@ -1,6 +1,8 @@
 package com.cases.carefull.features.carefullcontents.feed
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,12 +26,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -68,13 +72,13 @@ fun RankingScreen(
 				)
 			}
 		}
-		HorizontalDivider(thickness = 2.dp)
+		HorizontalDivider(thickness = 1.dp)
 		
 		if (!uiState.isLoading && uiState.myRankInfo?.myRecord != null) {
 			MyRankItem(myRankInfo = uiState.myRankInfo!!)
 		}
 		
-		HorizontalDivider(thickness = 2.dp)
+		HorizontalDivider(thickness = 1.dp)
 		if (uiState.isLoading) {
 			Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 				CircularProgressIndicator()
@@ -106,11 +110,11 @@ fun RankingScreen(
 
 @Composable
 fun MyRankItem(myRankInfo: MyRankInfo) {
-	Card(
+	Surface(
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(top = 4.dp, bottom = 4.dp),
-		colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+//		colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
 	) {
 		Row(
 			modifier = Modifier
@@ -121,17 +125,17 @@ fun MyRankItem(myRankInfo: MyRankInfo) {
 			Text("${myRankInfo.rank}위", style = MaterialTheme.typography.titleLarge)
 			Spacer(modifier = Modifier.width(12.dp))
 			//더미 이미지
-			Image(
-				painter = painterResource(id = R.drawable.app_logo),
-				contentDescription = "프로필 사진",
-				modifier = Modifier
-					.size(40.dp)
-					.clip(CircleShape)
-			)
+//			Image(
+//				painter = painterResource(id = R.drawable.app_logo),
+//				contentDescription = "프로필 사진",
+//				modifier = Modifier
+//					.size(40.dp)
+//					.clip(CircleShape)
+//			)
 			Spacer(modifier = Modifier.width(12.dp))
 			Text(
 				myRankInfo.myRecord?.userId ?: "",
-				style = MaterialTheme.typography.bodyLarge
+				style = MaterialTheme.typography.titleMedium
 			)
 			Spacer(modifier = Modifier.weight(1f))
 			Text(
@@ -148,7 +152,11 @@ fun RankListItem(
 	rankData: Ranker
 ) {
 	Card(
-		modifier = Modifier.fillMaxWidth(),
+		modifier = Modifier
+			.fillMaxWidth()
+,
+		colors = CardDefaults.cardColors(containerColor = Color.White),
+		border = BorderStroke(1.dp, color = Color.LightGray)
 	) {
 		Row(
 			modifier = Modifier
@@ -158,7 +166,7 @@ fun RankListItem(
 		) {
 			Text(
 				text = "${rankNumber}위",
-				style = MaterialTheme.typography.titleLarge,
+				style = MaterialTheme.typography.titleMedium,
 				fontWeight = FontWeight.Bold,
 				modifier = Modifier.width(40.dp)
 			)
