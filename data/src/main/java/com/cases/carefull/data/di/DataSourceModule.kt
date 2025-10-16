@@ -1,6 +1,8 @@
 package com.cases.carefull.data.di
 
 
+import com.cases.carefull.data.datasource.HospitalDataSource
+import com.cases.carefull.data.datasource.HospitalDataSourceImpl
 import com.cases.carefull.data.datasource.KaKaoDataSource
 import com.cases.carefull.data.datasource.KakaoDataSourceImpl
 import com.cases.carefull.data.datasource.UserDataSource
@@ -26,4 +28,10 @@ abstract class DataSourceModule {
 	abstract fun bindUserDataSource(
 		userDataSourceImpl: UserDataSourceImpl
 	): UserDataSource
+
+	@Binds
+	@Singleton
+	abstract fun bindHospitalDataSource(
+		hospitalDatasourceImpl: HospitalDataSourceImpl
+	): HospitalDataSource
 }

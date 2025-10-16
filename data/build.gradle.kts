@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.ksp)
+    alias(libs.plugins.kapt)
     
     alias(libs.plugins.google.dagger.hilt.android)
 }
@@ -70,6 +71,12 @@ dependencies {
 
     // ML Kit Pose Detection
     implementation(libs.pose.detection)
+
+    // tikxml
+    implementation("com.tickaroo.tikxml:core:0.8.13")
+    implementation("com.tickaroo.tikxml:annotation:0.8.13")
+    implementation("com.tickaroo.tikxml:retrofit-converter:0.8.13")
+    kapt("com.tickaroo.tikxml:processor:0.8.13")
 
     // RoomDB
     implementation(libs.bundles.room.libraries)

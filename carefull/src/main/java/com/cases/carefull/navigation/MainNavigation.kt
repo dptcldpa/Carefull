@@ -27,6 +27,7 @@ import com.cases.carefull.common.MainViewModel
 import com.cases.carefull.features.carefullcommon.components.LayoutAsset
 import com.cases.carefull.features.carefullcommon.navigation.MainRoute
 import com.cases.carefull.features.carefullcommon.navigation.Route
+import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalViewModel
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineViewModel
 import com.cases.carefull.features.carefullcontents.navigation.diagnosisGraph
 import com.cases.carefull.features.carefullcontents.navigation.feedGraph
@@ -40,7 +41,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainNavigation(
 	viewModel: MainViewModel = hiltViewModel(),
-	medicineViewModel: MedicineViewModel = hiltViewModel()
+	medicineViewModel: MedicineViewModel = hiltViewModel(),
+	hospitalViewModel: HospitalViewModel = hiltViewModel()
 ) {
 	val navController = rememberNavController()
 	val uiState by viewModel.uiState.collectAsState()
@@ -98,7 +100,9 @@ fun MainNavigation(
 			
 			routineGraph(navController)
 			
-			diagnosisGraph(viewModel = medicineViewModel, navController)
+			diagnosisGraph(medicineViewModel = medicineViewModel,
+				hospitalViewModel = hospitalViewModel,
+				navController)
 			
 			feedGraph(navController)
 			
