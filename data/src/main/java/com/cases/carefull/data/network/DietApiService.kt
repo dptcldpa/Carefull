@@ -9,7 +9,7 @@ interface DietApiService {
 	suspend fun getFoodList(
 		@Query("serviceKey") apiKey: String,
 		@Query("pageNo") pageNo: Int = 1,
-		@Query("numOfRows") numOfRows: Int = 10,
+		@Query("numOfRows") numOfRows: Int = 20,
 		@Query("type") type: String = "json",
 		@Query("FOOD_NM_KR") foodName: String
 	): DietResponseDTO

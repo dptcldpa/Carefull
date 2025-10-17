@@ -34,6 +34,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.pose.PoseDetector
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import java.time.Instant
@@ -57,12 +58,12 @@ class DietRepositoryImpl @Inject constructor(
 		AppDatabase.getInstance(context).recentMealSearchDao()
 	
 	@RequiresApi(Build.VERSION_CODES.O)
-	override suspend fun getAllMeal(): Flow<DataResourceResult<Map<LocalDate, List<DietCollection>>>> {
+	override fun getAllMeal(): Flow<DataResourceResult<Map<LocalDate, List<DietCollection>>>> {
 		val query = db.collection("diet_collection")
 			.orderBy("created_at", Query.Direction.DESCENDING)
 		
-		return query.snapshots().map { snapshot ->
-			try {
+		return query.snapshots()
+			.map { snapshot ->
 				val mealList = snapshot.documents.mapNotNull { document ->
 					val dto = document.toObject<DietCollectionDTO>()
 					dto?.toDomainDietCollection()?.copy(
@@ -75,11 +76,11 @@ class DietRepositoryImpl @Inject constructor(
 						.atZone(ZoneId.systemDefault())
 						.toLocalDate()
 				}
-				DataResourceResult.Success(mealsGroupedByDate)
-			} catch (e: Exception) {
-				DataResourceResult.Error(e)
+				DataResourceResult.Success(mealsGroupedByDate) as DataResourceResult<Map<LocalDate, List<DietCollection>>>
 			}
-		}
+			.catch { exception ->
+				emit(DataResourceResult.Error(exception))
+			}
 	}
 	
 	override suspend fun addMeal(mealData: DietCollection): DataResourceResult<Unit> {
@@ -133,7 +134,7 @@ class DietRepositoryImpl @Inject constructor(
 			DataResourceResult.Error(exception)
 		}
 	
-	override suspend fun getMyBmr(userId: String): Flow<Bmr?> {
+	override fun getMyBmr(userId: String): Flow<Bmr?> {
 		return bmrDao.getBmrByUserId(userId).map { bmrCollection ->
 			bmrCollection?.toDomainModel()
 		}

@@ -16,7 +16,9 @@ import com.cases.carefull.domain.util.DataResourceResult
 import com.cases.carefull.features.carefullmainui.home.HomeUiState.Companion.START_PAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
@@ -34,13 +36,16 @@ import java.time.temporal.TemporalAdjusters
 @RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val calendarRepository: CalendarRepository,
-    private val exerciseRepository: ExerciseRepository,
-    private val dietRepository: DietRepository,
+	private val calendarRepository: CalendarRepository,
+	private val exerciseRepository: ExerciseRepository,
+	private val dietRepository: DietRepository,
 	private val getSavedBmrUseCase: GetSavedBmrUseCase,
 ) : ViewModel() {
 	private val _uiState = MutableStateFlow(HomeUiState())
 	val uiState = _uiState.asStateFlow()
+	
+	private val _toastEvent = MutableSharedFlow<String>()
+	val toastEvent = _toastEvent.asSharedFlow()
 	
 	companion object {
 		const val TODAY_EXERCISE_GOAL = 30
@@ -50,6 +55,12 @@ class HomeViewModel @Inject constructor(
 		observeAllDataFlows()
 		observeCalendarChanges()
 		loadOneTimeData()
+	}
+	
+	fun oneMoreTouchExitToast() {
+		viewModelScope.launch {
+			_toastEvent.emit("한 번 더 누르면 종료됩니다.")
+		}
 	}
 	
 	private fun observeAllDataFlows() {

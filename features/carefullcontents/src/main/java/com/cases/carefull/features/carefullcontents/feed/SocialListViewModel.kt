@@ -17,23 +17,25 @@ import javax.inject.Inject
 class SocialListViewModel @Inject constructor(
 	private val socialRepository: SocialRepository
 ) : ViewModel() {
-
+	
 	private val _uiState = MutableStateFlow(SocialListUiState())
 	val uiState: StateFlow<SocialListUiState> = _uiState.asStateFlow()
-
+	
 	init {
 		fetchPosts("전체")
 	}
-
+	
 	fun fetchPosts(category: String, isLoading: Boolean = false) {
 		viewModelScope.launch {
-			_uiState.update { it.copy(
-				isLoading = true,
-				isRefreshing = !isLoading,
-				error = null,
-				selectedCategory = category
-			) }
-
+			_uiState.update {
+				it.copy(
+					isLoading = true,
+					isRefreshing = !isLoading,
+					error = null,
+					selectedCategory = category
+				)
+			}
+			
 			when (val result = socialRepository.getPosts(category)) {
 				is BaseResult.Success -> {
 					_uiState.update {
@@ -44,15 +46,15 @@ class SocialListViewModel @Inject constructor(
 						)
 					}
 				}
+				
 				is BaseResult.Error -> {
-					Log.e("SocialListViewModel", "Error fetching posts: ${result.exception.message}")
 					_uiState.update {
 						it.copy(
 							isLoading = false,
 							isRefreshing = false,
 							error = result.exception.message ?: "게시글 로드 중 오류 발생"
 						)
-
+						
 					}
 				}
 			}
