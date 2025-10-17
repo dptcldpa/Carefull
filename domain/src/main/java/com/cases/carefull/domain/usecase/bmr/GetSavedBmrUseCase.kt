@@ -5,9 +5,9 @@ import com.cases.carefull.domain.repository.DietRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetSavedBmrUseCase(
-    private val dietRepository: DietRepository
+	private val dietRepository: DietRepository
 ) {
-    suspend operator fun invoke(userId: String): Flow<Bmr?> {
-        return dietRepository.getMyBmr(userId)
-    }
+	operator fun invoke(userId: String): Flow<Bmr?> {
+		return dietRepository.getMyBmr(userId)
+	}
 }

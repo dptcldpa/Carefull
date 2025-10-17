@@ -1,8 +1,6 @@
 package com.cases.carefull.features.carefullcontents.feed
 
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,8 +28,6 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -126,7 +122,7 @@ fun PostList(posts: List<Post>, onPostClick: (String) -> Unit) {
 			contentPadding = PaddingValues(16.dp),
 			verticalArrangement = Arrangement.spacedBy(2.dp)
 		) {
-			items(posts) { post ->
+			items(posts, key = { it.id }) { post ->
 				PostItem(post = post, onClick = { onPostClick(post.id) })
 			}
 		}
@@ -225,7 +221,7 @@ fun CategoryFilterChips(
 			horizontalArrangement = Arrangement.spacedBy(8.dp),
 			contentPadding = PaddingValues(vertical = 8.dp)
 		) {
-			items(categories) { category ->
+			items(categories, key = { it }) { category ->
 				FilterChip(
 					selected = (category == selectedCategory),
 					onClick = { onCategorySelected(category) },

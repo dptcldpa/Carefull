@@ -25,11 +25,25 @@ class PostDetailViewModel @Inject constructor(
 	private val _uiState = MutableStateFlow(PostDetailUiState())
 	val uiState: StateFlow<PostDetailUiState> = _uiState.asStateFlow()
 	
+	private var lastFetchedTimeMillis: Long = 0
+	private val CACHE_DURATION_MS = 1 * 60 * 1000L // 1분
+	
 	init {
 		_uiState.update { it.copy(currentUserId = "test") }
+		fetchData()
+	}
+	
+	private fun fetchData() {
 		fetchPostDetail()
 		fetchComments()
 		checkLikeStatus()
+		lastFetchedTimeMillis = System.currentTimeMillis()
+	}
+	
+	fun refreshDataIfNeeded() {
+		if (System.currentTimeMillis() - lastFetchedTimeMillis > CACHE_DURATION_MS) {
+			fetchData()
+		}
 	}
 	
 	fun fetchPostDetail() {
@@ -66,8 +80,12 @@ class PostDetailViewModel @Inject constructor(
 			when (val result = socialRepository.addComment(postId, content)) {
 				is BaseResult.Success -> {
 					fetchComments()
-					fetchPostDetail()
-					_uiState.update { it.copy(isLoading = false) }
+					_uiState.update { currentState ->
+						val updatedPost = currentState.post?.copy(
+							commentCount = currentState.post.commentCount + 1
+						)
+						currentState.copy(isLoading = false, post = updatedPost)
+					}
 				}
 				is BaseResult.Error -> {
 					_uiState.update { it.copy(isLoading = false, error = result.exception.message ?: "댓글 작성 실패") }
@@ -97,8 +115,20 @@ class PostDetailViewModel @Inject constructor(
 			_uiState.update { it.copy(error = null) }
 			when (val result = socialRepository.toggleLike(postId)) {
 				is BaseResult.Success -> {
-					_uiState.update { it.copy(userLikedPost = !it.userLikedPost) }
-					fetchPostDetail()
+					_uiState.update { currentState ->
+						val currentLiked = currentState.userLikedPost
+						val newLikeCount = if (currentLiked) {
+							currentState.post?.likeCount?.minus(1) ?: 0
+						} else {
+							currentState.post?.likeCount?.plus(1) ?: 1
+						}
+						val updatedPost = currentState.post?.copy(likeCount = newLikeCount)
+						
+						currentState.copy(
+							userLikedPost = !currentLiked,
+							post = updatedPost
+						)
+					}
 				}
 				is BaseResult.Error -> {
 					_uiState.update { it.copy(error = result.exception.message ?: "좋아요 처리 실패") }
@@ -124,7 +154,13 @@ class PostDetailViewModel @Inject constructor(
 			when (val result = socialRepository.deleteComment(postId, commentId)) {
 				is BaseResult.Success -> {
 					fetchComments()
-					fetchPostDetail()
+					
+					_uiState.update { currentState ->
+						val updatedPost = currentState.post?.copy(
+							commentCount = currentState.post.commentCount - 1
+						)
+						currentState.copy(post = updatedPost)
+					}
 				}
 				is BaseResult.Error -> {
 					_uiState.update {

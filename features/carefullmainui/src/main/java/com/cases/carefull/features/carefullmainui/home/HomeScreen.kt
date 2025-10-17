@@ -1,6 +1,8 @@
 package com.cases.carefull.features.carefullmainui.home
 
+import android.app.Activity
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -25,10 +27,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -41,9 +48,12 @@ import androidx.navigation.NavController
 import com.cases.carefull.domain.model.CalendarViewType
 import com.cases.carefull.features.carefullcommon.components.Calendar
 import com.cases.carefull.features.carefullcommon.components.CalendarState
+import com.cases.carefull.features.carefullcommon.components.ComposableToast
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import com.cases.carefull.features.carefullmainui.home.HomeUiState.Companion.START_PAGE
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -68,6 +78,26 @@ fun HomeScreen(
 		markedDates = uiState.loggedMealDates,
 		dailyExerciseCompletedDates = uiState.dailyExerciseCompletedDates
 	)
+	
+	val context = LocalContext.current
+	val activity = (context as? Activity)
+	val scope = rememberCoroutineScope()
+	var backPressedOnce by remember { mutableStateOf(false) }
+	
+	ComposableToast(toastEvent = viewModel.toastEvent)
+	
+	BackHandler(enabled = true) {
+		if (backPressedOnce) {
+			activity?.finish()
+		} else {
+			backPressedOnce = true
+			viewModel.oneMoreTouchExitToast()
+			scope.launch {
+				delay(2000L)
+				backPressedOnce = false
+			}
+		}
+	}
 	
 	LaunchedEffect(pagerState) {
 		snapshotFlow { pagerState.settledPage }
