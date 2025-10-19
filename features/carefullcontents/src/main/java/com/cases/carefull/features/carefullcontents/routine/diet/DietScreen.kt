@@ -50,6 +50,7 @@ import com.cases.carefull.domain.model.diet.DietCollection
 import com.cases.carefull.domain.model.diet.MealType
 import com.cases.carefull.features.carefullcommon.components.Calendar
 import com.cases.carefull.features.carefullcommon.components.CalendarState
+import com.cases.carefull.features.carefullcommon.components.CommonAlertDialog
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -196,10 +197,10 @@ fun DatePickerDialog(
             }
     }
 
-    AlertDialog(
+    CommonAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("날짜 선택") },
-        text = {
+        content={
             Calendar(
                 calendarState = calendarState,
                 pagerState = pagerState,
@@ -390,7 +391,7 @@ fun DateHeader(
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = "총 $totalCalories / $todayCalories kcal",
+                text = "$totalCalories / $todayCalories kcal",
                 style = MaterialTheme.typography.bodyMedium
             )
 

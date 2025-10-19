@@ -24,7 +24,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -37,7 +36,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -54,7 +52,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -64,6 +61,9 @@ import com.cases.carefull.domain.model.diet.DietCollection
 import com.cases.carefull.domain.model.diet.FavoriteMeal
 import com.cases.carefull.domain.model.diet.MealType
 import com.cases.carefull.domain.model.diet.RecentMealSearch
+import com.cases.carefull.features.carefullcommon.components.CommonAlertDialog
+import com.cases.carefull.features.carefullcommon.components.CommonNumberOutLinedTextField
+import com.cases.carefull.features.carefullcommon.components.CommonTextOutLinedTextField
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import java.time.LocalDate
 
@@ -162,7 +162,7 @@ fun DietSearchScreen(
 	}
 	
 	if (uiState.customInputState.isDialogVisible) {
-		CustomInputDialog(
+		CustomInputAlertDialog(
 			state = uiState.customInputState,
 			onNameChanged = viewModel::onCustomInputNameChanged,
 			onWeightChanged = viewModel::onCustomInputWeightChanged,
@@ -306,51 +306,7 @@ fun FoodItemCard(
 }
 
 @Composable
-fun EditWeightDialog(
-	item: DietCollection,
-	onConfirm: (Int) -> Unit,
-	onDismiss: () -> Unit
-) {
-	var weight by remember { mutableStateOf(item.weight.toString()) }
-	
-	AlertDialog(
-		onDismissRequest = onDismiss,
-		title = { Text(text = "${item.mealName} 중량 수정") },
-		text = {
-			OutlinedTextField(
-				value = weight,
-				onValueChange = { newValue ->
-					if (newValue.all { it.isDigit() }) {
-						weight = newValue
-					}
-				},
-				label = { Text("새로운 중량 (g)") },
-				keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-			)
-		},
-		confirmButton = {
-			Button(
-				onClick = {
-					val newWeight = weight.toIntOrNull()
-					if (newWeight != null) {
-						onConfirm(newWeight)
-					}
-				},
-				enabled = weight.isNotBlank()
-			) {
-				Text("확인")
-			}
-		},
-		dismissButton = {
-			Button(onClick = onDismiss) {
-				Text("취소")
-			}
-		}
-	)
-}
-
-@Composable
-fun CustomInputDialog(
+fun CustomInputAlertDialog(
 	state: CustomInputState,
 	onNameChanged: (String) -> Unit,
 	onWeightChanged: (String) -> Unit,
@@ -361,58 +317,50 @@ fun CustomInputDialog(
 	onConfirm: () -> Unit,
 	onDismiss: () -> Unit
 ) {
-	AlertDialog(
+	CommonAlertDialog(
 		onDismissRequest = onDismiss,
 		title = { Text(text = "음식 정보 직접 입력") },
-		text = {
+		content = {
 			LazyColumn {
 				item {
-					OutlinedTextField(
+					CommonTextOutLinedTextField(
+						modifier = Modifier,
 						value = state.name,
 						onValueChange = onNameChanged,
 						label = { Text("음식 이름") },
 					)
 					Spacer(modifier = Modifier.height(8.dp))
-					OutlinedTextField(
+					CommonNumberOutLinedTextField(
+						modifier = Modifier,
 						value = state.weight,
 						onValueChange = onWeightChanged,
-						label = { Text("중량 (g)") },
-						keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+						label = { Text("중량 (g)") }
 					)
 					Spacer(modifier = Modifier.height(8.dp))
-					OutlinedTextField(
+					CommonNumberOutLinedTextField(
+						modifier = Modifier,
 						value = state.carbohydrate,
 						onValueChange = onCarbsChanged,
-						label = { Text("탄수화물 (g)") },
-						keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+						label = { Text("탄수화물 (g)") }
 					)
 					Spacer(modifier = Modifier.height(8.dp))
-					OutlinedTextField(
+					CommonNumberOutLinedTextField(
+						modifier = Modifier,
 						value = state.protein,
 						onValueChange = onProteinChanged,
-						label = { Text("단백질 (g)") },
-						keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+						label = { Text("단백질 (g)") }
 					)
 					Spacer(modifier = Modifier.height(8.dp))
-					OutlinedTextField(
+					CommonNumberOutLinedTextField(
+						modifier = Modifier,
 						value = state.fat,
 						onValueChange = onFatChanged,
-						label = { Text("지방 (g)") },
-						keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+						label = { Text("지방 (g)") }
 					)
-					Spacer(modifier = Modifier.height(8.dp))
-					OutlinedTextField(
-						value = state.calculatedKcal,
-						onValueChange = {},
-						label = { Text("칼로리 (kcal)") },
-						keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-						readOnly = true,
-						enabled = false,
-						colors = OutlinedTextFieldDefaults.colors(
-							disabledTextColor = MaterialTheme.colorScheme.onSurface,
-							disabledBorderColor = MaterialTheme.colorScheme.outline,
-							disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
-						)
+					Spacer(modifier = Modifier.height(14.dp))
+					ResultRowComponent(
+						label = "총 칼로리",
+						value = state.calculatedKcal
 					)
 				}
 			}
@@ -436,9 +384,9 @@ fun CustomInputDialog(
 					onCheckedChange = onFavoriteChanged
 				)
 				Text("즐겨찾기", modifier = Modifier.clickable { onFavoriteChanged(!state.isFavorite) })
-				
+
 				Spacer(modifier = Modifier.weight(1f))
-				
+
 				Button(onClick = onDismiss) { Text("취소") }
 			}
 		}
@@ -503,6 +451,53 @@ fun SearchBar(
 	}
 }
 
+
+@Composable
+fun EditWeightDialog(
+	item: DietCollection,
+
+	onConfirm: (Int) -> Unit,
+	onDismiss: () -> Unit
+) {
+	var weight by remember { mutableStateOf(item.weight.toString()) }
+
+	CommonAlertDialog(
+		onDismissRequest = onDismiss,
+		title = { Text(text = "${item.mealName} 중량 수정") },
+		content = {
+			CommonNumberOutLinedTextField(
+				modifier = Modifier,
+				value = weight,
+				onValueChange = { newValue ->
+					if (newValue.all { it.isDigit() }) {
+						weight = newValue
+					}
+				},
+				label = { Text("새로운 중량 (g)") }
+			)
+		},
+		confirmButton = {
+			Button(
+				onClick = {
+					val newWeight = weight.toIntOrNull()
+					if (newWeight != null) {
+						onConfirm(newWeight)
+					}
+				},
+				enabled = weight.isNotBlank()
+			) {
+				Text("확인")
+			}
+		},
+		dismissButton = {
+			Button(onClick = onDismiss) {
+				Text("취소")
+			}
+		}
+	)
+}
+
+
 @Composable
 fun FavoritesDialog(
 	favorites: List<FavoriteMeal>,
@@ -510,10 +505,10 @@ fun FavoritesDialog(
 	onSelect: (FavoriteMeal) -> Unit,
 	onDelete: (FavoriteMeal) -> Unit
 ) {
-	AlertDialog(
+	CommonAlertDialog(
 		onDismissRequest = onDismiss,
 		title = { Text("즐겨찾기 목록") },
-		text = {
+		content = {
 			if (favorites.isEmpty()) {
 				Text("즐겨찾기된 음식이 없습니다.")
 			} else {
