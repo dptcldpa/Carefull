@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">CareFull</string>
+
+    <!-- ====================================계정 (Account)==================================== -->
     <string name="email">이메일</string>
     <string name="email_input">이메일을 입력하세요.</string>
     <string name="password">비밀번호</string>
@@ -13,18 +15,7 @@
     <string name="signin_kakao">카카오로 로그인</string>
     <string name="nickname">닉네임</string>
     <string name="nickname_input">닉네임을 입력하세요.</string>
-    <string name="home">홈</string>
-    <string name="mypage">마이</string>"
     <string name="account_management">계정 관리</string>
-    <string name="basal_metabolic_rate_measurement">기초(활동)대사량 측정</string>
-    <string name="gender">성별</string>
-    <string name="weight">체중</string>
-    <string name="height">신장</string>
-    <string name="age">나이(만)</string>
-    <string name="basal_metabolic_rate">기초대사량</string>
-    <string name="movementlevel_setting">활동량 설정</string>
-    <string name="total_daily_energy">일일대사량</string>
-    <string name="kcal">kcal</string>
     <string name="notification_setting">알림 설정</string>
     <string name="writing_management">작성 글 관리</string>
     <string name="profile_management">프로필 관리</string>
@@ -32,13 +23,108 @@
     <string name="change_profile">프로필 변경</string>
     <string name="change_nickname">닉네임 변경</string>
     <string name="change_password">비밀번호 변경</string>
-    <string name="save">저장하기</string>
+
+    <!-- ===================================기초(활동)대사량=================================== -->
+    <string name="basal_metabolic_rate_measurement">기초(활동)대사량 측정</string>
+    <string name="basal_metabolic_rate">기초대사량</string>
+    <string name="movementlevel_setting">활동량 설정</string>
+    <string name="total_daily_energy">일일대사량</string>
+
+    <!-- ====================================공통 (Common)==================================== -->
+    <string name="common_confirm">확인</string>
+    <string name="common_save">저장하기</string>
+    <string name="common_cancel">취소</string>
+    <string name="common_close">닫기</string>
+    <string name="common_delete">삭제</string>
+    <string name="common_delete_all">모두 삭제하기</string>
+    <string name="common_register">등록하기</string>
+    <string name="common_favorites">즐겨찾기</string>
+    <string name="common_clear_input">입력 초기화</string>
+
+    <!-- =====================================프로필 정보===================================== -->
+    <string name="gender">성별</string>
+    <string name="gender_male">남성</string>
+    <string name="gender_female">여성</string>
+    <string name="weight">체중</string>
+    <string name="height">신장</string>
+    <string name="age">나이(만)</string>
+
+    <!-- =====================================단위 (Units)===================================== -->
+    <string name="unit_cm">cm</string>
+    <string name="unit_kg">kg</string>
+    <string name="unit_gram">g</string>
+    <string name="unit_kcal">kcal</string>
+    <string name="unit_age">세</string>
+
+    <!-- =====================================날짜 (Date)===================================== -->
+    <string name="date_picker_title">날짜 선택</string>
+    <string name="date_today">오늘</string>
+    <string name="date_yesterday">어제</string>
+    <string name="month_short">M</string>
+    <string name="day_short">d</string>
+    <!-- 사용 예시: 10월 27일 -->
+    <string name="date_format_month_day">%1$s월 %2$s일</string>
+
+    <!-- ==================================영양소 (Nutrients)================================== -->
+    <string name="nutrient_carbohydrate">탄수화물</string>
+    <string name="nutrient_protein">단백질</string>
+    <string name="nutrient_fat">지방</string>
+    <string name="nutrient_carbohydrate_short">탄</string>
+    <string name="nutrient_protein_short">단</string>
+    <string name="nutrient_fat_short">지</string>
+    <!-- 사용 예시: 탄수화물 : 100g -->
+    <string name="nutrient_label_format">%1$s : %2$s%3$s</string>
+    <!-- 사용 예시: 1234 / 2000 kcal -->
+    <string name="calories_progress_format">%1$s / %2$s kcal</string>
+    <!-- 사용 예시: 닭가슴살 (150g) -->
+    <string name="meal_with_weight_format">%1$s (%2$sg)</string>
+    <!-- 사용 예시: (150g) -->
+    <string name="weight_in_parentheses_format">(%1$sg)</string>
+    <!-- 사용 예시: 350 kcal -->
+    <string name="kcal_format">%1$s kcal</string>
+    <!-- 사용 예시: 닭가슴살 중량 수정 -->
+    <string name="dialog_title_edit_weight_for_meal">%1$s 중량 수정</string>
+
+
+    <!-- ========================음식 입력 및 검색 (Food Input & Search)======================== -->
+    <string name="food_search_title">음식 검색</string>
+    <string name="food_manual_entry_button">직접 입력하기</string>
+    <string name="food_search_hint">음식을 입력하세요.</string>
+    <string name="food_home_empty_message">   아직 추가된 음식이 없습니다.</string>
+
+    <!-- ============================음식 정보 직접 입력 다이얼로그============================ -->
+    <string name="dialog_title_food_manual_entry">음식 정보 직접 입력</string>
+    <string name="label_food_name">음식 이름</string>
+    <string name="label_weight_with_unit">중량 (g)</string>
+    <string name="label_carbohydrate_with_unit">탄수화물 (g)</string>
+    <string name="label_protein_with_unit">단백질 (g)</string>
+    <string name="label_fat_with_unit">지방 (g)</string>
+    <string name="label_total_calories">총 칼로리</string>
+    <string name="dialog_title_edit_weight">중량 수정</string>
+    <string name="label_new_weight_with_unit">새로운 중량 (g)</string>
+
+    <!-- ================================즐겨찾기 (Favorites)================================ -->
+    <string name="dialog_title_favorites_list">즐겨찾기 목록</string>
+    <string name="favorites_empty_message">즐겨찾기된 음식이 없습니다.</string>
+
+    <!-- ==============================최근 검색 (Search History)============================== -->
+    <string name="search_history_title">최근 검색</string>
+    <string name="search_history_empty_message">최근 검색 기록이 없습니다.</string>
+
+    <!-- ==========================컨텐츠 설명 (Content Descriptions)========================== -->
+    <string name="content_description_search_icon">검색 아이콘</string>
+    <string name="content_description_history_icon">최근 검색 아이콘</string>
+    <string name="content_description_delete_item">기록 삭제</string>
+
+    <!-- ======================================네비게이션====================================== -->
+    <string name="home">홈</string>
     <string name="exercise_and_diet">운동/식단</string>
     <string name="exercise">운동</string>
     <string name="diet">식단</string>
     <string name="feed">피드</string>
     <string name="social">소셜</string>
     <string name="ranking">랭킹</string>
+    <string name="mypage">마이</string>
 
     <string-array name="bottom_nav_items">
         <item>홈,HomeScreen,Home</item>
@@ -57,4 +143,5 @@
         <item>소셜</item>
         <item>랭킹</item>
     </string-array>
+
 </resources>

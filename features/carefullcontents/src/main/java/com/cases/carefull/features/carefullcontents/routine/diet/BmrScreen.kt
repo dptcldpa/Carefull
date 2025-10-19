@@ -84,9 +84,9 @@ fun BmrScreen(
 
     Column(
         modifier = Modifier
-			.fillMaxSize()
-			.padding(16.dp)
-			.verticalScroll(scrollState),
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
@@ -101,32 +101,32 @@ fun BmrScreen(
                 selected = (uiState.gender == Gender.MALE),
                 onClick = { onGenderSelected(Gender.MALE) }
             )
-            Text("남성")
+            Text(text = stringResource(id = R.string.gender_male))
             Spacer(Modifier.width(8.dp))
             RadioButton(
                 selected = (uiState.gender == Gender.FEMALE),
                 onClick = { onGenderSelected(Gender.FEMALE) }
             )
-            Text("여성")
+            Text(text = stringResource(id = R.string.gender_female))
         }
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextFieldComponent(
             label = stringResource(R.string.height),
             value = uiState.height,
             onValueChange = onHeightChanged,
-            unit = "cm"
+            unit = stringResource(id = R.string.unit_cm)
         )
         OutlinedTextFieldComponent(
             label = stringResource(R.string.weight),
             value = uiState.weight,
             onValueChange = onWeightChanged,
-            unit = "kg"
+            unit = stringResource(id = R.string.unit_kg)
         )
         OutlinedTextFieldComponent(
             label = stringResource(R.string.age),
             value = uiState.age,
             onValueChange = onAgeChanged,
-            unit = "세"
+            unit = stringResource(id = R.string.unit_age)
         )
         Spacer(modifier = Modifier.height(24.dp))
         ExposedDropdownMenuBox(
@@ -141,8 +141,8 @@ fun BmrScreen(
                 label = { Text(stringResource(R.string.movementlevel_setting)) },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isMovementLevelMenuExpanded) },
                 modifier = Modifier
-					.menuAnchor(type = MenuAnchorType.PrimaryEditable)
-					.fillMaxWidth(),
+                    .menuAnchor(type = MenuAnchorType.PrimaryEditable)
+                    .fillMaxWidth(),
                 textStyle = LocalTextStyle.current.copy(
                     fontSize = 14.sp
                 )
@@ -177,9 +177,9 @@ fun BmrScreen(
         Button(
             onClick = onSaveClicked,
             modifier = Modifier
-				.fillMaxWidth(0.8f)
-				.height(56.dp)
-				.padding(bottom = 16.dp),
+                .fillMaxWidth(0.8f)
+                .height(56.dp)
+                .padding(bottom = 16.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
                 contentColor = Color.White
@@ -191,7 +191,7 @@ fun BmrScreen(
                     uiState.isBmrChanged
         ) {
             Text(
-                text = stringResource(R.string.save),
+                text = stringResource(R.string.common_save),
                 style = MaterialTheme.typography.bodyLarge
             )
         }
@@ -261,12 +261,11 @@ fun ResultRowComponent(
         )
         Text(
             modifier = Modifier.padding(start = 8.dp),
-            text = stringResource(R.string.kcal),
+            text = stringResource(R.string.unit_kcal),
             style = MaterialTheme.typography.bodyLarge
         )
     }
 }
-
 
 
 @RequiresApi(Build.VERSION_CODES.O)
