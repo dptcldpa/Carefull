@@ -110,19 +110,19 @@ fun BmrScreen(
             Text("여성")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        EditableMenuButton(
+        OutlinedTextFieldComponent(
             label = stringResource(R.string.height),
             value = uiState.height,
             onValueChange = onHeightChanged,
             unit = "cm"
         )
-        EditableMenuButton(
+        OutlinedTextFieldComponent(
             label = stringResource(R.string.weight),
             value = uiState.weight,
             onValueChange = onWeightChanged,
             unit = "kg"
         )
-        EditableMenuButton(
+        OutlinedTextFieldComponent(
             label = stringResource(R.string.age),
             value = uiState.age,
             onValueChange = onAgeChanged,
@@ -163,12 +163,12 @@ fun BmrScreen(
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
-        ResultRow(
+        ResultRowComponent(
             label = stringResource(R.string.basal_metabolic_rate),
             value = uiState.calculatedBmr.toString()
         )
         Spacer(modifier = Modifier.height(16.dp))
-        ResultRow(
+        ResultRowComponent(
             label = stringResource(R.string.total_daily_energy),
             value = uiState.movementLevelMetabolism.toString(),
             isHighlighted = true
@@ -199,7 +199,7 @@ fun BmrScreen(
 }
 
 @Composable
-fun EditableMenuButton(
+fun OutlinedTextFieldComponent(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
@@ -207,8 +207,8 @@ fun EditableMenuButton(
 ) {
     Row(
         modifier = Modifier
-			.fillMaxWidth()
-			.padding(horizontal = 32.dp),
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -220,7 +220,9 @@ fun EditableMenuButton(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.width(100.dp),
+            modifier = Modifier
+                .width(80.dp)
+                .padding(top = 5.dp, bottom = 5.dp),
             textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -234,11 +236,15 @@ fun EditableMenuButton(
 }
 
 @Composable
-private fun ResultRow(label: String, value: String, isHighlighted: Boolean = false) {
+fun ResultRowComponent(
+    label: String,
+    value: String,
+    isHighlighted: Boolean = false
+) {
     Row(
         modifier = Modifier
-			.fillMaxWidth()
-			.padding(horizontal = 32.dp),
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -260,6 +266,8 @@ private fun ResultRow(label: String, value: String, isHighlighted: Boolean = fal
         )
     }
 }
+
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
@@ -283,6 +291,31 @@ fun BmrScreenPreview() {
             onAgeChanged = {},
             onMovementLevelSelected = {},
             onSaveClicked = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OutlinedTextFieldComponentPreview() {
+    CarefullTheme {
+        OutlinedTextFieldComponent(
+            label = "신장",
+            value = "180",
+            onValueChange = {},
+            unit = "cm"
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ResultRowComponentPreview() {
+    CarefullTheme {
+        ResultRowComponent(
+            label = "기초 대사량",
+            value = "1767",
+            isHighlighted = true
         )
     }
 }
