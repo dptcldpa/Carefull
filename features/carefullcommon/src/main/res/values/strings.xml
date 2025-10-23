@@ -1,6 +1,28 @@
 <resources>
     <string name="app_name">CareFull</string>
 
+    <!-- ====================================공통 (Common)==================================== -->
+    <string name="common_confirm">확인</string>
+    <string name="common_save">저장하기</string>
+    <string name="common_cancel">취소</string>
+    <string name="common_close">닫기</string>
+    <string name="common_delete">삭제</string>
+    <string name="common_delete_all">모두 삭제하기</string>
+    <string name="common_register">등록하기</string>
+    <string name="common_favorites">즐겨찾기</string>
+    <string name="common_clear_input">입력 초기화</string>
+    <string name="common_edit">수정</string>
+    <string name="common_back">뒤로 가기</string>
+    <string name="common_image">이미지</string>
+    <string name="common_image_format"> 이미지</string>
+    <string name="common_like">좋아요</string>
+    <string name="common_comment">댓글</string>
+    <string name="common_post">게시글</string>
+
+    <!-- ======================= 인증 / 로그인 (Authentication / Login) ======================= -->
+    <string name="auth_login_with_kakao">카카오 로그인</string>
+    <string name="auth_start_with_other_method">다른 방법으로 시작하기</string>
+
     <!-- ====================================계정 (Account)==================================== -->
     <string name="email">이메일</string>
     <string name="email_input">이메일을 입력하세요.</string>
@@ -12,7 +34,6 @@
     <string name="find_id">아이디 찾기</string>
     <string name="find_password">비밀번호 찾기</string>
     <string name="signup">회원가입</string>
-    <string name="signin_kakao">카카오로 로그인</string>
     <string name="nickname">닉네임</string>
     <string name="nickname_input">닉네임을 입력하세요.</string>
     <string name="account_management">계정 관리</string>
@@ -30,17 +51,6 @@
     <string name="movementlevel_setting">활동량 설정</string>
     <string name="total_daily_energy">일일대사량</string>
 
-    <!-- ====================================공통 (Common)==================================== -->
-    <string name="common_confirm">확인</string>
-    <string name="common_save">저장하기</string>
-    <string name="common_cancel">취소</string>
-    <string name="common_close">닫기</string>
-    <string name="common_delete">삭제</string>
-    <string name="common_delete_all">모두 삭제하기</string>
-    <string name="common_register">등록하기</string>
-    <string name="common_favorites">즐겨찾기</string>
-    <string name="common_clear_input">입력 초기화</string>
-
     <!-- =====================================프로필 정보===================================== -->
     <string name="gender">성별</string>
     <string name="gender_male">남성</string>
@@ -55,15 +65,11 @@
     <string name="unit_gram">g</string>
     <string name="unit_kcal">kcal</string>
     <string name="unit_age">세</string>
+    <string name="unit_count">회</string>
+    <string name="unit_rank">위</string>
 
-    <!-- =====================================날짜 (Date)===================================== -->
-    <string name="date_picker_title">날짜 선택</string>
-    <string name="date_today">오늘</string>
-    <string name="date_yesterday">어제</string>
-    <string name="month_short">M</string>
-    <string name="day_short">d</string>
-    <!-- 사용 예시: 10월 27일 -->
-    <string name="date_format_month_day">%1$s월 %2$s일</string>
+    <string name="unit_count_format">%1$s회</string>
+    <string name="unit_rank_format">%1$s위</string>
 
     <!-- ==================================영양소 (Nutrients)================================== -->
     <string name="nutrient_carbohydrate">탄수화물</string>
@@ -116,6 +122,102 @@
     <string name="content_description_history_icon">최근 검색 아이콘</string>
     <string name="content_description_delete_item">기록 삭제</string>
 
+    <!-- ==================================== 운동 (Workout) ==================================== -->
+    <string name="workout_title">오늘의 운동</string>
+    <string name="workout_button_stop">그만하기</string>
+    <string name="workout_button_start">운동 시작</string>
+    <string name="permission_camera_request">카메라 권한을 허용해주세요.</string>
+
+    <string name="workout_label_count_format">횟수: %1$s</string>
+    <string name="workout_label_status_format">상태: %1$s</string>
+    <string name="workout_title_format">오늘의 운동: %1$s</string>
+    <string name="workout_stats_today_format">오늘 %1$s회</string>
+    <string name="workout_stats_weekly_format">이번 주 %1$s회</string>
+    <string name="workout_stats_total_format">총 %1$s회</string>
+
+    <string name="workout_name_dumbbell_curl">덤벨 컬</string>
+    <string name="workout_desc_dumbbell_curl">이두근을 발달시키는 대표적인 운동으로,덤벨을 이용해 팔을 굽혔다 펴는 동작을 반복합니다.</string>
+    <string name="workout_name_squat">스쿼트</string>
+    <string name="workout_desc_squat">쪼그려 앉는 동작을 반복하는 웨이트 트레이닝 운동입니다. 양발을 어깨 너비로 벌리고 서서 무릎을 굽혔다 펴는 동작을 통해 하체 근육을 강화합니다.</string>
+    <string name="workout_name_pushup">푸쉬업</string>
+    <string name="workout_desc_pushup">엎드린 자세에서 손과 발을 지지점으로 하여 몸을 바닥에서 밀어 올리는 전신 운동입니다.가슴, 어깨, 삼두근, 코어 근육 등을 발달에 효과적입니다.</string>
+    <string name="workout_name_shoulder_press">덤벨 숄더 프레스</string>
+    <string name="workout_desc_shoulder_press">어깨 근육을 발달시키는 대표적인 운동으로, 덤벨을 이용하여 양쪽 어깨를 동시에 또는 번갈아 가며 머리 위로 밀어 올리는 동작으로, 어깨 근육을 키우는 데 효과적입니다.</string>
+
+    <!-- ======================== 커뮤니티 / 게시글 (Community / Post) ======================== -->
+    <string name="post_create_new">새 글 작성</string>
+    <string name="post_edit_title">글 수정</string>
+    <string name="post_button_select_image">이미지 선택</string>
+    <string name="post_label_select_image_optional">이미지 선택 (선택 사항)</string>
+    <string name="post_label_category">카테고리</string>
+    <string name="post_label_title">제목</string>
+    <string name="post_label_content">내용</string>
+    <string name="post_button_edit_complete">수정 완료</string>
+    <string name="post_button_create">게시글 작성</string>
+    <string name="post_button_edit">게시글 수정</string>
+    <string name="post_button_delete">게시글 삭제</string>
+
+    <string name="category_all">전체</string>
+    <string name="category_free">자유</string>
+    <string name="category_workout">운동</string>
+    <string name="category_diet">식단</string>
+    <string name="category_medical">의료</string>
+
+    <string name="comment_count_format">댓글 (%1$d)</string>
+    <string name="comment_menu">댓글 메뉴</string>
+    <string name="comment_edit_title">댓글 수정</string>
+    <string name="comment_input_hint">댓글 입력</string>
+    <string name="comment_send_button">댓글 전송</string>
+
+    <string name="dialog_title_confirm_delete_post">게시글 삭제 확인</string>
+    <string name="dialog_message_confirm_delete_post">이 게시글을 정말로 삭제하시겠습니까?</string>
+    <string name="dialog_title_confirm_delete_comment">댓글 삭제 확인</string>
+    <string name="dialog_message_confirm_delete_comment">이 댓글을 정말로 삭제하시겠습니까?</string>
+
+    <string name="post_info_format_user_category">%1$s | %2$s</string>
+    <string name="post_info_format_user_category2">%1$s - %2$s</string>
+
+    <string name="content_description_post_image">Post Image</string>
+
+    <!-- ============================== 홈 / 기록 (Home / Record) ============================== -->
+    <string name="record_workout_title">운동 기록</string>
+    <string name="record_diet_title">식단 기록</string>
+    <string name="record_today_calorie_intake">오늘의 섭취 칼로리</string>
+    <string name="record_total_calorie_intake">총 섭취 칼로리</string>
+    <string name="record_button_add_diet">식단 입력</string>
+    <string name="record_today_workout">오늘의 운동</string>
+    <!-- 사용 예시: / 2000 kcal -->
+    <string name="calorie_goal_format">/ %1$s kcal</string>
+    <!-- 사용 예시: / 100 회 -->
+    <string name="count_goal_format">/ %1$s 회</string>
+
+    <!-- ============================= 날짜 및 시간 (Date & Time) ============================= -->
+    <string name="date_today">오늘</string>
+    <string name="date_tomorrow">내일</string>
+    <string name="date_yesterday">어제</string>
+    <string name="date_days_after_format">%1$d일 후</string>
+    <string name="date_days_before_format">%1$d일 전</string>
+    <string name="date_previous_year">이전 년도</string>
+    <string name="date_next_year">다음 년도</string>
+    <string name="date_month">월</string>
+    <string name="date_picker_title">날짜 선택</string>
+    <string name="date_select_month">월 선택</string>
+    <string name="date_move_to_today">오늘로 이동</string>
+    <string name="month_short">M</string>
+    <string name="day_short">d</string>
+
+    <string name="completion_workout_today">오늘의 운동 완료</string>
+    <string name="completion_diet_record">식단 기록 완료</string>
+
+    <!-- 사용 예시: 10월 27일 -->
+    <string name="date_format_month">%1$s월</string>
+    <string name="date_format_month_day">%1$s월 %2$s일</string>
+
+    <string name="date_format_full" translatable="false">yyyy.MM.dd HH:mm</string>
+    <string name="date_format_date_only" translatable="false">yyyy.MM.dd</string>
+    <string name="date_format_short" translatable="false">MM.dd HH:mm</string>
+
+
     <!-- ======================================네비게이션====================================== -->
     <string name="home">홈</string>
     <string name="exercise_and_diet">운동/식단</string>
@@ -143,5 +245,26 @@
         <item>소셜</item>
         <item>랭킹</item>
     </string-array>
+
+    <!-- =================== 에러 및 상태 메시지 (Error & Status Messages) =================== -->
+    <string name="error_generic_format">에러 발생: %1$s</string>
+    <string name="error_fetch_data_failed">데이터를 불러오는 데 실패했습니다.</string>
+    <string name="error_fetch_daily_workout_failed">오늘의 운동을 불러오지 못했습니다.</string>
+    <string name="error_post_load_failed">게시글 로드 중 오류 발생</string>
+    <string name="error_comment_load_failed">댓글 로드 실패</string>
+    <string name="error_post_detail_load_failed">게시글 상세 로드 실패</string>
+    <string name="error_comment_create_failed">댓글 작성 실패</string>
+    <string name="error_comment_edit_failed">댓글 수정 실패</string>
+    <string name="error_like_process_failed">좋아요 처리 실패</string>
+    <string name="error_like_check_failed">좋아요 상태 확인 실패</string>
+    <string name="error_comment_delete_failed">댓글 삭제 실패</string>
+    <string name="error_post_delete_failed">게시글 삭제 실패</string>
+    <string name="error_edit_failed">수정 실패</string>
+    <string name="error_create_failed">작성 실패</string>
+    <string name="error_no_post">게시글이 없습니다.</string>
+    <string name="error_no_ranking_data">랭킹 데이터가 없습니다.</string>
+    <string name="error_id_info_required">아이디 정보 필요</string>
+
+    <string name="app_exit_toast">한 번 더 누르면 종료됩니다.</string>
 
 </resources>

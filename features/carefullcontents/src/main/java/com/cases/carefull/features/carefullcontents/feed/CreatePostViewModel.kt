@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cases.carefull.domain.model.SocialCategory
 import com.cases.carefull.domain.repository.SocialRepository
 import com.cases.carefull.domain.util.BaseResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,7 +48,7 @@ class CreatePostViewModel @Inject constructor(
 	fun submitPost(
 		title: String,
 		content: String,
-		category: String,
+		category: SocialCategory,
 		imageUri: Uri?
 	) {
 		viewModelScope.launch {

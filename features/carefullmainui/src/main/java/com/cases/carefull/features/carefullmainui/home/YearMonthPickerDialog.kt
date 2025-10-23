@@ -35,86 +35,95 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import java.time.YearMonth
+import com.cases.carefull.features.carefullcommon.R
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun YearMonthPickerDialog(
-	isVisible: Boolean,
-	initialYearMonth: YearMonth,
-	onDismissRequest: () -> Unit,
-	onYearMonthSelected: (YearMonth) -> Unit
+    isVisible: Boolean,
+    initialYearMonth: YearMonth,
+    onDismissRequest: () -> Unit,
+    onYearMonthSelected: (YearMonth) -> Unit
 ) {
-	if (isVisible) {
-		var displayedYear by remember { mutableIntStateOf(initialYearMonth.year) }
-		
-		Dialog(onDismissRequest = onDismissRequest) {
-			Surface(
-				shape = RoundedCornerShape(16.dp),
-				color = MaterialTheme.colorScheme.surface,
-				tonalElevation = 8.dp
-			) {
-				Column(
-					modifier = Modifier.padding(16.dp),
-					horizontalAlignment = Alignment.CenterHorizontally
-				) {
-					Row(
-						modifier = Modifier.fillMaxWidth(),
-						horizontalArrangement = Arrangement.SpaceBetween,
-						verticalAlignment = Alignment.CenterVertically
-					) {
-						IconButton(onClick = { displayedYear-- }) {
-							Icon(Icons.Default.ArrowBackIosNew, contentDescription = "이전 년도")
-						}
-						Text(
-							text = displayedYear.toString(),
-							fontSize = 20.sp,
-							fontWeight = FontWeight.Bold
-						)
-						IconButton(onClick = { displayedYear++ }) {
-							Icon(
-								Icons.AutoMirrored.Filled.ArrowForwardIos,
-								contentDescription = "다음 년도"
-							)
-						}
-					}
-					
-					Spacer(modifier = Modifier.height(16.dp))
-					
-					val months = (1..12).toList()
-					LazyVerticalGrid(
-						columns = GridCells.Fixed(4),
-						contentPadding = PaddingValues(vertical = 8.dp)
-					) {
-						items(months) { month ->
-							val isSelected =
-								(displayedYear == initialYearMonth.year && month == initialYearMonth.monthValue)
-							val backgroundColor =
-								if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
-							val textColor =
-								if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
-							
-							Box(
-								modifier = Modifier
-									.padding(4.dp)
-									.clip(CircleShape)
-									.background(backgroundColor)
-									.clickable {
-										onYearMonthSelected(YearMonth.of(displayedYear, month))
-									}
-									.padding(vertical = 8.dp),
-								contentAlignment = Alignment.Center
-							) {
-								Text(text = "${month}월", color = textColor)
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+    if (isVisible) {
+        var displayedYear by remember { mutableIntStateOf(initialYearMonth.year) }
+
+        Dialog(onDismissRequest = onDismissRequest) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 8.dp
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = { displayedYear-- }) {
+                            Icon(
+                                Icons.Default.ArrowBackIosNew,
+                                contentDescription = stringResource(R.string.date_previous_year)
+                            )
+                        }
+                        Text(
+                            text = displayedYear.toString(),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        IconButton(onClick = { displayedYear++ }) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowForwardIos,
+                                contentDescription = stringResource(R.string.date_next_year)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    val months = (1..12).toList()
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(4),
+                        contentPadding = PaddingValues(vertical = 8.dp)
+                    ) {
+                        items(months) { month ->
+                            val isSelected =
+                                (displayedYear == initialYearMonth.year && month == initialYearMonth.monthValue)
+                            val backgroundColor =
+                                if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+                            val textColor =
+                                if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+
+                            Box(
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .clip(CircleShape)
+                                    .background(backgroundColor)
+                                    .clickable {
+                                        onYearMonthSelected(YearMonth.of(displayedYear, month))
+                                    }
+                                    .padding(vertical = 8.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.date_format_month, month),
+                                    color = textColor
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

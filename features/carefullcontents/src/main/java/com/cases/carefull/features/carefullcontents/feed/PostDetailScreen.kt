@@ -53,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -69,6 +70,7 @@ import com.cases.carefull.features.carefullcommon.components.CustomTopAppBar
 import com.cases.carefull.features.carefullcommon.navigation.FeedRoute
 import java.text.SimpleDateFormat
 import java.util.Locale
+import com.cases.carefull.features.carefullcommon.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -122,8 +124,8 @@ fun PostDetailScreen(
 
     if (showCommentDeleteDialog && commentToDelete != null) {
         DeleteConfirmationDialog(
-            title = "댓글 삭제 확인",
-            text = "이 댓글을 정말로 삭제하시겠습니까?",
+            title = stringResource(R.string.dialog_title_confirm_delete_comment),
+            text = stringResource(R.string.dialog_message_confirm_delete_comment),
             onConfirm = {
                 viewModel.deleteComment(commentToDelete!!.id)
                 showCommentDeleteDialog = false
@@ -138,8 +140,8 @@ fun PostDetailScreen(
 
     if (showDeleteDialog) {
         DeleteConfirmationDialog(
-            title = "게시글 삭제 확인",
-            text = "이 게시글을 정말로 삭제하시겠습니까?",
+            title = stringResource(R.string.dialog_title_confirm_delete_post),
+            text = stringResource(R.string.dialog_message_confirm_delete_post),
             onConfirm = {
                 showDeleteDialog = false
                 viewModel.deletePost()
@@ -152,10 +154,13 @@ fun PostDetailScreen(
     Scaffold(
         topBar = {
             CustomTopAppBar(
-                title = "게시글",
+                title = stringResource(R.string.common_post),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "뒤로 가기")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.common_back)
+                        )
                     }
                 },
                 actions = {
@@ -163,10 +168,16 @@ fun PostDetailScreen(
                         IconButton(onClick = {
                             navController.navigate(FeedRoute.CreatePostScreen(postId = uiState.post!!.id))
                         }) {
-                            Icon(Icons.Default.Edit, contentDescription = "게시글 수정")
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = stringResource(R.string.post_button_edit)
+                            )
                         }
                         IconButton(onClick = { showDeleteDialog = true }) {
-                            Icon(Icons.Default.Delete, contentDescription = "게시글 삭제")
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.post_button_delete)
+                            )
                         }
                     }
                 }
@@ -201,7 +212,7 @@ fun PostDetailScreen(
             } else if (uiState.error != null) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
-                        text = "에러 발생: ${uiState.error}",
+                        text = stringResource(R.string.error_generic_format, uiState.error!!),
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
@@ -236,9 +247,9 @@ fun DeleteConfirmationDialog(
     CommonAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
-        content = {Text(text) },
-        confirmButton = { TextButton(onClick = onConfirm) { Text("삭제") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("취소") } }
+        content = { Text(text) },
+        confirmButton = { TextButton(onClick = onConfirm) { Text(stringResource(R.string.common_delete)) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.common_cancel)) } }
     )
 }
 
@@ -272,7 +283,11 @@ fun PostDetailContent(
                 Text(text = post.title, style = MaterialTheme.typography.headlineSmall)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "${post.userId} | ${post.category}",
+                    text = stringResource(
+                        R.string.post_info_format_user_category,
+                        post.userId,
+                        post.category
+                    ),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -286,7 +301,7 @@ fun PostDetailContent(
                         IconButton(onClick = onToggleLike) {
                             Icon(
                                 imageVector = if (userLikedPost) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                                contentDescription = "좋아요",
+                                contentDescription = stringResource(R.string.common_like),
                                 tint = if (userLikedPost) Color.Red else MaterialTheme.colorScheme.onSurface
                             )
                         }
@@ -297,7 +312,7 @@ fun PostDetailContent(
                         Spacer(modifier = Modifier.width(16.dp))
                         Icon(
                             Icons.Filled.Comment,
-                            contentDescription = "댓글",
+                            contentDescription = stringResource(R.string.common_comment),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(modifier = Modifier.width(4.dp))
@@ -308,7 +323,7 @@ fun PostDetailContent(
                     }
                     Text(
                         text = SimpleDateFormat(
-                            "yyyy.MM.dd HH:mm",
+                            stringResource(R.string.date_format_full),
                             Locale.getDefault()
                         ).format(post.createdAt),
                         style = MaterialTheme.typography.bodySmall,
@@ -320,7 +335,10 @@ fun PostDetailContent(
                     thickness = DividerDefaults.Thickness,
                     color = DividerDefaults.color
                 )
-                Text("댓글 (${comments.size})", style = MaterialTheme.typography.labelLarge)
+                Text(
+                    stringResource(R.string.comment_count_format, comments.size),
+                    style = MaterialTheme.typography.labelLarge
+                )
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -379,7 +397,7 @@ fun CommentItem(
                     )
                     Text(
                         text = SimpleDateFormat(
-                            "MM.dd HH:mm",
+                            stringResource(R.string.date_format_short),
                             Locale.getDefault()
                         ).format(comment.createdAt),
                         style = MaterialTheme.typography.bodySmall
@@ -395,21 +413,24 @@ fun CommentItem(
             if (isOwnComment) {
                 Box {
                     IconButton(onClick = { isMenuExpanded = true }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "댓글 메뉴")
+                        Icon(
+                            Icons.Default.MoreVert,
+                            contentDescription = stringResource(R.string.comment_menu)
+                        )
                     }
                     DropdownMenu(
                         expanded = isMenuExpanded,
                         onDismissRequest = { isMenuExpanded = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text("수정") },
+                            text = { Text(stringResource(R.string.common_edit)) },
                             onClick = {
                                 isMenuExpanded = false
                                 onEditClick()
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("삭제") },
+                            text = { Text(stringResource(R.string.common_delete)) },
                             onClick = {
                                 isMenuExpanded = false
                                 onDeleteClick()
@@ -432,13 +453,13 @@ fun CommentEditDialog(
 
     CommonAlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("댓글 수정") },
+        title = { Text(stringResource(R.string.comment_edit_title)) },
         content = {
             CommonTextOutLinedTextField(
                 value = text,
                 onValueChange = { text = it },
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("내용") }
+                label = { Text(stringResource(R.string.post_label_content)) }
             )
         },
         confirmButton = {
@@ -446,12 +467,12 @@ fun CommentEditDialog(
                 onClick = { onConfirm(text) },
                 enabled = text.isNotBlank()
             ) {
-                Text("수정")
+                Text(stringResource(R.string.common_edit))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("취소")
+                Text(stringResource(R.string.common_cancel))
             }
         }
     )
@@ -459,7 +480,7 @@ fun CommentEditDialog(
 
 @Composable
 fun CommentInputSection(
-    modifier: Modifier = Modifier, // 외부에서 Modifier를 전달받을 수 있도록 추가
+    modifier: Modifier = Modifier,
     commentInput: String,
     onCommentInputChanged: (String) -> Unit,
     onSendComment: () -> Unit,
@@ -476,7 +497,7 @@ fun CommentInputSection(
             OutlinedTextField(
                 value = commentInput,
                 onValueChange = onCommentInputChanged,
-                label = { Text("댓글 입력") },
+                label = { Text(stringResource(R.string.comment_input_hint)) },
                 modifier = Modifier.weight(1f),
                 maxLines = 3,
                 shape = RoundedCornerShape(16.dp)
@@ -492,7 +513,7 @@ fun CommentInputSection(
                         MaterialTheme.colorScheme.primary
                     else
                         Color.Gray,
-                    contentDescription = "댓글 전송"
+                    contentDescription = stringResource(R.string.comment_send_button)
                 )
             }
         }

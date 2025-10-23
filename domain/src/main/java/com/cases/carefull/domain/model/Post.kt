@@ -6,7 +6,7 @@ data class Post(
     val id: String,
     val title: String,
     val content: String,
-    val category: String,
+    val category: SocialCategory,
     val imageUrl: String?,
     val userId: String,
     val createdAt: Date,
