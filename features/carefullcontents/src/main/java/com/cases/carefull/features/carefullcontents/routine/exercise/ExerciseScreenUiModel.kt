@@ -27,6 +27,7 @@ fun ExerciseType.toUiModel(totalCount: Int, weeklyCount: Int, dailyCount: Int): 
             weeklyCount = weeklyCount,
             dailyCount = dailyCount
         )
+
         ExerciseType.SQUAT -> ExerciseUiModel(
             type = this,
             name = "스쿼트",
@@ -36,6 +37,7 @@ fun ExerciseType.toUiModel(totalCount: Int, weeklyCount: Int, dailyCount: Int): 
             weeklyCount = weeklyCount,
             dailyCount = dailyCount
         )
+
         ExerciseType.PUSH_UP -> ExerciseUiModel(
             type = this,
             name = "푸쉬업",
@@ -45,11 +47,12 @@ fun ExerciseType.toUiModel(totalCount: Int, weeklyCount: Int, dailyCount: Int): 
             weeklyCount = weeklyCount,
             dailyCount = dailyCount
         )
+
         ExerciseType.DUMBBELL_SHOULDER_PRESS -> ExerciseUiModel(
             type = this,
             name = "덤벨 숄더 프레스",
             imageResId = R.drawable.dumbbell_shoulder_press,
-            description = "어깨 근육을 발달시키는 대표적인 운동으로, 덤벨을 이용하여 양쪽 어깨를 동시에 또는 번갈아 가며 머리 위로 밀어 올리는 동작으로, 어깨 근육을 키우는 데 효과적입니다. ",
+            description = "어깨 근육을 발달시키는 대표적인 운동으로, 덤벨을 이용하여 양쪽 어깨를 동시에 또는 번갈아 가며 머리 위로 밀어 올리는 동작으로, 어깨 근육을 키우는 데 효과적입니다.",
             totalCount = totalCount,
             weeklyCount = weeklyCount,
             dailyCount = dailyCount
