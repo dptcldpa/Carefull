@@ -86,30 +86,31 @@ graph TD
 | 운동과 식단 활동이<br>달력에 표시됩니다. |
 
 ### 3. 운동 기록
-|<img src="https://github.com/user-attachments/assets/1eb42d8d-996a-4df9-ad6d-fd775e3c6930" alt="squat" width="200"/>|
+|<img src="https://github.com/user-attachments/assets/d8aafe14-2b04-4072-8532-44c65d5b3551" alt="squat" width="200"/>|
 |:---:|
 | ML Kit API를 활용한<br>운동 자세를 인식합니다. |
 
+
 ### 4. 식단 기록
-|<img src="https://github.com/user-attachments/assets/570b9998-1116-4213-9d2f-5baba3339680" alt="diet" width="200"/>|
+|<img src="https://github.com/user-attachments/assets/dbb8668c-66da-496b-88ba-e1d9864399f1" alt="diet" width="200"/>|
 |:---:|
 | 공공데이터 api를 활용하여<br>식단을 등록합니다. |
 
+
 ### 5. 챗봇
-|<img src="https://github.com/user-attachments/assets/b9964ea6-6426-4b98-a12c-bdbf9fa619ee" alt="chatbot" width="200"/>|
+|<img src="https://github.com/user-attachments/assets/709605b3-f803-4037-b60f-7c753d398341" alt="chatbot" width="200"/>|
 |:---:|
 | 몸 상태를 챗봇에 질문 시<br>질환과 진료 과목을 추천합니다. |
 
 ### 6. 병원 검색
 
 ### 7. 질병, 약 검색
-|<img src="https://github.com/user-attachments/assets/88d1a96b-3dc8-4cfc-89a9-4144bdc30bc8" alt="medicineSearch" width="200"/>|
+|<img src="https://github.com/user-attachments/assets/8c68fcc1-4d13-4811-ac5e-eb17db5d2da1" alt="medicineSearch" width="200"/>|
 |:---:|
 | 공공데이터 API를 활용하여<br>약을 검색합니다. |
 
-
 ### 8. 커뮤니티, 랭킹
-| <img src="https://github.com/user-attachments/assets/3cf6ac8a-6e57-4a8f-bd01-2a82ea566df2" alt="social" width="200"/> | <img width="200" height="418" alt="ranking" src="https://github.com/user-attachments/assets/0f80f387-481f-493e-80cf-a874559be6f5" /> |
+| <img src="https://github.com/user-attachments/assets/1ddd0bc3-1b44-4d4e-9bb5-79808ba95fc7" alt="social" width="200"/> | <img width="200" height="418" alt="ranking" src="https://github.com/user-attachments/assets/0f80f387-481f-493e-80cf-a874559be6f5" /> |
 |:---:|:---:|
 | Firebase를 활용한<br>커뮤니티입니다. | 주간 간격으로 운동 종목별<br>운동 횟수로 순위를 나타냅니다. |
 
