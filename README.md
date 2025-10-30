@@ -1,106 +1,143 @@
 # CareFull
--대표 화면
 
-<br/>
+---
 
-## 목차
-1. [프로젝트 소개](#1-프로젝트-소개 )
-2. [기술스택](#2-기술스택)
-3. [프로젝트 아키텍쳐](#3-프로젝트-아키텍쳐)
-4. [서비스 주요 기능](#4-서비스-주요-기능)
-5. [데이터셋](#5-데이터셋)
-6. [개선 목표](#6-개선-목표)
-7. [프로젝트 팀원 소개](#6-프로젝트-팀원-소개)
+**"운동·식단 기록부터 건강 정보 검색까지, 하나의 앱으로 케어하세요"**
 
-<br/>
+매일의 운동과 식단을 기록하고, AI로 증상을 분석하며 내게 필요한 건강 정보를 제공하는 통합 헬스케어 앱입니다."
 
-## 1. 프로젝트 소개
-### 1.1 프로젝트 개요
-- 앱 이름 : CareFull
-- 작업 기간 :
-- 팀원 : 
+## 🗂️ 프로젝트 개요
 
-### 1.2 서비스 목표
-- 
+---
 
-<br/>
+- **앱 이름** : CareFull
+- **팀원** : 양정규(PEANUTBUTTER1001), 조해민(dptcldpa)
+- **작업 기간** : 2025.06 ~ 마켓 출시 준비 중
+- **플랫폼** : Android
+- **개발 언어** : Kotlin
+- **개발 환경** : Android Studio
+- **외부API 및 서비스**
+  - 공공데이터 API
+  - Naver Maps
+  - Kakao OAuth
+  - ML Kit API
+  - Firebase Firestore
 
-## 2. 기술 스택
-| 분류 | 기술 |
-| --- | --- |
-| Language | Kotlin |
-| Architecture | MVVM, Hybrid Architecture, Coruotine, Flow |
-| Jetpack | Compose, Navigation Graph, Runtime Permission, Coil |
-| Network | Retrofit2, OkHttp3, Interceptor, Moshi, Gson, tikxml |
-| API | Naver Map SDK, Fused Location Provider, ML Kit, |
-| Authentication | KaKak OAuth |
-| DataBase | FireStorem, Room |
-| DI | Hilt |
-| Tools | Figma, Github, Notion |
+## 🎯 서비스 목표
 
-<br/>
+---
 
-## 3. 프로젝트 아키텍쳐
-<img width="1587" height="902" alt="image" src="https://github.com/user-attachments/assets/2b0b6dc9-95f6-446e-8603-e0c48b2b7d80" />
+사용자의 운동·식단 습관화를 돕고, 개인의 상태를 분석하여 최적의 건강 정보를 제공함으로써 사용자 중심의 건강관리 서비스를 실현합니다.
 
-<br/>
+## 🧰 기술 스택
 
-## 4. 서비스 주요 기능
-### 4.1 로그인
+---
 
-### 4.2 메인 화면
+| 분류             | 기술                                                        |
+|----------------|-----------------------------------------------------------|
+| Language       | Kotlin                                                    |
+| Architecture   | MVVM, Clean Architecture(Hybrid)                          |
+| Asynchronous   | Coroutine, Flow                                           |
+| UI             | Jetpack Compose, Navigation, Coil                         |
+| Network        | Retrofit2, OkHttp3, Interceptor, Moshi, Gson, tikxml      |
+| SDK & API      | Kakao SDK, Naver Map SDK, Fused Location Provider, ML Kit |
+| Authentication | KaKao OAuth                                               |
+| DataBase       | FireStore, Room                                           |
+| DI             | Hilt                                                      |
+| ETC / Tools    | Figma, Github, Notion, Runtime Permission                 |
 
-### 4.3 운동 기록
-<p align="cneter">
-  <img width="225" height="945" alt="image" src="https://github.com/user-attachments/assets/bd1f69a7-7527-4a11-a642-523df19217c7" />
-  <img width="225" height="945" alt="image" src="https://github.com/user-attachments/assets/16ac5128-05f9-49aa-be05-f95fcfbf83c9" />
-  <img width="225" height="945" alt="image" src="https://github.com/user-attachments/assets/2fb7051c-492c-49e8-be2b-76dee68b4347" />
-  <img width="225" height="945" alt="image" src="https://github.com/user-attachments/assets/aa1aeadb-4637-40c6-a9e2-74d832104e7c" />
-</p>
+## 🏗️ 프로젝트 아키텍쳐
 
-### 4.4 식단 기록
-<p align="cneter">
-  <img width="436" height="945" alt="image" src="https://github.com/user-attachments/assets/39d0d7d8-b19e-430d-9988-3de63eec39bd" />
-  <img width="474" height="945" alt="image" src="https://github.com/user-attachments/assets/31aef3c3-62ae-418e-bf2f-307b3d696da9" />
-  <img width="474" height="945" alt="image" src="https://github.com/user-attachments/assets/610dc7d5-8016-4006-8af1-da19205f4909" />
-</p>
+---
+<table>
+  <tr>
+    <td width="40%">
 
-### 4.5 챗봇
-<p align="cneter">
-  <img width="436" height="945" alt="image" src="https://github.com/user-attachments/assets/553a0293-836a-4a84-8b3c-5b61a913cca5" />
-  <img width="474" height="945" alt="image" src="https://github.com/user-attachments/assets/79abc18d-ab4f-42f2-b4e0-9b248af4b52e" />
-  <img width="474" height="945" alt="image" src="https://github.com/user-attachments/assets/047c4886-58a9-4c60-a067-919cbcc04c5c" />
-</p>
+```mermaid
+graph TD
+    subgraph "App Layer"
+        direction LR
+        App["<b>:app</b><br/>(MainActivity, MainNavigation)"]
+    end
+    subgraph "Feature Layer"
+        direction TB
+        CareFullMainUi["<b>:carefullmainui</b><br/>(Auth, Home, Mypage, Splash)"]
+        CareFullContents["<b>:carefullcontents</b><br/>(Diagnosis, Feed, Routine)"]
+        CareFullCommon["<b>:carefullcommon</b><br/>(Component, Theme, Resources)"]
+    end
+    subgraph "Domain Layer"
+        Domain["<b>:Domain</b><br/>(Model, Repository Interface, UseCase)"]
+    end
+    subgraph "Data Layer"
+        Data["<b>:Data</b><br/>(DAO, Database, Datasource, DI,<br/>DTO,Mapper, Network, Repository Impl)"]
+    end
 
-### 4.6 병원 검색
-<p align="cneter">
+    App --> CareFullMainUi;
+    App --> CareFullContents;
+    App --> CareFullCommon;
+    App --> Data;
+    App --> Domain;
+    CareFullMainUi --> CareFullCommon;
+    CareFullContents --> CareFullCommon;
+    CareFullMainUi --> Domain;
+    CareFullContents ---> Domain;
+    Data --> Domain;
+```
 
-</p>
+</td>
+</tr>
+</table>
 
-### 4.7 질병, 약 검색
-<p align="cneter">
-  <img width="436" height="945" alt="image" src="https://github.com/user-attachments/assets/96b50b84-6353-4aa3-9694-c72689ba9a78" />
-  <img width="474" height="945" alt="image" src="https://github.com/user-attachments/assets/cb8b664c-323f-4a0a-a101-d9cbe0bf0dcc" />
-  <img width="474" height="945" alt="image" src="https://github.com/user-attachments/assets/33226b08-476f-42fa-adf4-66d9f7b2100e" />
+## ✨ 서비스 주요 기능
 
-</p>
+---
 
-### 4.8 커뮤니티, 랭킹
-<p align="cneter">
-  <img width="436" height="945" alt="image" src="https://github.com/user-attachments/assets/e258b848-097b-4b5e-a890-d48358c82385" />
-  <img width="474" height="945" alt="image" src="https://github.com/user-attachments/assets/b6633422-2c8e-4adc-92f7-b02c9a08c6ec" />
-  <img width="474" height="945" alt="image" src="https://github.com/user-attachments/assets/edc4a0ad-cfa4-4c4f-b704-b3dd1f5baeeb" />
-  <img width="453" height="945" alt="image" src="https://github.com/user-attachments/assets/adb1b267-344b-4a01-bd66-2bddd10cac6b" />
-</p>
+### 1. 로그인
 
-<br/>
+### 2. 메인 화면
 
-## 5. 데이터 셋
+### 3. 운동 기록
 
-<br/>
+### 4. 식단 기록
 
-## 6. 개선 목표
+### 5. 챗봇
 
-<br/>
+### 6. 병원 검색
 
-## 7. 프로젝트 팀원 소개
+### 7. 질병, 약 검색
+
+### 8. 커뮤니티, 랭킹
+
+## 📊 데이터 셋
+
+---
+
+### 1. API 데이터
+
+| 데이터 종류   | 활용 API                        | 제공 기관     | 주요 활용 목적    |
+|----------|-------------------------------|-----------|-------------|
+| 의약품 정보   | 의약품 제품 허가정보 API / 병용금기 정보 API | 식품의약품안전처  | 약 상세 정보 조회  |
+| 병원 위치 정보 | 병원 정보 조회 API                  | 건강보험심사평가원 | 위치 기반 병원 검색 |
+| 식품 영양 정보 | 식품영양성분 DB API                 | 식품의약품안전처  | 음식 영양 성분 분석 |
+| 위치 정보    | 지도 SDK                        | Naver     | 현재 위치 안내    |
+
+### 2. 사용자 생성 데이터
+
+- **프로필 데이터** : 나이, 성별, 키, 체중, 활동량
+- **운동 기록** : 운동종목, 횟수, 날짜
+- **식단 기록** : 음식명, 음식 영양 성분, 섭취량, 날짜
+- **소셜 활동** : 게시글, 댓글, 좋아요
+
+### 3. 가공 및 시스템 생성 데이터
+
+- **통계·분석 데이터** : 운동 빈도, 섭취 칼로리, 영양 비율
+
+## 🚀 개선 목표
+
+---
+
+📷 Google Cloud Vision / ML Kit 을 활용한 음식,약 이미지 인식 및 운동 인식 정확도 개선
+
+🔔 하루 루틴 미 입력 시 알림기능 추가
+
+📃 누적된 일일 활동 데이터를 기반한 주간/월간 리포트
