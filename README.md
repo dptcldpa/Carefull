@@ -1,14 +1,12 @@
 # CareFull
 
----
+<img width="200" height="200" alt="app_logo" src="https://github.com/user-attachments/assets/510a5cff-01a1-45f1-839f-02fbd25985c6" />
 
 **"운동·식단 기록부터 건강 정보 검색까지, 하나의 앱으로 케어하세요"**
 
 매일의 운동과 식단을 기록하고, AI로 증상을 분석하며 내게 필요한 건강 정보를 제공하는 통합 헬스케어 앱입니다."
 
 ## 🗂️ 프로젝트 개요
-
----
 
 - **앱 이름** : CareFull
 - **팀원** : 양정규(PEANUTBUTTER1001), 조해민(dptcldpa)
@@ -25,13 +23,9 @@
 
 ## 🎯 서비스 목표
 
----
-
 사용자의 운동·식단 습관화를 돕고, 개인의 상태를 분석하여 최적의 건강 정보를 제공함으로써 사용자 중심의 건강관리 서비스를 실현합니다.
 
 ## 🧰 기술 스택
-
----
 
 | 분류             | 기술                                                        |
 |----------------|-----------------------------------------------------------|
@@ -42,16 +36,11 @@
 | Network        | Retrofit2, OkHttp3, Interceptor, Moshi, Gson, tikxml      |
 | SDK & API      | Kakao SDK, Naver Map SDK, Fused Location Provider, ML Kit |
 | Authentication | KaKao OAuth                                               |
-| DataBase       | FireStore, Room                                           |
+| DataBase       | Firestore, Room                                           |
 | DI             | Hilt                                                      |
 | ETC / Tools    | Figma, Github, Notion, Runtime Permission                 |
 
 ## 🏗️ 프로젝트 아키텍쳐
-
----
-<table>
-  <tr>
-    <td width="40%">
 
 ```mermaid
 graph TD
@@ -66,7 +55,7 @@ graph TD
         CareFullCommon["<b>:carefullcommon</b><br/>(Component, Theme, Resources)"]
     end
     subgraph "Domain Layer"
-        Domain["<b>:Domain</b><br/>(Model, Repository Interface, UseCase)"]
+        Domain["<b>:Domain</b><br/>(Model, Repository, UseCase)"]
     end
     subgraph "Data Layer"
         Data["<b>:Data</b><br/>(DAO, Database, Datasource, DI,<br/>DTO,Mapper, Network, Repository Impl)"]
@@ -84,33 +73,47 @@ graph TD
     Data --> Domain;
 ```
 
-</td>
-</tr>
-</table>
-
 ## ✨ 서비스 주요 기능
 
----
-
 ### 1. 로그인
+|<img width="200" height="433" alt="Signin" src="https://github.com/user-attachments/assets/c8f1f3a6-224e-4747-a497-f6d2e30a630b" />|
+|:---:|
+| Kakao OAuth를 이용하여<br>계정을 관리합니다. |
 
 ### 2. 메인 화면
+|<img width="200" height="398" alt="home" src="https://github.com/user-attachments/assets/87967983-c311-4991-a4b4-fcce8d7cec5a" />|
+|:---:|
+| 운동과 식단 활동이<br>달력에 표시됩니다. |
 
 ### 3. 운동 기록
+|<img src="https://github.com/user-attachments/assets/1eb42d8d-996a-4df9-ad6d-fd775e3c6930" alt="squat" width="200"/>|
+|:---:|
+| ML Kit API를 활용한<br>운동 자세를 인식합니다. |
 
 ### 4. 식단 기록
+|<img src="https://github.com/user-attachments/assets/570b9998-1116-4213-9d2f-5baba3339680" alt="diet" width="200"/>|
+|:---:|
+| 공공데이터 api를 활용하여<br>식단을 등록합니다. |
 
 ### 5. 챗봇
+|<img src="https://github.com/user-attachments/assets/b9964ea6-6426-4b98-a12c-bdbf9fa619ee" alt="chatbot" width="200"/>|
+|:---:|
+| 몸 상태를 챗봇에 질문 시<br>질환과 진료 과목을 추천합니다. |
 
 ### 6. 병원 검색
 
 ### 7. 질병, 약 검색
+|<img src="https://github.com/user-attachments/assets/88d1a96b-3dc8-4cfc-89a9-4144bdc30bc8" alt="medicineSearch" width="200"/>|
+|:---:|
+| 공공데이터 API를 활용하여<br>약을 검색합니다. |
+
 
 ### 8. 커뮤니티, 랭킹
+| <img src="https://github.com/user-attachments/assets/3cf6ac8a-6e57-4a8f-bd01-2a82ea566df2" alt="social" width="200"/> | <img width="200" height="418" alt="ranking" src="https://github.com/user-attachments/assets/0f80f387-481f-493e-80cf-a874559be6f5" /> |
+|:---:|:---:|
+| Firebase를 활용한<br>커뮤니티입니다. | 주간 간격으로 운동 종목별<br>운동 횟수로 순위를 나타냅니다. |
 
 ## 📊 데이터 셋
-
----
 
 ### 1. API 데이터
 
@@ -133,8 +136,6 @@ graph TD
 - **통계·분석 데이터** : 운동 빈도, 섭취 칼로리, 영양 비율
 
 ## 🚀 개선 목표
-
----
 
 📷 Google Cloud Vision / ML Kit 을 활용한 음식,약 이미지 인식 및 운동 인식 정확도 개선
 
