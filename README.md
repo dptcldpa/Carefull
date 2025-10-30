@@ -42,36 +42,8 @@
 
 ## 🏗️ 프로젝트 아키텍쳐
 
-```mermaid
-graph TD
-    subgraph "App Layer"
-        direction LR
-        App["<b>:app</b><br/>(MainActivity, MainNavigation)"]
-    end
-    subgraph "Feature Layer"
-        direction TB
-        CareFullMainUi["<b>:carefullmainui</b><br/>(Auth, Home, Mypage, Splash)"]
-        CareFullContents["<b>:carefullcontents</b><br/>(Diagnosis, Feed, Routine)"]
-        CareFullCommon["<b>:carefullcommon</b><br/>(Component, Theme, Resources)"]
-    end
-    subgraph "Domain Layer"
-        Domain["<b>:Domain</b><br/>(Model, Repository, UseCase)"]
-    end
-    subgraph "Data Layer"
-        Data["<b>:Data</b><br/>(DAO, Database, Datasource, DI,<br/>DTO,Mapper, Network, Repository Impl)"]
-    end
+<img width="1253" height="849" alt="module" src="https://github.com/user-attachments/assets/febe767e-3b62-4dde-a566-af9ea5468b9a" />
 
-    App --> CareFullMainUi;
-    App --> CareFullContents;
-    App --> CareFullCommon;
-    App --> Data;
-    App --> Domain;
-    CareFullMainUi --> CareFullCommon;
-    CareFullContents --> CareFullCommon;
-    CareFullMainUi --> Domain;
-    CareFullContents ---> Domain;
-    Data --> Domain;
-```
 
 ## ✨ 서비스 주요 기능
 
