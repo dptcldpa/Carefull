@@ -1,6 +1,8 @@
 package com.cases.carefull.data.di
 
 
+import com.cases.carefull.data.datasource.ChatbotDataSource
+import com.cases.carefull.data.datasource.ChatbotDataSourceImpl
 import com.cases.carefull.data.datasource.HospitalDataSource
 import com.cases.carefull.data.datasource.HospitalDataSourceImpl
 import com.cases.carefull.data.datasource.KaKaoDataSource
@@ -34,4 +36,10 @@ abstract class DataSourceModule {
 	abstract fun bindHospitalDataSource(
 		hospitalDatasourceImpl: HospitalDataSourceImpl
 	): HospitalDataSource
+
+	@Binds
+	@Singleton
+	abstract fun bindChatbotDataSource(
+		chatbotDataSourceImpl: ChatbotDataSourceImpl
+	): ChatbotDataSource
 }

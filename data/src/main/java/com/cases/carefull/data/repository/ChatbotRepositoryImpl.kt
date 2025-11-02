@@ -1,0 +1,39 @@
+package com.cases.carefull.data.repository
+
+import com.cases.carefull.data.datasource.ChatbotDataSource
+import com.cases.carefull.data.dto.StructuredContentDto
+import com.cases.carefull.domain.model.ChatbotMessage
+import com.cases.carefull.domain.model.SuggestedAction
+import com.cases.carefull.domain.repository.ChatbotRepository
+import javax.inject.Inject
+
+class ChatbotRepositoryImpl @Inject constructor(
+    private val chatbotDataSource: ChatbotDataSource
+) : ChatbotRepository {
+
+    override suspend fun sendMessage(prompt: String): ChatbotMessage {
+        val responseDto = chatbotDataSource.sendMessage(prompt)
+
+        return responseDto.toDomainModel()
+    }
+}
+
+private fun StructuredContentDto.toDomainModel(): ChatbotMessage {
+    val domainActions = this.suggestedActions.mapNotNull { dto ->
+        when {
+            dto.department != null -> SuggestedAction.FindHospital(
+                button = dto.button,
+                department = dto.department
+            )
+            dto.diseaseName != null -> SuggestedAction.ShowDiseaseInfo(
+                button = dto.button,
+                diseaseName = dto.diseaseName
+            )
+            else -> null
+        }
+    }
+    return ChatbotMessage(
+        content = this.content,
+        suggestedActions = domainActions
+    )
+}

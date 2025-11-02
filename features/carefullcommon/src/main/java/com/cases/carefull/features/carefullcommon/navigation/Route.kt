@@ -42,11 +42,13 @@ sealed interface RoutineRoute : Route {
 sealed interface DiagnosisRoute : Route {
 	
 	@Serializable
-	data object ChatBotScreen : DiagnosisRoute
+	object ChatBotScreen : DiagnosisRoute
 	
 	@Serializable
-//	data class HospitalInfoScreen(val department:String,val diagnosis:String): DiagnosisRoute
-	data object HospitalInfoScreen : DiagnosisRoute
+	data class HospitalInfoScreen(
+		val department: String,
+		val diagnosis: String
+	) : DiagnosisRoute
 	
 	@Serializable
 	data object MedicineInfoScreen: DiagnosisRoute

@@ -1,6 +1,7 @@
 package com.cases.carefull.di
 
 import com.cases.carefull.BuildConfig
+import com.cases.carefull.data.di.ChatbotApiKey
 import com.cases.carefull.data.di.DietApiKey
 import com.cases.carefull.data.di.HospitalApiKey
 import com.cases.carefull.data.di.MedicineApiKey
@@ -33,5 +34,12 @@ object ApiKeyModule {
 	@HospitalApiKey
 	fun provideHospitalApiKey(): String {
 		return BuildConfig.hospital_api_key
+	}
+
+	@Provides
+	@Singleton
+	@ChatbotApiKey
+	fun provideChatbotApiKey(): String {
+		return BuildConfig.OPENAI_API_KEY
 	}
 }

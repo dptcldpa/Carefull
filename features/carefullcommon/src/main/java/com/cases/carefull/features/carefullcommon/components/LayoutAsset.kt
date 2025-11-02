@@ -29,7 +29,7 @@ object LayoutAsset {
 		
 		NavType.SUB_DIAGNOSIS to listOf(
 			NavItem("챗봇", DiagnosisRoute.ChatBotScreen),
-			NavItem("병원 정보", DiagnosisRoute.HospitalInfoScreen),
+			NavItem("병원 정보", DiagnosisRoute.HospitalSearchScreen),
 			NavItem("약 정보", DiagnosisRoute.MedicineSearchScreen)
 		),
 		NavType.SUB_SEARCH to listOf(
