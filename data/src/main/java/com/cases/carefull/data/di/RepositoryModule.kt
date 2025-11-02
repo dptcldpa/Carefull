@@ -1,6 +1,7 @@
 package com.cases.carefull.data.di
 
 import com.cases.carefull.data.repository.CalendarRepositoryImpl
+import com.cases.carefull.data.repository.ChatbotRepositoryImpl
 import com.cases.carefull.data.repository.DietRepositoryImpl
 import com.cases.carefull.data.repository.ExerciseRepositoryImpl
 import com.cases.carefull.data.repository.HospitalRepositoryImpl
@@ -9,6 +10,7 @@ import com.cases.carefull.data.repository.RankingRepositoryImpl
 import com.cases.carefull.data.repository.SocialRepositoryImpl
 import com.cases.carefull.data.repository.UserRepositoryImpl
 import com.cases.carefull.domain.repository.CalendarRepository
+import com.cases.carefull.domain.repository.ChatbotRepository
 import com.cases.carefull.domain.repository.DietRepository
 import com.cases.carefull.domain.repository.ExerciseRepository
 import com.cases.carefull.domain.repository.HospitalRepository
@@ -21,8 +23,6 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -76,4 +76,10 @@ abstract class RepositoryModule {
 	abstract fun bindHospitalRepository(
 		hospitalRepositoryImpl: HospitalRepositoryImpl
 	): HospitalRepository
+
+	@Binds
+	@ViewModelScoped
+	abstract fun bindChatbotRepository(
+		chatbotRepositoryImpl: ChatbotRepositoryImpl
+	): ChatbotRepository
 }

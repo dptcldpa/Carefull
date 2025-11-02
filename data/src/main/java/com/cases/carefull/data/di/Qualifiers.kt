@@ -25,3 +25,19 @@ annotation class MedicineRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class HospitalRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ChatbotApiKey
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ChatbotInterceptor
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ChatbotOkHttpClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ChatbotRetrofit

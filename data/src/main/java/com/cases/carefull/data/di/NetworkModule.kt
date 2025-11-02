@@ -1,5 +1,7 @@
 package com.cases.carefull.data.di
 
+import androidx.room.PrimaryKey
+import com.cases.carefull.data.network.ChatbotApiService
 import com.cases.carefull.data.network.DietApiService
 import com.cases.carefull.data.network.HospitalApiService
 import com.cases.carefull.data.network.MedicineApiService
@@ -9,6 +11,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -18,10 +21,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-	
+
 	private const val DIET_URL = "https://apis.data.go.kr/1471000/FoodNtrCpntDbInfo02/"
 	private const val MEDICINE_URL = "http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/"
 	private const val HOSPITAL_URL = "https://apis.data.go.kr/B551182/hospInfoServicev2/"
+	private const val Chatbot_URL = "https://api.openai.com/"
 
 	@Provides
 	@Singleton
@@ -43,13 +47,13 @@ object NetworkModule {
 			.addConverterFactory(GsonConverterFactory.create())
 			.build()
 	}
-	
+
 	@Provides
 	@Singleton
 	fun provideDietApiService(@DietRetrofit retrofit: Retrofit): DietApiService {
 		return retrofit.create(DietApiService::class.java)
 	}
-	
+
 	@Provides
 	@Singleton
 	@MedicineRetrofit
@@ -60,7 +64,7 @@ object NetworkModule {
 			.addConverterFactory(GsonConverterFactory.create())
 			.build()
 	}
-	
+
 	@Provides
 	@Singleton
 	fun provideMedicineApiService(@MedicineRetrofit retrofit: Retrofit): MedicineApiService {
@@ -82,5 +86,47 @@ object NetworkModule {
 	@Singleton
 	fun provideHospitalApiService(@HospitalRetrofit retrofit: Retrofit): HospitalApiService {
 		return retrofit.create(HospitalApiService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	@ChatbotInterceptor
+	fun provideChatbotInterceptor(@ChatbotApiKey chatbotApiKey: String): Interceptor {
+		return Interceptor { chain ->
+			val request = chain.request().newBuilder()
+				.addHeader("Authorization", "Bearer $chatbotApiKey")
+				.build()
+			chain.proceed(request)
+		}
+	}
+
+	@Provides
+	@Singleton
+	@ChatbotOkHttpClient
+	fun provideChatbotOkHttpClient(@ChatbotInterceptor interceptor: Interceptor): OkHttpClient {
+		val loggingInterceptor = HttpLoggingInterceptor().apply {
+			level = HttpLoggingInterceptor.Level.BODY
+		}
+		return OkHttpClient.Builder()
+			.addInterceptor(interceptor)
+			.addInterceptor(loggingInterceptor)
+			.build()
+	}
+
+	@Provides
+	@Singleton
+	@ChatbotRetrofit
+	fun provideChatbotRetrofit(@ChatbotOkHttpClient okHttpClient: OkHttpClient): Retrofit {
+		return Retrofit.Builder()
+			.baseUrl(Chatbot_URL)
+			.client(okHttpClient)
+			.addConverterFactory(GsonConverterFactory.create())
+			.build()
+	}
+
+	@Provides
+	@Singleton
+	fun provideChatbotApiService(@ChatbotRetrofit retrofit: Retrofit): ChatbotApiService {
+		return retrofit.create(ChatbotApiService::class.java)
 	}
 }

@@ -7,7 +7,10 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import com.cases.carefull.features.carefullcommon.navigation.DiagnosisRoute
 import com.cases.carefull.features.carefullcontents.diagnosis.chatbot.ChatBotScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.disease.DiseaseSearchScreen
@@ -19,26 +22,29 @@ import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineS
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-fun NavGraphBuilder.diagnosisGraph(medicineViewModel: MedicineViewModel
-                                   , hospitalViewModel: HospitalViewModel
-                                   , navController: NavHostController) {
+fun NavGraphBuilder.diagnosisGraph(
+	medicineViewModel: MedicineViewModel,
+	hospitalViewModel: HospitalViewModel,
+	navController: NavHostController
+) {
+	// 챗봇
 	composable<DiagnosisRoute.ChatBotScreen> {
 		ChatBotScreen(
-            navController = navController
+			navController = navController
 		)
 	}
 	
 	// 진료 - 병원
-	composable<DiagnosisRoute.HospitalInfoScreen> {
-		val args = it.arguments
-		val department = args?.getString("department") ?: ""
-		val diagnosis = args?.getString("diagnosis") ?: ""
-		
+	composable<DiagnosisRoute.HospitalInfoScreen> { backStackEntry ->
+		val department = backStackEntry.savedStateHandle.get<String>("department") ?: ""
+		val diagnosis = backStackEntry.savedStateHandle.get<String>("diagnosis") ?: ""
+
 		HospitalInfoScreen(
 			department = department,
 			diagnosis = diagnosis
 		)
 	}
+
 	// 진료 - 약
 	composable<DiagnosisRoute.MedicineInfoScreen> {
 		val uiState by medicineViewModel.uiState.collectAsStateWithLifecycle()

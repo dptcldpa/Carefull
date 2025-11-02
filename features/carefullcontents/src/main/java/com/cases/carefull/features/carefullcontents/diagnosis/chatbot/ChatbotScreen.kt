@@ -1,5 +1,7 @@
 package com.cases.carefull.features.carefullcontents.diagnosis.chatbot
 
+import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,29 +24,51 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.cases.carefull.chatbot.ChatBotViewModel
-import com.cases.carefull.domain.model.ChatBotInfo
 import com.cases.carefull.features.carefullcommon.navigation.DiagnosisRoute
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun ChatBotScreen(
     navController: NavController,
     viewModel: ChatBotViewModel = hiltViewModel()
 ) {
-//    val viewModel = remember { ChatBotViewModel(onDepartmentClick) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var userInput by remember { mutableStateOf("") }
-    val messages = viewModel.chatMessages.reversed()
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(Unit) {
+        viewModel.navigationEvent.collect { event ->
+            when (event) {
+                is ChatNavigationEvent.ToHospitalList -> {
+                    val destination = DiagnosisRoute.HospitalInfoScreen(
+                        department = event.department,
+                        diagnosis = ""
+                    )
+                    navController.navigate(destination)
+                }
+                is ChatNavigationEvent.ToDiseaseInfo -> {
+
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -55,18 +79,24 @@ fun ChatBotScreen(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),
-            reverseLayout = true
+            reverseLayout = true,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(messages) { message ->
-                ChatBubble(navController,message)
-                Spacer(modifier = Modifier.height(8.dp))
+            items(uiState.messages.reversed()) { message ->
+                ChatBubble(
+                    message = message,
+                    onDepartmentClick = { department ->
+                        viewModel.onHospitalButtonClicked(department)
+                    },
+                    onDiseaseClick = { disease ->
+                        viewModel.onDiseaseInfoButtonClicked(disease)
+                    }
+                )
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
-
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             OutlinedTextField(
@@ -74,12 +104,20 @@ fun ChatBotScreen(
                 value = userInput,
                 onValueChange = { userInput = it },
                 placeholder = { Text("증상을 입력하세요") },
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(24.dp)
             )
-            IconButton(onClick = {
-                viewModel.onUserMessage(userInput)
-                userInput = ""
-            }) {
+            Spacer(modifier = Modifier.width(8.dp))
+            IconButton(
+                onClick = {
+                    if (userInput.isNotBlank()) {
+                        viewModel.sendMessage(userInput)
+                        userInput = ""
+
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                    }
+                }
+            ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Send,
                     tint = MaterialTheme.colorScheme.primary,
@@ -91,12 +129,14 @@ fun ChatBotScreen(
 }
 
 @Composable
-fun ChatBubble(navController: NavController,message: ChatBotInfo) {
+fun ChatBubble(
+    message: ChatMessage,
+    onDepartmentClick: (String) -> Unit,
+    onDiseaseClick: (String) -> Unit
+) {
     val alignment = if (message.isUser) Alignment.CenterEnd else Alignment.CenterStart
-    val bgColor =
-        if (message.isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
-    val textColor =
-        if (message.isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+    val bgColor = if (message.isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
+    val textColor = if (message.isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -109,27 +149,47 @@ fun ChatBubble(navController: NavController,message: ChatBotInfo) {
         ) {
             Column(modifier = Modifier.padding(10.dp)) {
                 Text(
-                    text = message.message,
+                    text = message.content,
                     color = textColor
                 )
-                if (!message.clickableDepartments.isNullOrEmpty()) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "추천 진료과:",
-                            color = textColor,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
 
-                        Spacer(modifier = Modifier.width(8.dp))
+                if (!message.isUser && (message.recommendedDepartment != null || message.diseaseName != null)) {
 
-                        message.clickableDepartments?.forEach { dept ->
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    message.diseaseName?.let { disease ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "예상 병명 : ",
+                                color = textColor,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold
+                            )
                             AssistChip(
-                                onClick = { navController.navigate(DiagnosisRoute.HospitalInfoScreen)},
-                                label = { Text(dept) },
-                                modifier = Modifier.padding(end = 8.dp)
+                                onClick = { onDiseaseClick(disease) },
+                                label = { Text(disease) }
+                            )
+                        }
+                    }
+
+                    message.recommendedDepartment?.let { dept ->
+                        if (message.diseaseName != null) {
+                            Spacer(modifier = Modifier.height(3.dp))
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "관련 병원 : ",
+                                color = textColor,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            AssistChip(
+                                onClick = { onDepartmentClick(dept) },
+                                label = { Text(dept) }
                             )
                         }
                     }
