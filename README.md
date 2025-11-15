@@ -1,10 +1,12 @@
 # CareFull
 
-<img width="200" height="200" alt="app_logo" src="https://github.com/user-attachments/assets/510a5cff-01a1-45f1-839f-02fbd25985c6" />
-
-**"운동·식단 기록부터 건강 정보 검색까지, 하나의 앱으로 케어하세요"**
-
-매일의 운동과 식단을 기록하고, AI로 증상을 분석하며 내게 필요한 건강 정보를 제공하는 통합 헬스케어 앱입니다."
+<div align="center">
+  <img width="200" height="200" alt="app_logo" src="https://github.com/user-attachments/assets/510a5cff-01a1-45f1-839f-02fbd25985c6" />
+  <br />
+  <strong>"운동·식단 기록부터 건강 정보 검색까지, 하나의 앱으로 케어하세요"</strong>
+  <br /><br />
+  매일의 운동과 식단을 기록하고, AI로 증상을 분석하며 내게 필요한 건강 정보를 제공하는 통합 헬스케어 앱입니다.
+</div>
 
 ## 🗂️ 프로젝트 개요
 
@@ -44,8 +46,9 @@
 | ETC / Tools    | Figma, Github, Notion, Runtime Permission                                           |
 
 ## 🏗️ 프로젝트 아키텍쳐
+<img width="1000" height="569" alt="project-flow" src="https://github.com/user-attachments/assets/fedc8a46-eecc-4e58-b61c-8f5ef6a5a0a4" />
 
-<img width="1253" height="849" alt="module" src="https://github.com/user-attachments/assets/febe767e-3b62-4dde-a566-af9ea5468b9a" />
+<img width="1000" height="678" alt="module" src="https://github.com/user-attachments/assets/febe767e-3b62-4dde-a566-af9ea5468b9a" />
 
 ## ✨ 서비스 주요 기능
 
