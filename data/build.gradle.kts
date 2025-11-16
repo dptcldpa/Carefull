@@ -68,7 +68,6 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
 
-
     // ML Kit Pose Detection
     implementation(libs.pose.detection)
 
@@ -77,6 +76,9 @@ dependencies {
     implementation("com.tickaroo.tikxml:annotation:0.8.13")
     implementation("com.tickaroo.tikxml:retrofit-converter:0.8.13")
     kapt("com.tickaroo.tikxml:processor:0.8.13")
+
+    // 지도 위치 정보
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
     // RoomDB
     implementation(libs.bundles.room.libraries)

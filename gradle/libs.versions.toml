@@ -36,7 +36,8 @@ poseDetection = "18.0.0-beta5"
 
 retrofit = "3.0.0"
 gson = "3.0.0"
-tikxml = "0.8.15"
+
+tikxml = "0.8.13"
 
 viewmodel = "2.9.3"
 activity = "1.10.1"
@@ -61,6 +62,7 @@ ksp = "2.2.0-2.0.2"
 
 # room
 room = "2.7.2"
+
 #hilt
 hiltAndroid = "2.57.1"
 hitNavigationCompose = "1.2.0"
@@ -114,6 +116,12 @@ play-services-maps = { group = "com.google.android.gms", name = "play-services-m
 # retrofit
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "gson" }
+
+# tikxml
+tikxml-core = { module = "com.tickaroo.tikxml:core", version.ref = "tikxml" }
+tikxml-annotation = { module = "com.tickaroo.tikxml:annotation", version.ref = "tikxml" }
+tikxml-retrofit-converter = { module = "com.tickaroo.tikxml:retrofit-converter", version.ref = "tikxml" }
+tikxml-processor = { module = "com.tickaroo.tikxml:processor", version.ref = "tikxml" }
 
 # coil
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilCompose" }
@@ -209,6 +217,13 @@ maps-sdk = [
 retrofit = [
     "retrofit",
     "converter-gson"
+]
+
+tikxml = [
+    "tikxml-core",
+    "tikxml-annotation",
+    "tikxml-retrofit-converter",
+    "tikxml-processor"
 ]
 
 coil = [

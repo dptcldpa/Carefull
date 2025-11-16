@@ -5,6 +5,7 @@ import com.cases.carefull.data.repository.ChatbotRepositoryImpl
 import com.cases.carefull.data.repository.DietRepositoryImpl
 import com.cases.carefull.data.repository.ExerciseRepositoryImpl
 import com.cases.carefull.data.repository.HospitalRepositoryImpl
+import com.cases.carefull.data.repository.LocationRepositoryImpl
 import com.cases.carefull.data.repository.MedicineRepositoryImpl
 import com.cases.carefull.data.repository.RankingRepositoryImpl
 import com.cases.carefull.data.repository.SocialRepositoryImpl
@@ -14,6 +15,7 @@ import com.cases.carefull.domain.repository.ChatbotRepository
 import com.cases.carefull.domain.repository.DietRepository
 import com.cases.carefull.domain.repository.ExerciseRepository
 import com.cases.carefull.domain.repository.HospitalRepository
+import com.cases.carefull.domain.repository.LocationRepository
 import com.cases.carefull.domain.repository.MedicineRepository
 import com.cases.carefull.domain.repository.RankingRepository
 import com.cases.carefull.domain.repository.SocialRepository
@@ -23,6 +25,7 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
+import javax.inject.Singleton
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -76,6 +79,12 @@ abstract class RepositoryModule {
 	abstract fun bindHospitalRepository(
 		hospitalRepositoryImpl: HospitalRepositoryImpl
 	): HospitalRepository
+
+	@Binds
+	@ViewModelScoped
+	abstract fun bindLocationRepository(
+		locationRepositoryImpl: LocationRepositoryImpl
+	): LocationRepository
 
 	@Binds
 	@ViewModelScoped

@@ -28,6 +28,10 @@ annotation class HospitalRetrofit
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class DepartmentCode
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class ChatbotApiKey
 
 @Qualifier

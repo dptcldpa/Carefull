@@ -45,7 +45,7 @@ sealed interface DiagnosisRoute : Route {
 	object ChatBotScreen : DiagnosisRoute
 	
 	@Serializable
-	data class HospitalInfoScreen(
+	data class HospitalListScreen(
 		val department: String,
 		val diagnosis: String
 	) : DiagnosisRoute

@@ -4,6 +4,7 @@ package com.cases.carefull.features.carefullcontents.navigation
 import android.net.Uri
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -14,7 +15,7 @@ import androidx.navigation.toRoute
 import com.cases.carefull.features.carefullcommon.navigation.DiagnosisRoute
 import com.cases.carefull.features.carefullcontents.diagnosis.chatbot.ChatBotScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.disease.DiseaseSearchScreen
-import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalInfoScreen
+import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalListScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalSearchScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalViewModel
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineInfoScreen
@@ -35,14 +36,13 @@ fun NavGraphBuilder.diagnosisGraph(
 	}
 	
 	// 진료 - 병원
-	composable<DiagnosisRoute.HospitalInfoScreen> { backStackEntry ->
+	composable<DiagnosisRoute.HospitalListScreen> { backStackEntry ->
 		val department = backStackEntry.savedStateHandle.get<String>("department") ?: ""
 		val diagnosis = backStackEntry.savedStateHandle.get<String>("diagnosis") ?: ""
 
-		HospitalInfoScreen(
-			department = department,
-			diagnosis = diagnosis
-		)
+		val viewModel: HospitalViewModel = hiltViewModel()
+
+		HospitalListScreen(viewModel = viewModel)
 	}
 
 	// 진료 - 약

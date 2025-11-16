@@ -16,23 +16,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -80,23 +85,31 @@ fun HospitalSearchScreen(
 
     var currentLocation by remember { mutableStateOf<LatLng?>(null) }
 
+    var initialLocationLoaded by remember { mutableStateOf(false) }
+
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
         onResult = { permissions ->
-            if (permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false)) {
-                getCurrentLocation(context, useFineAccuracy = true) { lat, lon ->
-                    currentLocation = LatLng(lat, lon)
-                    viewModel.searchHospitals(latitude = lat, longitude = lon)
-                }
-            }
-            else if (permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)) {
-                // 대략적인 위치 권한만 있으므로, 낮은 정확도로 위치 요청
-                getCurrentLocation(context, useFineAccuracy = false) { lat, lon ->
-                    currentLocation = LatLng(lat, lon)
-                    viewModel.searchHospitals(latitude = lat, longitude = lon)
+            val isGranted = permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) ||
+                    permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)
+
+            if (isGranted) {
+                getCurrentLocation(context) { lat, lon ->
+                    if (!initialLocationLoaded) {
+                        val currentLocation = LatLng(lat, lon)
+                        val cameraUpdate = CameraUpdate.scrollTo(currentLocation)
+                        naverMap?.moveCamera(cameraUpdate)
+                        viewModel.onCameraMoved(lat, lon)
+
+                        val locationOverlay = naverMap?.locationOverlay
+                        locationOverlay?.isVisible = true
+                        locationOverlay?.position = currentLocation
+
+                        initialLocationLoaded = true
+                    }
                 }
             } else {
-                // 어떤 위치 권한도 허용되지 않음
+                viewModel.onCameraMoved(37.5665, 126.9780)
             }
         }
     )
@@ -110,13 +123,16 @@ fun HospitalSearchScreen(
     val mapView = remember {
         MapView(context).apply {
             getMapAsync { map ->
-                Log.d("MapDebug", "--- NaverMap 객체 준비 완료 ---") // <--- 이 로그 추가
+                Log.d("MapDebug", "--- NaverMap 객체 준비 완료 ---")
                 naverMap = map
                 map.cameraPosition = CameraPosition(
                     LatLng(37.5665, 126.9780),
                     14.0
                 )
-                map.uiSettings.isZoomControlEnabled = false
+                map.addOnCameraIdleListener {
+                    val center = map.cameraPosition.target
+                    viewModel.onCameraMoved(center.latitude, center.longitude)
+                }
             }
         }
     }
@@ -134,39 +150,26 @@ fun HospitalSearchScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    LaunchedEffect(currentLocation, naverMap) {
-        naverMap?.let { map ->
-            currentLocation?.let { location ->
-                val cameraUpdate = CameraUpdate.scrollTo(location).animate(CameraAnimation.Easing)
-                map.moveCamera(cameraUpdate)
-
-                val locationOverlay = map.locationOverlay
-                locationOverlay.isVisible = true
-                locationOverlay.position = location
-            }
-        }
-    }
-
-    // 검색 결과(hospitals)가 변경될 때마다 마커를 새로 그립니다.
     val markers = remember { mutableListOf<Marker>() }
-    LaunchedEffect(uiState.hospitals, naverMap) {
+    LaunchedEffect(uiState.searchHospitals, naverMap) {
         naverMap?.let { map ->
             markers.forEach { it.map = null }
             markers.clear()
 
-            uiState.hospitals.forEach { hospital ->
+            uiState.searchHospitals.forEach { hospital ->
                 try {
-                    val lat = hospital.YPos?.toDoubleOrNull()
-                    val lon = hospital.XPos?.toDoubleOrNull()
+                    val lat = hospital.YPos
+                    val lon = hospital.XPos
                     if (lat != null && lon != null) {
                         val newMarker = Marker().apply {
                             position = LatLng(lat, lon)
-                            captionText = hospital.yadmNm
+                            captionText = hospital.name
                             this.map = map
                         }
                         markers.add(newMarker)
                     }
                 } catch (e: Exception) {
+                    Log.e("MarkerCreation", "Failed to create marker for ${hospital.name}", e)
                 }
             }
         }
@@ -193,25 +196,26 @@ fun HospitalSearchScreen(
             // 검색창
             TextField(
                 value = uiState.searchQuery,
-                onValueChange = viewModel::onSearchQueryChanged, // 2. 람다 대신 함수 참조 사용
+                onValueChange = viewModel::onSearchQueryChanged,
                 placeholder = { Text("장소를 입력하세요", color = Color.Gray) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp) // 화면 가장자리에 여백 추가
-                    .clip(RoundedCornerShape(24.dp)) // 네이버 지도 스타일: 둥근 직사각형
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(24.dp))
                     .background(Color.White)
-                    .padding(horizontal = 4.dp), // 아이콘과 텍스트가 너무 붙지 않게
+                    .padding(horizontal = 4.dp),
                 singleLine = true,
                 colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,        // 기본 배경색 투명화
-                    focusedIndicatorColor = Color.Transparent, // 포커스 시 밑줄 제거
-                    unfocusedIndicatorColor = Color.Transparent, // 비포커스 시 밑줄 제거
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
                     focusedContainerColor = Color.Transparent
                 ),
                 trailingIcon = {
                     IconButton(onClick = {
-                        currentLocation?.let { loc ->
-                            viewModel.searchHospitals(loc.latitude, loc.longitude)
+
+                        naverMap?.cameraPosition?.target?.let { center ->
+                            viewModel.searchHospitals(center.latitude, center.longitude)
                         }
                         focusManager.clearFocus()
                     }) {
@@ -228,69 +232,76 @@ fun HospitalSearchScreen(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
 
-//            val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
-//            val sheetState = rememberModalBottomSheetState()
-//            // 검색 결과 BottomSheet
-//            if (uiState.hospitals.isNotEmpty() && !uiState.isLoading) {
-//                ModalBottomSheet(
-//                    onDismissRequest = { viewModel.clearHospitalSelection() },
-//                    sheetState = sheetState,
-//                    dragHandle = { BottomSheetDefaults.DragHandle() }
-//                ) {
-//                    LazyColumn(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(8.dp)
-//                    ) {
-//                        items(uiState.hospitals, key = { it.ykiho }) { hospital ->
-//                            Column(
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .clickable {
-//                                        viewModel.selectHospital(hospital)
-//                                        try {
-//                                            val lat = hospital.YPos?.toDoubleOrNull()
-//                                            val lon = hospital.XPos?.toDoubleOrNull()
-//                                            if (lat != null && lon != null) {
-//                                                val cameraUpdate = CameraUpdate
-//                                                    .scrollTo(LatLng(lat, lon))
-//                                                    .animate(CameraAnimation.Easing)
-//                                                naverMap?.moveCamera(cameraUpdate)
-//                                            }
-//                                        } catch (e: Exception) {
-//                                                    // Log.e("MapCamera", "좌표 변환 실패: $latStr, $lonStr")
-//                                        }
-//                                    }
-//                                    .padding(horizontal = 24.dp, vertical = 16.dp)
-//                            ) {
-//                                Text(hospital.yadmNm, style = MaterialTheme.typography.titleMedium)
-//                                Spacer(modifier = Modifier.height(4.dp))
-//                                Text(hospital.addr, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
+            val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+
+            if (uiState.searchHospitals.isNotEmpty()) {
+                ModalBottomSheet(
+                    onDismissRequest = { viewModel.clearHospitalSelection() },
+                    sheetState = sheetState
+                ) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                        items(uiState.searchHospitals, key = { it.id }) { hospital ->
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        viewModel.selectHospital(hospital)
+                                        try {
+                                            val lat = hospital.YPos
+                                            val lon = hospital.XPos
+                                            if (lat != null && lon != null) {
+                                                val cameraUpdate = CameraUpdate
+                                                    .scrollTo(LatLng(lat, lon))
+                                                    .animate(CameraAnimation.Easing)
+                                                naverMap?.moveCamera(cameraUpdate)
+                                            }
+                                        } catch (e: Exception) {
+
+                                        }
+                                    }
+                                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                            ) {
+                                Text(hospital.name, style = MaterialTheme.typography.titleMedium)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(hospital.address, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
 // 현재 위치
 @SuppressLint("MissingPermission")
-private fun getCurrentLocation(context: Context, useFineAccuracy: Boolean, onResult: (Double, Double) -> Unit) {
+private fun getCurrentLocation(context: Context, onResult: (Double, Double) -> Unit) {
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-    val priority = if (useFineAccuracy) Priority.PRIORITY_HIGH_ACCURACY else Priority.PRIORITY_BALANCED_POWER_ACCURACY
 
     try {
-        fusedLocationClient.getCurrentLocation(priority, CancellationTokenSource().token)
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, CancellationTokenSource().token)
             .addOnSuccessListener { location ->
                 location?.let {
                     onResult(it.latitude, it.longitude)
                 }
             }
-            .addOnFailureListener { exception ->
+            .addOnFailureListener {
+                Log.w("Location", "Failed to get high accuracy location, trying balanced.")
+                fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, CancellationTokenSource().token)
+                    .addOnSuccessListener { location ->
+                        location?.let {
+                            onResult(it.latitude, it.longitude)
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("Location", "Failed to get any location.", e)
+                    }
             }
     } catch (e: SecurityException) {
-      
+        Log.e("Location", "Location permission not granted.", e)
     }
 }
