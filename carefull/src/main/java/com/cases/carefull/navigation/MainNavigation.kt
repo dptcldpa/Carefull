@@ -1,8 +1,5 @@
 package com.cases.carefull.navigation
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,7 +23,6 @@ import com.cases.carefull.features.carefullcontents.navigation.routineGraph
 import com.cases.carefull.features.carefullmainui.navigation.mainGraph
 import com.cases.carefull.features.carefullmainui.navigation.myPageGraph
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainNavigation(
 	viewModel: MainViewModel = hiltViewModel(),

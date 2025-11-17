@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.kapt)
-    
+
     alias(libs.plugins.google.dagger.hilt.android)
 }
 
@@ -13,7 +13,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -52,10 +52,10 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase.libraries)
-    
+
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage)
-    
+
 
     implementation(libs.bundles.retrofit)
 
@@ -68,9 +68,14 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
 
-
     // ML Kit Pose Detection
-    implementation(libs.pose.detection)
+    implementation(libs.bundles.pose.detection)
+
+    // ML Kit Face Detection
+    implementation(libs.face.detection)
+
+    // Camerax
+    implementation(libs.bundles.camerax)
 
     // tikxml
     implementation("com.tickaroo.tikxml:core:0.8.13")
@@ -83,7 +88,7 @@ dependencies {
     ksp(libs.androidx.room.compiler) {
         exclude(group = "com.intellij", module = "annotations")
     }
-    
+
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 

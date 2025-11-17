@@ -1,7 +1,5 @@
 package com.cases.carefull.features.carefullcontents.navigation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -9,20 +7,18 @@ import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import com.cases.carefull.features.carefullcontents.routine.diet.BmrRoute
 import com.cases.carefull.features.carefullcontents.routine.diet.DietRoute
 import com.cases.carefull.features.carefullcontents.routine.diet.DietSearchScreen
-import com.cases.carefull.features.carefullcontents.routine.exercise.ExerciseScreen
-import com.cases.carefull.features.carefullcontents.routine.exercise.WorkOutScreen
+import com.cases.carefull.features.carefullcontents.routine.exercise.ExerciseRoute
+import com.cases.carefull.features.carefullcontents.routine.exercise.WorkOutRoute
 
-
-@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.routineGraph(navController: NavHostController) {
 
-    composable<RoutineRoute.ExerciseScreen> {
-        ExerciseScreen(
+    composable<RoutineRoute.ExerciseRoute> {
+        ExerciseRoute(
             navController = navController
         )
     }
-    composable<RoutineRoute.WorkOutScreen> {
-        WorkOutScreen(
+    composable<RoutineRoute.WorkOutRoute> {
+        WorkOutRoute(
             navController = navController
         )
     }

@@ -1,7 +1,5 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -69,7 +67,6 @@ import com.cases.carefull.features.carefullcommon.components.CommonTextOutLinedT
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import java.time.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DietSearchScreen(
     viewModel: DietViewModel = hiltViewModel(),
@@ -591,25 +588,27 @@ private fun FavoriteItemRow(
                 Text(
                     stringResource(
                         id = R.string.nutrient_label_format,
-                        R.string.nutrient_protein,
+                        stringResource(R.string.nutrient_carbohydrate_short),
                         meal.carbohydrate,
                         stringResource(R.string.unit_gram)
                     ),
                     style = MaterialTheme.typography.bodyMedium
                 )
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     stringResource(
                         id = R.string.nutrient_label_format,
-                        R.string.nutrient_protein,
+                        stringResource(R.string.nutrient_protein_short),
                         meal.protein,
                         stringResource(R.string.unit_gram)
                     ),
                     style = MaterialTheme.typography.bodyMedium
                 )
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     stringResource(
                         id = R.string.nutrient_label_format,
-                        R.string.nutrient_fat,
+                        stringResource(R.string.nutrient_fat_short),
                         meal.fat,
                         stringResource(R.string.unit_gram)
                     ),

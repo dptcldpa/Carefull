@@ -1,14 +1,11 @@
 package com.cases.carefull.features.carefullmainui.home
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.cases.carefull.domain.model.CalendarViewType
 import com.cases.carefull.domain.model.exercise.ExerciseRecordForDate
 import com.cases.carefull.domain.model.exercise.ExerciseType
 import java.time.LocalDate
 import java.time.YearMonth
 
-@RequiresApi(Build.VERSION_CODES.O)
 data class HomeUiState(
 	val selectedDate: LocalDate = LocalDate.now(),
 	val displayedYearMonth: YearMonth = YearMonth.now(),

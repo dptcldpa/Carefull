@@ -1,7 +1,5 @@
 package com.cases.carefull.features.carefullmainui.home
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,11 +38,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import java.time.YearMonth
 import com.cases.carefull.features.carefullcommon.R
+import java.time.YearMonth
 
-
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun YearMonthPickerDialog(
     isVisible: Boolean,

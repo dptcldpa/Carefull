@@ -1,8 +1,6 @@
 package com.cases.carefull.data.repository
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.cases.carefull.data.dao.BmrDao
 import com.cases.carefull.data.dao.FavoriteMealDao
 import com.cases.carefull.data.dao.RecentMealSearchDao
@@ -57,7 +55,7 @@ class DietRepositoryImpl @Inject constructor(
 	private val recentMealSearchDao: RecentMealSearchDao =
 		AppDatabase.getInstance(context).recentMealSearchDao()
 	
-	@RequiresApi(Build.VERSION_CODES.O)
+	
 	override fun getAllMeal(): Flow<DataResourceResult<Map<LocalDate, List<DietCollection>>>> {
 		val query = db.collection("diet_collection")
 			.orderBy("created_at", Query.Direction.DESCENDING)

@@ -4,10 +4,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.cases.carefull.features.carefullcommon.navigation.FeedRoute
-import com.cases.carefull.features.carefullcontents.feed.CreatePostScreen
-import com.cases.carefull.features.carefullcontents.feed.PostDetailScreen
-import com.cases.carefull.features.carefullcontents.feed.RankingScreen
-import com.cases.carefull.features.carefullcontents.feed.SocialListScreen
+import com.cases.carefull.features.carefullcontents.feed.social.CreatePostScreen
+import com.cases.carefull.features.carefullcontents.feed.social.PostDetailScreen
+import com.cases.carefull.features.carefullcontents.feed.ranking.RankingScreen
+import com.cases.carefull.features.carefullcontents.feed.social.SocialListScreen
 
 fun NavGraphBuilder.feedGraph(navController: NavHostController) {
 	composable<FeedRoute.SocialListScreen> {

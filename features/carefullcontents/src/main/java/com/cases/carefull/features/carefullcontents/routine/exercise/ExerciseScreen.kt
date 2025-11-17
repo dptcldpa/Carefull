@@ -1,14 +1,11 @@
 package com.cases.carefull.features.carefullcontents.routine.exercise
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,25 +13,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,46 +34,48 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.cases.carefull.domain.model.exercise.ExerciseState
 import com.cases.carefull.domain.model.exercise.ExerciseType
-import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import com.cases.carefull.features.carefullcommon.R
+import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
+import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 
-
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ExerciseScreen(
+fun ExerciseRoute(
     viewModel: ExerciseViewModel = hiltViewModel(),
     navController: NavController
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val todayExercise = uiState.dailyExercise.firstOrNull()
+    ExerciseScreen(
+        uiState = uiState,
+        todayExercise = todayExercise,
+        onClickExercise = { exerciseUiModel ->
+            navController.navigate(
+                RoutineRoute.WorkOutRoute(
+                    exerciseType = exerciseUiModel.type,
+                    count = 10
+                )
+            )
+        }
+    )
+}
 
-
-//	if (uiState.showDialog && uiState.selectedExercise != null) {
-//		ExerciseCountDialog(
-//			exerciseName = uiState.selectedExercise!!,
-//			onDismiss = { viewModel.onDialogDismiss() },
-//			onConfirm = { count ->
-//				viewModel.onDialogConfirm()
-//				navController.navigate(
-//					RoutineRoute.WorkOutScreen(
-//						exerciseType = uiState.selectedExercise!!,
-//						count = count
-//					)
-//				)
-//			}
-//		)
-//	}
+@Composable
+fun ExerciseScreen(
+    uiState: ExerciseUiState,
+    todayExercise: ExerciseType?,
+    onClickExercise: (ExerciseUiModel) -> Unit
+) {
     Column(
         modifier = Modifier
-			.fillMaxSize()
-			.padding(horizontal = 16.dp),
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (uiState.isLoading) {
@@ -95,8 +87,8 @@ fun ExerciseScreen(
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
-					.fillMaxWidth()
-					.padding(top = 8.dp, bottom = 16.dp),
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, bottom = 16.dp),
                 textAlign = TextAlign.Start
             )
         } else {
@@ -105,8 +97,8 @@ fun ExerciseScreen(
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
-					.fillMaxWidth()
-					.padding(top = 8.dp, bottom = 16.dp),
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, bottom = 16.dp),
                 textAlign = TextAlign.Start
             )
         }
@@ -124,13 +116,7 @@ fun ExerciseScreen(
                     uiModel = exerciseUiModel,
                     isTodayExercise = isTodayExercise,
                     onClick = {
-                        navController.navigate(
-                            RoutineRoute.WorkOutScreen(
-                                exerciseType = exerciseUiModel.type,
-                                count = 10
-                            )
-                        )
-//						viewModel.onExerciseSelected(exerciseUiModel.type)
+                        onClickExercise(exerciseUiModel)
                     }
                 )
             }
@@ -148,18 +134,18 @@ fun ExerciseCard(
 ) {
     val cardModifier = if (isTodayExercise) {
         modifier
-			.fillMaxWidth()
-			.padding(vertical = 4.dp)
-			.then(
-				Modifier.border(
-					BorderStroke(3.dp, MaterialTheme.colorScheme.primary),
-					RoundedCornerShape(16.dp)
-				)
-			)
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .then(
+                Modifier.border(
+                    BorderStroke(3.dp, MaterialTheme.colorScheme.primary),
+                    RoundedCornerShape(16.dp)
+                )
+            )
     } else {
         modifier
-			.fillMaxWidth()
-			.padding(vertical = 4.dp)
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
     }
 
     Card(
@@ -174,17 +160,17 @@ fun ExerciseCard(
     ) {
         Row(
             modifier = Modifier
-				.padding(8.dp)
-				.height(IntrinsicSize.Min),
+                .padding(8.dp)
+                .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 painter = painterResource(id = uiModel.imageResId),
                 contentDescription = stringResource(R.string.common_image_format, uiModel.type),
                 modifier = Modifier
-					.width(100.dp)
-					.fillMaxHeight()
-					.clip(RoundedCornerShape(16.dp)),
+                    .width(100.dp)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Fit
             )
             Spacer(modifier = Modifier.width(16.dp))
@@ -234,144 +220,182 @@ fun ExerciseCard(
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-fun ExerciseCountDialog(
-    exerciseName: ExerciseType,
-    onDismiss: () -> Unit,
-    onConfirm: (Int) -> Unit
-) {
-    var count by remember { mutableIntStateOf(10) }
-
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(
+fun ExerciseScreenPreview() {
+    val fakeExerciseList = ExerciseType.entries.map { exerciseType ->
+        exerciseType.toUiModel(
+            totalCount = 152,
+            weeklyCount = 35,
+            dailyCount = if (exerciseType == ExerciseType.DUMBBELL_CURL) 10 else 0
         )
-    ) {
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 8.dp
+    }
+    val fakeTodayExercise = ExerciseType.DUMBBELL_CURL
+    val fakeUiState = ExerciseUiState(
+        count = 10,
+        userPose = ExerciseState.NONE,
+        detectedPose = null,
+        isLoading = false,
+        isError = false,
+        showDialog = false,
+        selectedExercise = null,
+        exercisesResults = emptyList(),
+        exerciseCounts = emptyMap(),
+        exerciseList = fakeExerciseList,
+        dailyExercise = ExerciseType.entries,
+        totalExerciseCounts = emptyMap(),
+        weeklyExerciseCounts = emptyMap(),
+        dailyExerciseCounts = emptyMap(),
+        completedDailyExerciseDates = emptySet(),
+    )
+
+    CarefullTheme {
+        ExerciseScreen(
+            uiState = fakeUiState,
+            todayExercise = fakeTodayExercise,
+            onClickExercise = {}
         )
-        {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large,
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onSurface
-                )
-            ) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Row {
-                        Spacer(modifier = Modifier.weight(0.5f))
-                        Text(
-                            text = exerciseName.type,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.weight(0.25f))
-                        TextButton(onClick = onDismiss) {
-                            Text(
-                                text = stringResource(R.string.common_close),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = Color.Gray,
-                                modifier = Modifier.padding(bottom = 10.dp)
-                            )
-                        }
-                    }
-                    Row {
-                        Text(
-                            text = "$count",
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Text(
-                            text = stringResource(R.string.unit_count),
-                            style = MaterialTheme.typography.titleLarge,
-                        )
-                    }
-
-                    Row(
-                        verticalAlignment = Alignment.Bottom,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Button(
-                            onClick = {
-                                if (count > 4) repeat(5) {
-                                    count--
-                                }
-                            },
-                            modifier = Modifier.size(40.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(
-                                "-5",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Button(
-                            onClick = { if (count > 1) count-- },
-                            modifier = Modifier.size(40.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(
-                                "-1",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Button(
-                            onClick = { count++ },
-                            modifier = Modifier.size(40.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(
-                                "+1",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Button(
-                            onClick = {
-                                repeat(5) {
-                                    count++
-                                }
-                            },
-                            modifier = Modifier.size(40.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(
-                                "+5",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Button(
-                            modifier = Modifier
-								.fillMaxWidth()
-								.height(50.dp),
-                            shape = MaterialTheme.shapes.large,
-                            onClick = { onConfirm(count) }) {
-                            Text(
-                                stringResource(R.string.common_confirm),
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        }
-                    }
-                }
-            }
-        }
     }
 }
+
+//@Composable
+//fun ExerciseCountDialog(
+//    exerciseName: ExerciseType,
+//    onDismiss: () -> Unit,
+//    onConfirm: (Int) -> Unit
+//) {
+//    var count by remember { mutableIntStateOf(10) }
+//
+//    Dialog(
+//        onDismissRequest = onDismiss,
+//        properties = DialogProperties(
+//        )
+//    ) {
+//        Surface(
+//            shape = RoundedCornerShape(16.dp),
+//            color = MaterialTheme.colorScheme.surface,
+//            tonalElevation = 8.dp
+//        )
+//        {
+//            Card(
+//                modifier = Modifier.fillMaxWidth(),
+//                shape = MaterialTheme.shapes.large,
+//                colors = CardDefaults.cardColors(
+//                    containerColor = MaterialTheme.colorScheme.surface,
+//                    contentColor = MaterialTheme.colorScheme.onSurface
+//                )
+//            ) {
+//                Column(
+//                    modifier = Modifier.padding(24.dp),
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    verticalArrangement = Arrangement.spacedBy(16.dp)
+//                ) {
+//                    Row {
+//                        Spacer(modifier = Modifier.weight(0.5f))
+//                        Text(
+//                            text = exerciseName.type,
+//                            style = MaterialTheme.typography.titleLarge,
+//                            fontWeight = FontWeight.Bold
+//                        )
+//                        Spacer(modifier = Modifier.weight(0.25f))
+//                        TextButton(onClick = onDismiss) {
+//                            Text(
+//                                text = stringResource(R.string.common_close),
+//                                style = MaterialTheme.typography.labelLarge,
+//                                color = Color.Gray,
+//                                modifier = Modifier.padding(bottom = 10.dp)
+//                            )
+//                        }
+//                    }
+//                    Row {
+//                        Text(
+//                            text = "$count",
+//                            style = MaterialTheme.typography.titleLarge
+//                        )
+//                        Spacer(modifier = Modifier.width(5.dp))
+//                        Text(
+//                            text = stringResource(R.string.unit_count),
+//                            style = MaterialTheme.typography.titleLarge,
+//                        )
+//                    }
+//
+//                    Row(
+//                        verticalAlignment = Alignment.Bottom,
+//                        horizontalArrangement = Arrangement.Center
+//                    ) {
+//                        Button(
+//                            onClick = {
+//                                if (count > 4) repeat(5) {
+//                                    count--
+//                                }
+//                            },
+//                            modifier = Modifier.size(40.dp),
+//                            contentPadding = PaddingValues(0.dp)
+//                        ) {
+//                            Text(
+//                                "-5",
+//                                style = MaterialTheme.typography.bodyLarge
+//                            )
+//                        }
+//                        Spacer(modifier = Modifier.width(10.dp))
+//                        Button(
+//                            onClick = { if (count > 1) count-- },
+//                            modifier = Modifier.size(40.dp),
+//                            contentPadding = PaddingValues(0.dp)
+//                        ) {
+//                            Text(
+//                                "-1",
+//                                style = MaterialTheme.typography.bodyLarge
+//                            )
+//                        }
+//
+//                        Spacer(modifier = Modifier.width(10.dp))
+//                        Button(
+//                            onClick = { count++ },
+//                            modifier = Modifier.size(40.dp),
+//                            contentPadding = PaddingValues(0.dp)
+//                        ) {
+//                            Text(
+//                                "+1",
+//                                style = MaterialTheme.typography.bodyLarge
+//                            )
+//                        }
+//                        Spacer(modifier = Modifier.width(10.dp))
+//                        Button(
+//                            onClick = {
+//                                repeat(5) {
+//                                    count++
+//                                }
+//                            },
+//                            modifier = Modifier.size(40.dp),
+//                            contentPadding = PaddingValues(0.dp)
+//                        ) {
+//                            Text(
+//                                "+5",
+//                                style = MaterialTheme.typography.bodyLarge
+//                            )
+//                        }
+//                    }
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.End
+//                    ) {
+//
+//                        Spacer(modifier = Modifier.width(8.dp))
+//                        Button(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .height(50.dp),
+//                            shape = MaterialTheme.shapes.large,
+//                            onClick = { onConfirm(count) }) {
+//                            Text(
+//                                stringResource(R.string.common_confirm),
+//                                style = MaterialTheme.typography.titleLarge
+//                            )
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}

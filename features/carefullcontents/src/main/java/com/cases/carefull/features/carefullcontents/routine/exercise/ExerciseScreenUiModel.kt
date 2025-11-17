@@ -11,7 +11,6 @@ data class ExerciseUiModel(
     val imageResId: Int,
     val description: String,
     val totalCount: Int = 0,
-    //
     val weeklyCount: Int = 0,
     val dailyCount: Int = 0
 )

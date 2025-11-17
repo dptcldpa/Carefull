@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullcontents.feed
+package com.cases.carefull.features.carefullcontents.feed.social
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
