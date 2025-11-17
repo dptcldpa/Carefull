@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullcontents.feed
+package com.cases.carefull.features.carefullcontents.feed.social
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

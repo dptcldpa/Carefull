@@ -1,8 +1,6 @@
 package com.cases.carefull.features.carefullcommon.components
 
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -57,7 +55,6 @@ import java.time.LocalDate
 import java.time.YearMonth
 import kotlin.math.abs
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Calendar(
     modifier: Modifier = Modifier,
@@ -117,7 +114,7 @@ fun Calendar(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 private fun CalendarHeader(
     calendarState: CalendarState,
@@ -224,7 +221,7 @@ private fun WeekDays() {
 }
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 private fun CalendarGrid(
     calendarState: CalendarState,
@@ -329,7 +326,7 @@ private fun CalendarFooter(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 private fun RowScope.CalendarDayBox(
     date: LocalDate,

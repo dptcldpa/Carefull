@@ -1,7 +1,5 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -58,7 +56,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DietRoute(
     dietViewModel: DietViewModel = hiltViewModel(),
@@ -85,7 +82,6 @@ fun DietRoute(
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DietScreen(
     uiState: MainDietUiState,
@@ -171,7 +167,6 @@ fun DietScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DatePickerDialog(
     calendarState: CalendarState,
@@ -221,7 +216,6 @@ fun DatePickerDialog(
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NutritionSummary(uiState: MainDietUiState) {
     Column {
@@ -396,7 +390,6 @@ fun FoodItemRow(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DateHeader(
     date: LocalDate,
@@ -440,7 +433,6 @@ fun DateHeader(
 }
 
 @Composable
-@RequiresApi(Build.VERSION_CODES.O)
 fun formatDate(date: LocalDate): String {
     val today = LocalDate.now()
     val yesterday = today.minusDays(1)
@@ -462,11 +454,9 @@ fun formatDate(date: LocalDate): String {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun DietScreenPreview() {
-
     val fakeDateDietState = DateDietState(
         selectedDate = LocalDate.now(),
         selectedDateSection = DietDateSection(

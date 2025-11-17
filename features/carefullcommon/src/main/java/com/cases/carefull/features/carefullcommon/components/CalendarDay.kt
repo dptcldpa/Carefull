@@ -1,7 +1,5 @@
 package com.cases.carefull.features.carefullcommon.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,7 +29,6 @@ import com.cases.carefull.features.carefullcommon.R
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CalendarDay(
     date: LocalDate,

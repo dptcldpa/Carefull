@@ -3,8 +3,6 @@ package com.cases.carefull.data.repository
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.content.edit
 import com.cases.carefull.data.dto.ExerciseCollectionDTO
 import com.cases.carefull.data.dto.toDomainExerciseCollectionList
@@ -46,7 +44,7 @@ class ExerciseRepositoryImpl @Inject constructor(
         context.getSharedPreferences(COMPLETION_PREFS_NAME, Context.MODE_PRIVATE)
     }
     
-    @RequiresApi(Build.VERSION_CODES.O)
+    
 	override fun getCompletedDailyExerciseDatesFlow(userId: String): Flow<Set<LocalDate>> = callbackFlow {
         val key = "$KEY_COMPLETED_DATES_PREFIX$userId"
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
@@ -89,7 +87,7 @@ class ExerciseRepositoryImpl @Inject constructor(
             emptyList()
         }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    
     override suspend fun getDailyExerciseList(): List<ExerciseType> {
         val todayString = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
         val lastFetchDate = prefs.getString(KEY_LAST_FETCH_DATE, null)
@@ -107,7 +105,7 @@ class ExerciseRepositoryImpl @Inject constructor(
     }
     
     @SuppressLint("DefaultLocale")
-	@RequiresApi(Build.VERSION_CODES.O)
+	
 	override suspend fun addExerciseRecord(
         exerciseRecord: ExerciseCollection
     ): Boolean = runCatching {
@@ -181,14 +179,14 @@ class ExerciseRepositoryImpl @Inject constructor(
         }
     }
     
-    @RequiresApi(Build.VERSION_CODES.O)
+    
 	override suspend fun getCompletedDailyExerciseDates(userId: String): Set<LocalDate> {
         val key = "$KEY_COMPLETED_DATES_PREFIX$userId"
         val dateStrings = completionPrefs.getStringSet(key, emptySet()) ?: emptySet()
         return dateStrings.map { LocalDate.parse(it) }.toSet()
     }
     
-    @RequiresApi(Build.VERSION_CODES.O)
+    
 	override suspend fun markDailyExerciseAsCompleted(userId: String, date: LocalDate) {
         val key = "$KEY_COMPLETED_DATES_PREFIX$userId"
         val currentDates = getCompletedDailyExerciseDates(userId).map { it.toString() }.toMutableSet()

@@ -12,8 +12,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 24
-
+        minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -41,7 +40,7 @@ kotlin {
 
 dependencies {
     implementation(project(":domain"))
-    implementation(project(":data"))
+//    implementation(project(":data"))
     implementation(project(":features:carefullcommon"))
 
     implementation(libs.bundles.android.core)

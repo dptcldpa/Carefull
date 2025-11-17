@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullcontents.feed
+package com.cases.carefull.features.carefullcontents.feed.ranking
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
