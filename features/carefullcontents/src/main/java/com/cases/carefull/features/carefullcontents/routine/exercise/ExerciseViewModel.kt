@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.camera.core.UseCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cases.carefull.domain.model.exercise.AnalysisState
 import com.cases.carefull.domain.model.exercise.ExerciseCollection
 import com.cases.carefull.domain.model.exercise.ExerciseState
 import com.cases.carefull.domain.model.exercise.ExerciseType
@@ -17,6 +18,7 @@ import com.cases.carefull.domain.repository.ExerciseRepository
 import com.cases.carefull.domain.repository.PoseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -44,7 +46,7 @@ class ExerciseViewModel @Inject constructor(
 
     init {
         loadInitialData()
-        startPoseAnalysis()
+        startAnalysis()
     }
 
     fun loadInitialData() {
@@ -118,12 +120,13 @@ class ExerciseViewModel @Inject constructor(
             it.copy(
                 count = 0,
                 userPose = ExerciseState.NONE,
-                detectedPose = null
+                detectedPose = null,
+                analysisState = StreamAnalysisState.DETECTING_FACE
             )
         }
     }
 
-    fun onPoseDetected(pose: Pose) {
+    private fun onPoseDetected(pose: Pose) {
         if (!::analyzer.isInitialized) return
         val newDetectedState = analyzer.analyze(pose)
         _uiState.update {
@@ -147,12 +150,32 @@ class ExerciseViewModel @Inject constructor(
         }
     }
 
-    private fun startPoseAnalysis() {
+    private fun startAnalysis() {
         poseRepository.analyze()
-            .onEach { pose ->
-                onPoseDetected(pose)
+            .onEach { state ->
+                when (state) {
+                    is AnalysisState.SearchingForFace -> {
+                        _uiState.update { it.copy(analysisState = StreamAnalysisState.DETECTING_FACE) }
+                    }
+
+                    is AnalysisState.FaceDetected -> {
+                        viewModelScope.launch {
+                            _uiState.update { it.copy(analysisState = StreamAnalysisState.FACE_DETECTED_SUCCESS) }
+                            delay(1500)
+                            _uiState.update { it.copy(analysisState = StreamAnalysisState.ANALYZING_EXERCISE) }
+                        }
+                    }
+
+                    is AnalysisState.AnalyzingPose -> {
+                        if (_uiState.value.analysisState != StreamAnalysisState.ANALYZING_EXERCISE) {
+                            _uiState.update { it.copy(analysisState = StreamAnalysisState.ANALYZING_EXERCISE) }
+                        }
+                        onPoseDetected(state.pose)
+                    }
+                }
             }
             .catch { e ->
+                _uiState.update { it.copy(isError = true) }
             }
             .launchIn(viewModelScope)
     }
@@ -166,7 +189,6 @@ class ExerciseViewModel @Inject constructor(
         poseRepository.close()
     }
 
-    
     fun saveWorkoutResult(exerciseType: ExerciseType) {
         viewModelScope.launch {
             val totalCount = _uiState.value.count
