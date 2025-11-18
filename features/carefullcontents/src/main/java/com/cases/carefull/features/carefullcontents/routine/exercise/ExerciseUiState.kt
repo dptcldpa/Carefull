@@ -28,4 +28,11 @@ data class ExerciseUiState(
 	val dailyExerciseCounts: Map<ExerciseType, Int> = emptyMap(),
 
 	val completedDailyExerciseDates: Set<LocalDate> = emptySet(),
+	val analysisState: StreamAnalysisState = StreamAnalysisState.DETECTING_FACE
 )
+
+enum class StreamAnalysisState {
+	DETECTING_FACE,
+	FACE_DETECTED_SUCCESS,
+	ANALYZING_EXERCISE
+}
