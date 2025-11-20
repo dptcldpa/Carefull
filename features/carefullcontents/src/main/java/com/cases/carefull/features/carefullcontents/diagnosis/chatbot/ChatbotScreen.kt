@@ -64,7 +64,6 @@ fun ChatBotScreen(
                     navController.navigate(destination)
                 }
                 is ChatNavigationEvent.ToDiseaseInfo -> {
-                    // 질병 화면
                     Log.d("Navigation", "Navigate to Disease Info for: ${event.diseaseName}")
                 }
             }

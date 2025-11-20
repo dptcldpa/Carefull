@@ -17,7 +17,7 @@ class HospitalDataSourceImpl @Inject constructor(
             xPos = longitude.toString(),
             yPos = latitude.toString(),
             dgsbjtCd = departmentCode,
-            radius = "5000"
+            radius = "1300"
         )
 
         if (response.header?.resultCode != "00") {
