@@ -1,6 +1,5 @@
-package com.cases.carefull.features.carefullcontents.feed
+package com.cases.carefull.features.carefullcontents.feed.social
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cases.carefull.domain.model.SocialCategory

@@ -14,7 +14,7 @@ import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 object LayoutAsset {
 	private val navItemConfig = mapOf(
 		NavType.TOP_ROUTINE to listOf(
-			NavItem("운동", RoutineRoute.ExerciseScreen),
+			NavItem("운동", RoutineRoute.ExerciseRoute),
 			NavItem("식단", RoutineRoute.DietRoute)
 		),
 		NavType.TOP_DIAGNOSIS to listOf(
@@ -39,7 +39,7 @@ object LayoutAsset {
 		),
 		NavType.BOTTOM_MAIN to listOf(
 			NavItem("홈", MainRoute.HomeScreen, "home"),
-			NavItem("루틴", RoutineRoute.ExerciseScreen, "routine"),
+			NavItem("루틴", RoutineRoute.ExerciseRoute, "routine"),
 			NavItem("진단", DiagnosisRoute.ChatBotScreen, "diagnosis"),
 			NavItem("피드", FeedRoute.SocialListScreen, "feed"),
 			NavItem("마이", MyPageRoute.MyPage, "mypage")
@@ -54,7 +54,7 @@ object LayoutAsset {
 		),
 		
 		//루틴
-		RoutineRoute.ExerciseScreen to ScreenConfig(
+		RoutineRoute.ExerciseRoute to ScreenConfig(
 			topBarType = NavType.TOP_ROUTINE,
 			showBottomBar = true
 		),
@@ -68,7 +68,7 @@ object LayoutAsset {
 			subTopBarType = NavType.NONE,
 			showBottomBar = true
 		),
-		RoutineRoute.WorkOutScreen to ScreenConfig(
+		RoutineRoute.WorkOutRoute to ScreenConfig(
 			topBarType = NavType.NONE,
 			subTopBarType = NavType.NONE,
 			showBottomBar = false
@@ -137,7 +137,7 @@ object LayoutAsset {
 		MainRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +
 				RoutineRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +
 				listOf(
-					RoutineRoute.WorkOutScreen(ExerciseType.SQUAT, 0)
+					RoutineRoute.WorkOutRoute(ExerciseType.SQUAT, 0)
 				) +
 				DiagnosisRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +
 				FeedRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +

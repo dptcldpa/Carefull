@@ -1,7 +1,5 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cases.carefull.domain.model.diet.Bmr
@@ -17,7 +15,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class BmrViewModel @Inject constructor(
     private val calculateBmrUseCase: CalculateBmrUseCase,

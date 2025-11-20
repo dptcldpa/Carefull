@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullcontents.feed
+package com.cases.carefull.features.carefullcontents.feed.ranking
 
 import com.cases.carefull.domain.model.MyRankInfo
 import com.cases.carefull.domain.model.Ranker

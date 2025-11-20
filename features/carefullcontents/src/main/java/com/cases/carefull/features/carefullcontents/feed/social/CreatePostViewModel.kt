@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullcontents.feed
+package com.cases.carefull.features.carefullcontents.feed.social
 
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle

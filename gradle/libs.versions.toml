@@ -1,6 +1,7 @@
 [versions]
 agp = "8.11.1"
 
+
 guava = "33.4.8-android"
 kotlin = "2.2.10"
 coreKtx = "1.17.0"
@@ -33,6 +34,7 @@ kotlinSerialization = "2.2.10"
 kotlinxSerializationJson = "1.9.0"
 
 poseDetection = "18.0.0-beta5"
+faceDetection = "16.1.7"
 
 retrofit = "3.0.0"
 gson = "3.0.0"
@@ -148,6 +150,7 @@ androidx-camera-view = { module = "androidx.camera:camera-view",version.ref = "c
 pose-detection-common = { group = "com.google.mlkit", name = "pose-detection-common", version.ref = "poseDetectionCommon" }
 pose-detection = { module = "com.google.mlkit:pose-detection", version.ref = "poseDetection" }
 pose-detection-accurate = { module = "com.google.mlkit:pose-detection-accurate", version.ref = "poseDetection" }
+face-detection = { module = "com.google.mlkit:face-detection", version.ref = "faceDetection" }
 
 # Kakao
 v2-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "v2User" }

@@ -1,7 +1,5 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,8 +47,6 @@ import com.cases.carefull.domain.model.diet.Gender
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 
-
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BmrRoute(
     viewModel: BmrViewModel = hiltViewModel()
@@ -268,7 +264,7 @@ fun ResultRowComponent(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Preview(showBackground = true)
 @Composable
 fun BmrScreenPreview() {

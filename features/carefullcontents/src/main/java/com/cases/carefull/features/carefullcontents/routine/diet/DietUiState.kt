@@ -1,7 +1,5 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Stable
 import androidx.core.text.isDigitsOnly
 import com.cases.carefull.domain.model.diet.DietCollection
@@ -10,7 +8,6 @@ import com.cases.carefull.domain.model.diet.RecentMealSearch
 import java.time.LocalDate
 import java.time.YearMonth
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Stable
 data class MainDietUiState(
     val dietSearchState: DietSearchState = DietSearchState(),
@@ -28,7 +25,6 @@ data class DietSearchState(
     val recentSearches: List<RecentMealSearch> = emptyList()
 )
 
-@RequiresApi(Build.VERSION_CODES.O)
 data class DateDietState(
     val dietSections: List<DietDateSection> = emptyList(),
     val allDietSections: List<DietDateSection> = emptyList(),

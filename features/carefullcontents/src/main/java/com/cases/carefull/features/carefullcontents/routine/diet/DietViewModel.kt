@@ -1,7 +1,5 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -30,7 +28,6 @@ import java.time.YearMonth
 import java.time.ZoneId
 import java.time.temporal.TemporalAdjusters
 
-@RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class DietViewModel @Inject constructor(
     private val dietRepository: DietRepository,
@@ -127,7 +124,6 @@ class DietViewModel @Inject constructor(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun observeAllMeals() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
@@ -235,7 +231,6 @@ class DietViewModel @Inject constructor(
             }
         }
     }
-
 
     fun onSearchQueryChanged(query: String) {
         savedStateHandle["searchQuery"] = query
@@ -356,7 +351,6 @@ class DietViewModel @Inject constructor(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun getDaysOfMonth(yearMonth: YearMonth): List<LocalDate> {
         val firstDayOfMonth = yearMonth.atDay(1)
         val firstDayOfFirstWeek =

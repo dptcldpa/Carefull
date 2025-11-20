@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullcontents.feed
+package com.cases.carefull.features.carefullcontents.feed.social
 
 import com.cases.carefull.domain.model.Comment
 import com.cases.carefull.domain.model.Post

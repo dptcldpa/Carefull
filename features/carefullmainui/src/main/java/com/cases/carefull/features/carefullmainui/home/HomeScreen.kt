@@ -1,9 +1,7 @@
 package com.cases.carefull.features.carefullmainui.home
 
 import android.app.Activity
-import android.os.Build
 import androidx.activity.compose.BackHandler
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -55,16 +53,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
 	viewModel: HomeViewModel = hiltViewModel(),
 	navController: NavController
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-	
 	val todayExercise = uiState.dailyExercise.firstOrNull()
-	
 	val pagerState = rememberPagerState(
 		initialPage = START_PAGE,
 		pageCount = { Int.MAX_VALUE }
@@ -78,7 +73,6 @@ fun HomeScreen(
 		markedDates = uiState.loggedMealDates,
 		dailyExerciseCompletedDates = uiState.dailyExerciseCompletedDates
 	)
-	
 	val context = LocalContext.current
 	val activity = (context as? Activity)
 	val scope = rememberCoroutineScope()
@@ -177,8 +171,6 @@ fun HomeScreen(
 							}
 						}
 					}
-					
-					
 					// 식단 기록 섹션
 					if (uiState.selectedDateTotalCalories > 0) {
 						Column {
@@ -229,7 +221,7 @@ fun HomeScreen(
 						goalCount = HomeViewModel.TODAY_EXERCISE_GOAL,
 						onClick = {
 							navController.navigate(
-								RoutineRoute.WorkOutScreen(
+								RoutineRoute.WorkOutRoute(
 									exerciseType = uiState.dailyExercise.first(),
 									count = 10
 								)

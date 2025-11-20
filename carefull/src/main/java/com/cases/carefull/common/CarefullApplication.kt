@@ -1,9 +1,6 @@
 package com.cases.carefull.common
 
 import android.app.Application
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import com.cases.carefull.BuildConfig.kakao_native_app_key
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
@@ -21,7 +18,6 @@ const val COIL_DISK_CACHE_MAX_SIZE = 1024 * 1024 * 100
 @HiltAndroidApp
 class CarefullApplication : Application() {
 	
-	@RequiresApi(Build.VERSION_CODES.O)
 	override fun onCreate() {
 		super.onCreate()
 //		setUpFirestoreLocalSinkCache()
