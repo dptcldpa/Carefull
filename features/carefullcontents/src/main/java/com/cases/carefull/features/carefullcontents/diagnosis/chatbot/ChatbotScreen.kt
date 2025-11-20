@@ -57,14 +57,15 @@ fun ChatBotScreen(
         viewModel.navigationEvent.collect { event ->
             when (event) {
                 is ChatNavigationEvent.ToHospitalList -> {
-                    val destination = DiagnosisRoute.HospitalInfoScreen(
+                    val destination = DiagnosisRoute.HospitalListScreen(
                         department = event.department,
                         diagnosis = ""
                     )
                     navController.navigate(destination)
                 }
                 is ChatNavigationEvent.ToDiseaseInfo -> {
-
+                    // 질병 화면
+                    Log.d("Navigation", "Navigate to Disease Info for: ${event.diseaseName}")
                 }
             }
         }

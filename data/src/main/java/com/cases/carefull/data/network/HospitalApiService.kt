@@ -1,12 +1,14 @@
 package com.cases.carefull.data.network
 
-import com.cases.carefull.data.dto.HospitalResponseDto
+import com.cases.carefull.data.dto.HospitalExcellResponseDto
+import com.cases.carefull.data.dto.HospitalListResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface HospitalApiService {
-    @GET("getHospBasisList") // ?추가
-    suspend fun searchHospitals(
+    // 병원 목록
+    @GET("hospInfoServicev2/getHospBasisList")
+    suspend fun getHospitalList(
         @Query("serviceKey") serviceKey: String,
         @Query("pageNo") pageNo: Int = 1,
         @Query("numOfRows") numOfRows: Int = 100,
@@ -17,8 +19,16 @@ interface HospitalApiService {
 //        @Query("zipCd") zipCd: Int = 2010,
 //        @Query("clCd") clCd: Int = 11,
         @Query("dgsbjtCd") dgsbjtCd: String = "01",
-        @Query("xPos") xPos: Double = 127.09854004628151,
-        @Query("yPos") yPos: Double = 37.6132113197367,
-        @Query("radius") radius: Int = 2000
-    ): HospitalResponseDto
+        @Query("xPos") xPos: String,
+        @Query("yPos") yPos: String,
+        @Query("radius") radius: String
+    ): HospitalListResponseDto
+
+    // 우수 병원
+    @GET("exclInstHospAsmInfoService1/getExclInstHospAsmInfo1")
+    suspend fun getHospitalsExcell(
+        @Query("serviceKey") serviceKey: String,
+        @Query("ykiho") ykiho: String,
+//        @Query("_type") type: String = "xml"
+    ): HospitalExcellResponseDto
 }

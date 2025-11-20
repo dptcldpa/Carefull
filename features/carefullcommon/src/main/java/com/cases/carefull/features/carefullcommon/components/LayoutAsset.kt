@@ -83,7 +83,7 @@ object LayoutAsset {
 			subTopBarType = NavType.NONE,
 			showBottomBar = true
 		),
-		DiagnosisRoute.HospitalInfoScreen to ScreenConfig(
+		DiagnosisRoute.HospitalListScreen to ScreenConfig(
 			topBarType = NavType.TOP_DIAGNOSIS,
 			subTopBarType = NavType.SUB_DIAGNOSIS,
 			showBottomBar = true
