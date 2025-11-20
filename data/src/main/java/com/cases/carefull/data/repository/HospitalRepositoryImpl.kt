@@ -27,7 +27,11 @@ class HospitalRepositoryImpl @Inject constructor(
         emit(DataResourceResult.Loading)
 
         val result = runCatching {
-            val departmentCode = departmentCodes[query] ?: "01"
+            val departmentCode = if (query.isBlank()) {
+                ""
+            } else {
+                departmentCodes[query] ?: "01"
+            }
 
             val hospitalDtoList = hospitalDataSource.getHospitalList(
                 departmentCode, latitude, longitude

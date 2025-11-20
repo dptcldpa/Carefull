@@ -1,11 +1,6 @@
 package com.cases.carefull.features.carefullcontents.diagnosis.hospital
-// 챗봇
-import android.annotation.SuppressLint
-import android.content.Context
-//import android.graphics.Color
-import android.util.Log
+
 import android.view.MotionEvent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,15 +9,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -54,7 +45,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -68,18 +58,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cases.carefull.domain.model.Hospital
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationTokenSource
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraAnimation
-import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.OverlayImage
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -92,7 +76,6 @@ fun HospitalListScreen(
 
     var naverMap by remember { mutableStateOf<NaverMap?>(null) }
     val mapView = rememberMapViewWithLifecycle(onMapReady = { map -> naverMap = map })
-
 
     val locationPermissionsState = rememberMultiplePermissionsState(
         permissions = listOf(
@@ -110,35 +93,23 @@ fun HospitalListScreen(
         }
 
         if (uiState.department.isNotEmpty()) {
-            getCurrentLocation(context) { lat, lon ->
-                val currentLocation = LatLng(lat, lon)
-                val cameraUpdate = CameraUpdate.scrollAndZoomTo(currentLocation, 14.0)
-                naverMap?.moveCamera(cameraUpdate)
-
-                viewModel.loadHospitals(lat, lon)
-            }
+            viewModel.loadCurrentLocationAndHospitals()
         }
     }
 
     val markers = remember { mutableStateListOf<Marker>() }
 
     LaunchedEffect(uiState.allHospitals, naverMap) {
-        Log.d("MarkerDebug", "Effect 실행됨. naverMap is null: ${naverMap == null}, 병원 수: ${uiState.allHospitals.size}")
 
         naverMap?.let { map ->
             markers.forEach { it.map = null }
             markers.clear()
 
             uiState.allHospitals.forEach { hospital ->
-                Log.d("MarkerDebug", "naverMap?.let 블록 실행됨. 마커 생성 시작.")
-                Log.d("MarkerDebug", "병원: ${hospital.name}, Lat: ${hospital.YPos}, Lon: ${hospital.XPos}")
-
                 val lat = hospital.XPos
                 val lon = hospital.YPos
 
                 if (lat != null && lon != null) {
-                    Log.d("MarkerDebug", "마커 생성: ${hospital.name} at ($lat, $lon)")
-
                     val marker = Marker().apply {
                         position = LatLng(lat, lon)
                         captionText = hospital.name
@@ -146,7 +117,7 @@ fun HospitalListScreen(
                         if (hospital.isExcellent) {
                             captionText = "⭐ ${hospital.name}"
                             iconTintColor = 0xFFFF0000.toInt()
-                            width = 70
+                            width = 70  // 조금 더 크게
                             height = 90
                         } else {
                             captionText = hospital.name
@@ -159,8 +130,6 @@ fun HospitalListScreen(
 
                     }
                     markers.add(marker)
-                } else {
-                    Log.w("MarkerDebug", "좌표가 null인 병원: ${hospital.name}")
                 }
             }
         }
@@ -273,18 +242,13 @@ fun HospitalListScreen(
 
                             FloatingActionButton(
                                 onClick = {
-                                    getCurrentLocation(context) { lat, lon ->
-                                        val currentLocation = LatLng(lat, lon)
-                                        val cameraUpdate = CameraUpdate.scrollAndZoomTo(currentLocation, 15.0)
-                                            .animate(CameraAnimation.Easing)
-                                        naverMap?.moveCamera(cameraUpdate)
-                                    }
+                                    viewModel.loadCurrentLocationAndHospitals()
                                 },
                                 modifier = Modifier
                                     .align(Alignment.BottomEnd)
                                     .padding(16.dp),
                                 containerColor = Color.White,
-                                contentColor = Color.Blue
+                                contentColor = MaterialTheme.colorScheme.primary
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.MyLocation,
@@ -294,6 +258,7 @@ fun HospitalListScreen(
                         }
                     }
 
+                    // 우수 병원 섹션
                     item {
                         Row(
                             modifier = Modifier.fillMaxWidth().clickable { showBestHospitals = !showBestHospitals },
@@ -304,6 +269,7 @@ fun HospitalListScreen(
                                 contentDescription = null
                             )
                             Spacer(modifier = Modifier.width(8.dp))
+
                             Text("우수 병원", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                         }
                     }
@@ -318,6 +284,7 @@ fun HospitalListScreen(
                         }
                     }
 
+                    // 전체 병원 섹션
                     item {
                         Row(
                             modifier = Modifier.fillMaxWidth().clickable { showAllHospitals = !showAllHospitals },
@@ -390,9 +357,6 @@ private fun HospitalItem(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
-                if (hospital.isExcellent) {
-
-                }
             }
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -411,34 +375,5 @@ private fun HospitalItem(
                 )
             }
         }
-    }
-}
-
-// 현재 위치
-@SuppressLint("MissingPermission")
-private fun getCurrentLocation(context: Context, onResult: (Double, Double) -> Unit) {
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
-    try {
-        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, CancellationTokenSource().token)
-            .addOnSuccessListener { location ->
-                location?.let {
-                    onResult(it.latitude, it.longitude)
-                }
-            }
-            .addOnFailureListener {
-                Log.w("Location", "Failed to get high accuracy location, trying balanced.")
-                fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, CancellationTokenSource().token)
-                    .addOnSuccessListener { location ->
-                        location?.let {
-                            onResult(it.latitude, it.longitude)
-                        }
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e("Location", "Failed to get any location.", e)
-                    }
-            }
-    } catch (e: SecurityException) {
-        Log.e("Location", "Location permission not granted.", e)
     }
 }

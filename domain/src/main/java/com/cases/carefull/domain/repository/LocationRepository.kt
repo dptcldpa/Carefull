@@ -4,4 +4,6 @@ import com.cases.carefull.domain.model.Location
 
 interface LocationRepository {
     suspend fun getLastKnownLocation(): Location?
+
+    suspend fun getCurrentLocation(): Location?
 }

@@ -6,6 +6,8 @@ import com.cases.carefull.domain.model.Location
 import com.cases.carefull.domain.repository.LocationRepository
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -22,19 +24,47 @@ class LocationRepositoryImpl @Inject constructor(
     @SuppressLint("MissingPermission")
     override suspend fun getLastKnownLocation(): Location? {
         return suspendCoroutine { continuation ->
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                val androidLocation: AndroidLocation? = location
-                continuation.resume(androidLocation?.toDomain())
-            }.addOnFailureListener {
-                continuation.resume(null)
-            }
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { androidLocation ->
+                    continuation.resume(androidLocation?.toDomainModel())
+                }
+                .addOnFailureListener {
+                    continuation.resume(null)
+                }
         }
     }
-}
 
-private fun AndroidLocation.toDomain(): Location {
-    return Location(
-        latitude = this.latitude,
-        longitude = this.longitude
-    )
+    @SuppressLint("MissingPermission")
+    override suspend fun getCurrentLocation(): Location? = suspendCoroutine { continuation ->
+        try {
+            fusedLocationClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                CancellationTokenSource().token
+            )
+                .addOnSuccessListener { androidLocation ->
+                    continuation.resume(androidLocation?.toDomainModel())
+                }
+                .addOnFailureListener {
+                    fusedLocationClient.getCurrentLocation(
+                        Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+                        CancellationTokenSource().token
+                    )
+                        .addOnSuccessListener { androidLocation ->
+                            continuation.resume(androidLocation?.toDomainModel())
+                        }
+                        .addOnFailureListener { e ->
+                            continuation.resume(null)
+                        }
+                }
+        } catch (e: SecurityException) {
+            continuation.resume(null)
+        }
+    }
+
+    private fun AndroidLocation.toDomainModel(): Location {
+        return Location(
+            latitude = this.latitude,
+            longitude = this.longitude
+        )
+    }
 }
