@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -18,51 +22,68 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 
 @Composable
 fun CustomTopAppBar(
-	title: String,
-	modifier: Modifier = Modifier,
-	navigationIcon: @Composable (() -> Unit)? = null,
-	actions: @Composable (RowScope.() -> Unit)? = null
+    title: String,
+    modifier: Modifier = Modifier,
+    navigationIcon: @Composable (() -> Unit)? = null,
+    actions: @Composable (RowScope.() -> Unit)? = null
 ) {
-	Surface(
-		modifier = modifier
-			.fillMaxWidth()
-			.height(56.dp),
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp),
 //		shadowElevation = 4.dp
-	) {
-		Box(
-			modifier = Modifier
-				.fillMaxSize()
-				.padding(horizontal = 4.dp)
-				.background(color = Color.White)
-		) {
-			if (navigationIcon != null) {
-				Box(modifier = Modifier.align(Alignment.CenterStart)) {
-					navigationIcon()
-				}
-			}
-			
-			Text(
-				text = title,
-				style = MaterialTheme.typography.titleLarge,
-				textAlign = TextAlign.Center,
-				maxLines = 1,
-				overflow = TextOverflow.Ellipsis,
-				modifier = Modifier
-					.align(Alignment.Center)
-					.padding(horizontal = 48.dp)
-			)
-			if (actions != null) {
-				Row(
-					modifier = Modifier.align(Alignment.CenterEnd),
-					verticalAlignment = Alignment.CenterVertically,
-					horizontalArrangement = Arrangement.End,
-					content = actions
-				)
-			}
-		}
-	}
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 4.dp)
+                .background(color = Color.White)
+        ) {
+            if (navigationIcon != null) {
+                Box(modifier = Modifier.align(Alignment.CenterStart)) {
+                    navigationIcon()
+                }
+            }
+
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(horizontal = 48.dp)
+            )
+            if (actions != null) {
+                Row(
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End,
+                    content = actions
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CustomTopAppBarPreview() {
+    CarefullTheme {
+        CustomTopAppBar(
+            title = "제목",
+            navigationIcon = {
+                IconButton(onClick = { }) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "뒤로 가기")
+                }
+            },
+        )
+    }
 }

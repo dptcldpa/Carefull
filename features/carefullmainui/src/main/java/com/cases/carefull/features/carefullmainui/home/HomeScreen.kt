@@ -44,8 +44,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.cases.carefull.domain.model.CalendarViewType
-import com.cases.carefull.features.carefullcommon.components.Calendar
-import com.cases.carefull.features.carefullcommon.components.CalendarState
+import com.cases.carefull.features.carefullcommon.calendar.Calendar
+import com.cases.carefull.features.carefullcommon.calendar.CalendarState
 import com.cases.carefull.features.carefullcommon.components.ComposableToast
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import com.cases.carefull.features.carefullmainui.home.HomeUiState.Companion.START_PAGE

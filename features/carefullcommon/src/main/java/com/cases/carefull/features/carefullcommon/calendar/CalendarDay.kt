@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullcommon.components
+package com.cases.carefull.features.carefullcommon.calendar
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -23,9 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cases.carefull.features.carefullcommon.R
+import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -101,6 +103,24 @@ fun CalendarDay(
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun CalendarDayPreview_AllStates() {
+    CarefullTheme {
+        Column(modifier = Modifier.size(50.dp)) {
+            CalendarDay(
+                date = LocalDate.now(),
+                isToday = true,
+                isSelected = true,
+                isVisibleMonth = true,
+                hasLoggedMeal = true,
+                hasCompletedDailyExercise = true,
+                onClick = {}
+            )
         }
     }
 }

@@ -47,8 +47,8 @@ import com.cases.carefull.domain.model.CalendarViewType
 import com.cases.carefull.domain.model.diet.DietCollection
 import com.cases.carefull.domain.model.diet.MealType
 import com.cases.carefull.features.carefullcommon.R
-import com.cases.carefull.features.carefullcommon.components.Calendar
-import com.cases.carefull.features.carefullcommon.components.CalendarState
+import com.cases.carefull.features.carefullcommon.calendar.Calendar
+import com.cases.carefull.features.carefullcommon.calendar.CalendarState
 import com.cases.carefull.features.carefullcommon.components.CommonAlertDialog
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme

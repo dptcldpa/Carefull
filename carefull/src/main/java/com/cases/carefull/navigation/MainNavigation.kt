@@ -12,7 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cases.carefull.common.MainViewModel
-import com.cases.carefull.features.carefullcommon.components.LayoutAsset
+import com.cases.carefull.features.carefullcommon.navigation.LayoutAsset
 import com.cases.carefull.features.carefullcommon.navigation.MainRoute
 import com.cases.carefull.features.carefullcommon.navigation.Route
 import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalViewModel

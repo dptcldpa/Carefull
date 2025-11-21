@@ -1,4 +1,4 @@
-package com.cases.carefull.features.carefullcommon.components
+package com.cases.carefull.features.carefullcommon.calendar
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -47,12 +48,15 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cases.carefull.domain.model.CalendarViewType
 import com.cases.carefull.features.carefullcommon.R
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.temporal.TemporalAdjusters
 import kotlin.math.abs
 
 @Composable
@@ -354,5 +358,112 @@ private fun RowScope.CalendarDayBox(
             hasCompletedDailyExercise = hasCompletedDailyExercise,
             onClick = onClick
         )
+    }
+}
+
+@Composable
+private fun rememberFakeCalendarState(
+    initialViewType: CalendarViewType = CalendarViewType.MONTHLY,
+    initialDate: LocalDate = LocalDate.now(),
+): CalendarState {
+    return remember {
+        val yearMonth = YearMonth.from(initialDate)
+        val firstOfMonth = yearMonth.atDay(1)
+        val firstDayOfWeek = firstOfMonth.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+        val dates = List(42) { i -> firstDayOfWeek.plusDays(i.toLong()) }
+
+        CalendarState(
+            viewType = initialViewType,
+            displayedYearMonth = yearMonth,
+            selectedDate = initialDate,
+            selectedDateInfo = "${initialDate.monthValue}월 ${initialDate.dayOfMonth}일",
+            calendarDates = dates,
+            markedDates = setOf(initialDate.minusDays(2), initialDate.plusDays(3)),
+            dailyExerciseCompletedDates = setOf(initialDate.minusDays(2), initialDate.plusDays(4)),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CalendarPreview_Weekly() {
+    MaterialTheme {
+        Surface {
+            Calendar(
+                modifier = Modifier.padding(16.dp),
+                calendarState = rememberFakeCalendarState(initialViewType = CalendarViewType.WEEKLY),
+                pagerState = rememberPagerState(initialPage = 500) { 1000 },
+                onDateClick = {},
+                onToggleViewType = {},
+                onMonthPickerClick = {},
+                onGoToToday = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CalendarPreview_Monthly() {
+    MaterialTheme {
+        Surface {
+            Calendar(
+                modifier = Modifier.padding(16.dp),
+                calendarState = rememberFakeCalendarState(),
+                pagerState = rememberPagerState(initialPage = 500) { 1000 },
+                onDateClick = {},
+                onToggleViewType = {},
+                onMonthPickerClick = {},
+                onGoToToday = {},
+                calendarFooterContent = {
+                    Column {
+                        Text(
+                            "운동 기록",
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                "스쿼트",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                "13 회",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray
+                            )
+                        }
+                    }
+                    Column {
+                        Text(
+                            "식단 기록",
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                "총 섭취 칼로리",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                "450 kcal",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray
+                            )
+                        }
+                    }
+                }
+            )
+        }
     }
 }
