@@ -5,6 +5,7 @@ import com.cases.carefull.data.network.ChatbotApiService
 import com.cases.carefull.data.network.DietApiService
 import com.cases.carefull.data.network.HospitalApiService
 import com.cases.carefull.data.network.MedicineApiService
+import com.google.gson.Gson
 import com.tickaroo.tikxml.TikXml
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import dagger.Module
@@ -24,7 +25,7 @@ object NetworkModule {
 
 	private const val DIET_URL = "https://apis.data.go.kr/1471000/FoodNtrCpntDbInfo02/"
 	private const val MEDICINE_URL = "http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/"
-	private const val HOSPITAL_URL = "https://apis.data.go.kr/B551182/hospInfoServicev2/"
+	private const val HOSPITAL_URL = "https://apis.data.go.kr/B551182/"
 	private const val Chatbot_URL = "https://api.openai.com/"
 
 	@Provides
@@ -86,6 +87,12 @@ object NetworkModule {
 	@Singleton
 	fun provideHospitalApiService(@HospitalRetrofit retrofit: Retrofit): HospitalApiService {
 		return retrofit.create(HospitalApiService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun provideGson(): Gson {
+		return Gson()
 	}
 
 	@Provides

@@ -66,6 +66,7 @@ dependencies {
 
     implementation(libs.bundles.pose.detection)
 
+    // 지도 위치 정보
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
     testImplementation(libs.junit)
