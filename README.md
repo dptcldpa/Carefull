@@ -5,7 +5,7 @@
   <br />
   <strong>"운동·식단 기록부터 건강 정보 검색까지, 하나의 앱으로 케어하세요"</strong>
   <br /><br />
-  매일의 운동과 식단을 기록하고, AI로 증상을 분석하며 내게 필요한 건강 정보를 제공하는 통합 헬스케어 앱입니다.
+  AI(ML Kit)를 활용한 실시간 운동 자세 분석과 생성형 AI(ChatGPT)기반의 맞춤형 건강 상담이 결합된 통합 헬스케어 앱입니다.
 </div>
 
 ## 🗂️ 프로젝트 개요
@@ -22,7 +22,7 @@
     - 공공데이터 API
     - Firebase Firestore
     - Kakao OAuth
-    - ML Kit API
+    - On-device AI Google ML Kit API
     - Naver Maps
     - OpenAI API (ChatGPT)
 
@@ -32,20 +32,22 @@
 
 ## 🧰 기술 스택
 
-| 분류             | 기술                                                                                  |
-|----------------|-------------------------------------------------------------------------------------|
-| Language       | Kotlin                                                                              |
-| Architecture   | Clean Architecture (Hybrid), MVVM                                                   |
-| Asynchronous   | Coroutine, Flow                                                                     |
-| UI             | Coil, Jetpack Compose, Navigation                                                   |
-| Network        | Gson, Interceptor, OkHttp3, Retrofit2, tikxml                                       |
-| SDK & API      | Fused Location Provider,Kakao SDK, ML Kit Pose Detection, Naver Map SDK, OpenAI API |
-| Authentication | KaKao OAuth                                                                         |
-| DataBase       | Firestore, Room                                                                     |
-| DI             | Hilt                                                                                |
-| ETC / Tools    | Figma, Github, Notion, Runtime Permission                                           |
+| 분류             | 기술                                                                              |
+|----------------|---------------------------------------------------------------------------------|
+| Language       | Kotlin                                                                          |
+| Architecture   | Clean Architecture (Hybrid), MVVM                                               |
+| Asynchronous   | Coroutine, Flow                                                                 |
+| UI             | Coil, Jetpack Compose, Navigation                                               |
+| Network        | Gson, Interceptor, OkHttp3, Retrofit2, tikxml                                   |
+| AI             | On-device AI Google ML Kit(Pose Detection, Face Detection), OpenAI API (생성형 AI) |
+| SDK & API      | Fused Location Provider,Kakao SDK, Naver Map SDK                                |
+| Authentication | KaKao OAuth                                                                     |
+| DataBase       | Firestore, Room                                                                 |
+| DI             | Hilt                                                                            |
+| ETC / Tools    | Figma, Github, Notion, Runtime Permission                                       |
 
 ## 🏗️ 프로젝트 아키텍쳐
+
 <img width="1000" height="569" alt="project-flow" src="https://github.com/user-attachments/assets/fedc8a46-eecc-4e58-b61c-8f5ef6a5a0a4" />
 
 <img width="1000" height="678" alt="module" src="https://github.com/user-attachments/assets/febe767e-3b62-4dde-a566-af9ea5468b9a" />
@@ -66,9 +68,9 @@
 
 ### 3. 운동 기록
 
-| <img src="https://github.com/user-attachments/assets/d8aafe14-2b04-4072-8532-44c65d5b3551" alt="squat" width="200"/> |
-|:--------------------------------------------------------------------------------------------------------------------:|
-|                                        ML Kit API를 활용하여<br>실시간 운동 동작을 분석합니다.                                         |
+|   <img src="https://github.com/user-attachments/assets/d8aafe14-2b04-4072-8532-44c65d5b3551" alt="squat" width="200"/>   |
+|:------------------------------------------------------------------------------------------------------------------------:|
+| On-device AI Google ML Kit를 활용하여 사용자의 <br> 관절 포인트(Skeleton)를 실시간으로 추적합니다.<br> 스쿼트 등 운동 자세의 정확도를판별하고 <br>자동으로 횟수를 카운팅합니다. |
 
 ### 4. 식단 기록
 

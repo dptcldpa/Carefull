@@ -12,6 +12,7 @@
 .cxx
 .idea/
 secret.properties
+google-services.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/java,kotlin,androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,kotlin,androidstudio
