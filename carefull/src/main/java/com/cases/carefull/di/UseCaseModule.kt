@@ -1,7 +1,7 @@
 package com.cases.carefull.di
 
-import com.cases.carefull.domain.repository.DietRepository
 import com.cases.carefull.domain.repository.MedicineRepository
+import com.cases.carefull.domain.repository.diet.BodyStatsRepository
 import com.cases.carefull.domain.usecase.bmr.CalculateBmrUseCase
 import com.cases.carefull.domain.usecase.bmr.GetSavedBmrUseCase
 import com.cases.carefull.domain.usecase.MedicineSearchUseCase
@@ -33,7 +33,7 @@ object UseCaseModule {
     @Provides
     @ViewModelScoped
     fun provideGetSavedBmrUseCase(
-        repository: DietRepository
+        repository: BodyStatsRepository
     ): GetSavedBmrUseCase {
         return GetSavedBmrUseCase(repository)
     }
@@ -41,7 +41,7 @@ object UseCaseModule {
     @Provides
     @ViewModelScoped
     fun provideSaveBmrUseCase(
-        repository: DietRepository
+        repository: BodyStatsRepository
     ): SaveBmrUseCase {
         return SaveBmrUseCase(repository)
     }
