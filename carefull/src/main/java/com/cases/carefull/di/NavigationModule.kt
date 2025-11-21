@@ -1,6 +1,6 @@
 package com.cases.carefull.di
 
-import com.cases.carefull.features.carefullcommon.components.AppNavigationProviderImpl
+import com.cases.carefull.features.carefullcommon.navigation.AppNavigationProviderImpl
 import com.cases.carefull.features.carefullcommon.model.AppNavigationProvider
 import dagger.Binds
 import dagger.Module

@@ -1,11 +1,9 @@
-package com.cases.carefull.features.carefullcommon.components
+package com.cases.carefull.features.carefullcommon.navigation
 
 import com.cases.carefull.domain.model.NavType
 import com.cases.carefull.domain.model.ScreenConfig
 import com.cases.carefull.features.carefullcommon.model.AppNavigationProvider
 import com.cases.carefull.features.carefullcommon.model.NavItem
-import com.cases.carefull.features.carefullcommon.navigation.LayoutAsset
-import com.cases.carefull.features.carefullcommon.navigation.Route
 import jakarta.inject.Inject
 
 class AppNavigationProviderImpl  @Inject constructor(): AppNavigationProvider {
