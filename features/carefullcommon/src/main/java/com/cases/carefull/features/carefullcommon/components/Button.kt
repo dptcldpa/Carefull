@@ -20,7 +20,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 
 @Composable
 fun MenuButton(text: String, onClick: () -> Unit) {
@@ -58,7 +60,6 @@ fun RowLine() {
     )
 }
 
-// 스위치 버튼 여부에 따른 사이즈 통일을 위해 최소 사이즈가 설정된 메뉴 컨테이너
 @Composable
 private fun MenuContainer(
     modifier: Modifier = Modifier,
@@ -72,4 +73,20 @@ private fun MenuContainer(
         verticalAlignment = Alignment.CenterVertically,
         content = content
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MenuButtonPreview() {
+    CarefullTheme {
+        MenuButton(text = "프로필 수정", onClick = {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SwitchMenuButtonPreview() {
+    CarefullTheme {
+        SwitchMenuButton(text = "알림 설정")
+    }
 }
