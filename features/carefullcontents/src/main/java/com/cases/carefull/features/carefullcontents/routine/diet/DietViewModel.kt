@@ -9,7 +9,10 @@ import com.cases.carefull.domain.model.diet.FavoriteMeal
 import com.cases.carefull.domain.model.diet.Gender
 import com.cases.carefull.domain.model.diet.MealType
 import com.cases.carefull.domain.model.diet.RecentMealSearch
-import com.cases.carefull.domain.repository.DietRepository
+import com.cases.carefull.domain.repository.diet.DietRecordRepository
+import com.cases.carefull.domain.repository.diet.DietSearchRecordRepository
+import com.cases.carefull.domain.repository.diet.FavoriteFoodRepository
+import com.cases.carefull.domain.repository.diet.FoodSearchRepository
 import com.cases.carefull.domain.usecase.bmr.CalculateBmrUseCase
 import com.cases.carefull.domain.usecase.bmr.GetSavedBmrUseCase
 import com.cases.carefull.domain.util.DataResourceResult
@@ -30,7 +33,10 @@ import java.time.temporal.TemporalAdjusters
 
 @HiltViewModel
 class DietViewModel @Inject constructor(
-    private val dietRepository: DietRepository,
+    private val dietRecordRepository: DietRecordRepository,
+    private val dietSearchRecordRepository: DietSearchRecordRepository,
+    private val favoriteFoodRepository: FavoriteFoodRepository,
+    private val foodSearchRepository: FoodSearchRepository,
     private val getSavedBmrUseCase: GetSavedBmrUseCase,
     private val calculateBmrUseCase: CalculateBmrUseCase,
     private val savedStateHandle: SavedStateHandle
@@ -73,13 +79,13 @@ class DietViewModel @Inject constructor(
 
     fun deleteFavoriteMeal(meal: FavoriteMeal) {
         viewModelScope.launch {
-            dietRepository.deleteFavorite(meal)
+            favoriteFoodRepository.deleteFavorite(meal)
         }
     }
 
     private fun observeFavorites() {
         viewModelScope.launch {
-            dietRepository.getFavorites().collect { favorites ->
+            favoriteFoodRepository.getFavorites().collect { favorites ->
                 _uiState.update { it.copy(favoriteState = it.favoriteState.copy(favoriteMeals = favorites)) }
             }
         }
@@ -127,7 +133,7 @@ class DietViewModel @Inject constructor(
     fun observeAllMeals() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            dietRepository.getAllMeal().collect { result ->
+            dietRecordRepository.getAllMeal().collect { result ->
                 when (result) {
                     is DataResourceResult.Success -> {
                         val meals = result.data
@@ -195,7 +201,7 @@ class DietViewModel @Inject constructor(
                 createdAt = createdAtTimestamp,
                 updatedAt = updatedAtTimestamp
             )
-            val result = dietRepository.addMeal(newDietCollection)
+            val result = dietRecordRepository.addMeal(newDietCollection)
             when (result) {
                 is DataResourceResult.Success -> {
                     _uiState.update { it.copy(isLoading = false) }
@@ -215,7 +221,7 @@ class DietViewModel @Inject constructor(
 
     fun onRemoveMeal(dietInfo: DietCollection) {
         viewModelScope.launch {
-            val result = dietRepository.removeMeal(dietInfo.documentId)
+            val result = dietRecordRepository.removeMeal(dietInfo.documentId)
             when (result) {
                 is DataResourceResult.Success -> {
                     observeAllMeals()
@@ -375,7 +381,7 @@ class DietViewModel @Inject constructor(
 
     private fun observeRecentSearches() {
         viewModelScope.launch {
-            dietRepository.getRecentSearches().collect { searches ->
+            dietSearchRecordRepository.getRecentSearches().collect { searches ->
                 _uiState.update {
                     it.copy(
                         dietSearchState = it.dietSearchState.copy(recentSearches = searches)
@@ -392,14 +398,14 @@ class DietViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            dietRepository.addSearch(query)
+            dietSearchRecordRepository.addSearch(query)
             _uiState.update {
                 it.copy(
                     isLoading = true,
                     dietSearchState = it.dietSearchState.copy(searchResults = emptyList())
                 )
             }
-            val result: List<DietCollection> = dietRepository.searchMeals(query = query)
+            val result: List<DietCollection> = foodSearchRepository.searchMeals(query = query)
             _uiState.update {
                 it.copy(
                     isLoading = false,
@@ -416,13 +422,13 @@ class DietViewModel @Inject constructor(
 
     fun onDeleteRecentSearch(search: RecentMealSearch) {
         viewModelScope.launch {
-            dietRepository.deleteSearch(search)
+            dietSearchRecordRepository.deleteSearch(search)
         }
     }
 
     fun onClearAllRecentMealSearches() {
         viewModelScope.launch {
-            dietRepository.clearAllSearches()
+            dietSearchRecordRepository.clearAllSearches()
         }
     }
 
@@ -523,7 +529,7 @@ class DietViewModel @Inject constructor(
                     protein = newMeal.protein,
                     fat = newMeal.fat
                 )
-                dietRepository.addFavorite(favoriteMeal)
+                favoriteFoodRepository.addFavorite(favoriteMeal)
             }
             _navigationEvent.emit(NavigationEvent.NavigateBackToDietScreen)
         }
