@@ -60,6 +60,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.cases.carefull.features.carefullcommon.components.SearchBar
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraPosition
@@ -93,8 +94,9 @@ fun HospitalSearchScreen(
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
         onResult = { permissions ->
-            val isGranted = permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) ||
-                    permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)
+            val isGranted =
+                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) ||
+                        permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)
 
             if (isGranted) {
                 viewModel.loadCurrentLocationForSearch { location ->
@@ -119,7 +121,10 @@ fun HospitalSearchScreen(
 
     LaunchedEffect(Unit) {
         locationPermissionLauncher.launch(
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
         )
     }
 
@@ -221,9 +226,17 @@ fun HospitalSearchScreen(
                                     }
                                     .padding(horizontal = 24.dp, vertical = 16.dp)
                             ) {
-                                Text(hospital.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                                Text(
+                                    hospital.name,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
                                 Spacer(modifier = Modifier.height(10.dp))
-                                Text(hospital.address, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                                Text(
+                                    hospital.address,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color.Gray
+                                )
                             }
                             HorizontalDivider(
                                 modifier = Modifier.padding(horizontal = 24.dp),
@@ -270,6 +283,21 @@ fun HospitalSearchScreen(
                     .fillMaxWidth()
                     .align(Alignment.TopCenter)
             ) {
+
+//                SearchBar(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 0.dp),
+//                    query = uiState.searchQuery,
+//                    onQueryChange = viewModel::onSearchQueryChanged,
+//                    onSearch = {
+//                        naverMap?.cameraPosition?.target?.let { center ->
+//                            viewModel.searchHospitals(center.latitude, center.longitude)
+//                        }
+//                    },
+//                    placeholder = "병원명을 입력해주세요",
+//                )
+
                 // 검색창
                 TextField(
                     value = uiState.searchQuery,

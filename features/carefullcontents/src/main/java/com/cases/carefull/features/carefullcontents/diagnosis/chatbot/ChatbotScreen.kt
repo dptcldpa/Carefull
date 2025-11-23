@@ -10,17 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,14 +26,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.cases.carefull.chatbot.ChatBotViewModel
+import com.cases.carefull.features.carefullcommon.components.SearchBar
 import com.cases.carefull.features.carefullcommon.navigation.DiagnosisRoute
 
 @Composable
@@ -50,9 +44,6 @@ fun ChatBotScreen(
 
     var userInput by remember { mutableStateOf("") }
 
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val focusManager = LocalFocusManager.current
-
     LaunchedEffect(Unit) {
         viewModel.navigationEvent.collect { event ->
             when (event) {
@@ -63,6 +54,7 @@ fun ChatBotScreen(
                     )
                     navController.navigate(destination)
                 }
+
                 is ChatNavigationEvent.ToDiseaseInfo -> {
                     Log.d("Navigation", "Navigate to Disease Info for: ${event.diseaseName}")
                 }
@@ -94,37 +86,17 @@ fun ChatBotScreen(
                 )
             }
         }
-
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OutlinedTextField(
-                modifier = Modifier.weight(1f),
-                value = userInput,
-                onValueChange = { userInput = it },
-                placeholder = { Text("증상을 입력하세요") },
-                shape = RoundedCornerShape(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            IconButton(
-                onClick = {
-                    if (userInput.isNotBlank()) {
-                        viewModel.sendMessage(userInput)
-                        userInput = ""
-
-                        keyboardController?.hide()
-                        focusManager.clearFocus()
-                    }
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Send,
-                    tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = "전송"
-                )
-            }
-        }
+        SearchBar(
+            modifier = Modifier,
+            query = userInput,
+            onQueryChange = { userInput = it },
+            onSearch = {
+                viewModel.sendMessage(userInput)
+                userInput = ""
+            },
+            placeholder = "증상을 입력하세요",
+            buttonIcon = Icons.AutoMirrored.Filled.Send
+        )
     }
 }
 
@@ -135,8 +107,10 @@ fun ChatBubble(
     onDiseaseClick: (String) -> Unit
 ) {
     val alignment = if (message.isUser) Alignment.CenterEnd else Alignment.CenterStart
-    val bgColor = if (message.isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
-    val textColor = if (message.isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+    val bgColor =
+        if (message.isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
+    val textColor =
+        if (message.isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
     Box(
         modifier = Modifier.fillMaxWidth(),
