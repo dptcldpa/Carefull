@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -33,7 +31,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -47,10 +44,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -64,6 +59,7 @@ import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.components.CommonAlertDialog
 import com.cases.carefull.features.carefullcommon.components.CommonNumberOutLinedTextField
 import com.cases.carefull.features.carefullcommon.components.CommonTextOutLinedTextField
+import com.cases.carefull.features.carefullcommon.components.SearchBar
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import java.time.LocalDate
 
@@ -81,7 +77,6 @@ fun DietSearchScreen(
     }
 
     var foodToEdit by remember { mutableStateOf<DietCollection?>(null) }
-    var showDirectInputDialog by remember { mutableStateOf(false) }
     val searchQuery by viewModel.searchQuery.collectAsState()
 
     if (mealType == null || selectedDate == null) {
@@ -182,13 +177,17 @@ fun DietSearchScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SearchBar(
-                value = searchQuery,
-                onValueChange = { newQuery ->
+                modifier = Modifier,
+                query = searchQuery,
+                onQueryChange = { newQuery ->
                     viewModel.onSearchQueryChanged(newQuery)
                 },
-                onSearch = { viewModel.onRecentMealSearch() }
+                onSearch = { viewModel.onRecentMealSearch() },
+                placeholder = "음식을 검색하세요",
             )
+
             Spacer(Modifier.height(16.dp))
+
             Row(modifier = Modifier.fillMaxWidth()) {
                 OutlinedButton(
                     onClick = { viewModel.showFavoritesDialog() },
@@ -413,64 +412,6 @@ fun CustomInputAlertDialog(
             }
         }
     )
-}
-
-@Composable
-fun SearchBar(
-    value: String,
-    onValueChange: (String) -> Unit,
-    onSearch: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            textStyle = MaterialTheme.typography.bodyLarge,
-            label = { Text(stringResource(R.string.food_search_title)) },
-            modifier = Modifier.weight(1f),
-            singleLine = true,
-            placeholder = { Text(stringResource(R.string.food_search_hint)) },
-//			leadingIcon = {
-//				Icon(
-//					imageVector = Icons.Default.Search,
-//					contentDescription = "검색 아이콘"
-//				)
-//			},
-            trailingIcon = {
-                if (value.isNotBlank()) {
-                    IconButton(onClick = { onValueChange("") }) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = stringResource(R.string.common_clear_input)
-                        )
-                    }
-                }
-            },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = {
-                onSearch()
-                keyboardController?.hide()
-            }
-            ),
-            shape = RoundedCornerShape(16.dp)
-        )
-        IconButton(
-            modifier = Modifier.padding(top = 10.dp),
-            onClick = {
-                onSearch()
-                keyboardController?.hide()
-            }) {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = stringResource(R.string.content_description_search_icon)
-            )
-        }
-    }
 }
 
 

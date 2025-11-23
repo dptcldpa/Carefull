@@ -45,29 +45,37 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cases.carefull.domain.model.MedicineItem
 import com.cases.carefull.domain.model.diet.RecentMealSearch
+import com.cases.carefull.features.carefullcommon.components.SearchBar
 
 @Composable
 fun MedicineSearchScreen(
-	viewModel: MedicineViewModel = hiltViewModel(),
-	onNavigateToMedicineInfo: () -> Unit
+    viewModel: MedicineViewModel = hiltViewModel(),
+    onNavigateToMedicineInfo: () -> Unit
 ) {
-	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-	
-	Column(
-		modifier = Modifier
-			.fillMaxSize()
-			.padding(
-				top = 16.dp,
-				start = 16.dp,
-				end = 16.dp
-			)
-	) {
-		Row(
-			verticalAlignment = Alignment.CenterVertically,
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 8.dp)
-		) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        SearchBar(
+            modifier = Modifier,
+            query = uiState.searchQuery,
+            onQueryChange = { newQuery ->
+                viewModel.onQueryChange(newQuery)
+            },
+            onSearch = { viewModel.addRecentSearch(uiState.searchQuery) },
+            placeholder = "약 이름을 검색하세요",
+            label = "약 검색",
+        )
+
+//		Row(
+//			verticalAlignment = Alignment.CenterVertically,
+//			modifier = Modifier
+//				.fillMaxWidth()
+//				.padding(horizontal = 8.dp)
+//		) {
 //			// 왼쪽 카메라 아이콘
 //			IconButton(onClick = { /* TODO: 카메라 기능 */ }) {
 //				Icon(
@@ -77,15 +85,8 @@ fun MedicineSearchScreen(
 //			}
 //
 //			Spacer(modifier = Modifier.width(8.dp))
-			MedicineSearchBar(
-				value = uiState.searchQuery,
-				onValueChange = { newQuery ->
-					viewModel.onQueryChange(newQuery)
-				},
-				onSearch = { viewModel.addRecentSearch(uiState.searchQuery) }
-			)
-		}
-
+//		}
+//
 //			TextField(
 //				value = uiState.searchQuery,
 //				onValueChange = { newQuery ->
@@ -116,104 +117,104 @@ fun MedicineSearchScreen(
 //			}
 //		}
 //		Spacer(modifier = Modifier.height(24.dp))
-		
-		if (uiState.searchQuery.isEmpty()) {
-			RecentSearchSection(
-				recentSearches = uiState.recentSearches,
-				onSearch = { searchTerm ->
-					viewModel.onQueryChange(searchTerm)
-				},
-				onRemove = viewModel::removeRecentSearch,
-				onClearAll = viewModel::clearRecentSearches
-			)
-		} else {
-			if (uiState.isLoading) {
-				Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-					CircularProgressIndicator()
-				}
-			}
-			
-			if (uiState.errorMessage != null) {
-				Box(
-					modifier = Modifier.fillMaxSize(),
-					contentAlignment = Alignment.Center
-				) {
-					Text("에러가 발생했습니다: ${uiState.errorMessage}", color = Color.Red)
-				}
-			} else {
-				SearchResultSection(
-					searchResults = uiState.searchResult,
-					onItemClick = { medicineItem ->
-						viewModel.setSelectedItem(medicineItem)
-						onNavigateToMedicineInfo()
-					}
-				)
-			}
-		}
-	}
+
+        if (uiState.searchQuery.isEmpty()) {
+            RecentSearchSection(
+                recentSearches = uiState.recentSearches,
+                onSearch = { searchTerm ->
+                    viewModel.onQueryChange(searchTerm)
+                },
+                onRemove = viewModel::removeRecentSearch,
+                onClearAll = viewModel::clearRecentSearches
+            )
+        } else {
+            if (uiState.isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            if (uiState.errorMessage != null) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("에러가 발생했습니다: ${uiState.errorMessage}", color = Color.Red)
+                }
+            } else {
+                SearchResultSection(
+                    searchResults = uiState.searchResult,
+                    onItemClick = { medicineItem ->
+                        viewModel.setSelectedItem(medicineItem)
+                        onNavigateToMedicineInfo()
+                    }
+                )
+            }
+        }
+    }
 }
 
 @Composable
 private fun RecentSearchSection(
-	recentSearches: List<String>,
-	onSearch: (String) -> Unit,
-	onRemove: (String) -> Unit,
-	onClearAll: () -> Unit
+    recentSearches: List<String>,
+    onSearch: (String) -> Unit,
+    onRemove: (String) -> Unit,
+    onClearAll: () -> Unit
 ) {
-	Column(
-		modifier = Modifier
-			.fillMaxWidth()
-			.padding(horizontal = 12.dp),
-		horizontalAlignment = Alignment.CenterHorizontally
-	) {
-		if (recentSearches.isEmpty()) {
-			Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-				Text("최근 검색 기록이 없습니다.", color = Color.Gray)
-			}
-		} else {
-			Row(
-				verticalAlignment = Alignment.CenterVertically
-			) {
-				Text(
-					"최근 검색",
-					style = MaterialTheme.typography.bodyMedium
-				)
-				Spacer(modifier = Modifier.weight(1f))
-				TextButton(
-					onClick = { onClearAll() },
-					contentPadding = PaddingValues(0.dp)
-				) {
-					Text(
-						"모두 삭제하기",
-						style = MaterialTheme.typography.bodySmall,
-						color = Color.Gray
-					)
-				}
-			}
-			HorizontalDivider(
-				modifier = Modifier.padding(vertical = 1.dp),
-				color = Color.Black
-			)
-			
-			
-			LazyColumn(modifier = Modifier.fillMaxWidth()) {
-				items(recentSearches) { term ->
-					Row(
-						modifier = Modifier
-							.fillMaxWidth()
-							.clickable { onSearch(term) }
-							.padding(vertical = 12.dp),
-						verticalAlignment = Alignment.CenterVertically
-					) {
-						Text(term, modifier = Modifier.weight(1f), fontSize = 16.sp)
-						IconButton(onClick = { onRemove(term) }, modifier = Modifier.size(24.dp)) {
-							Icon(Icons.Default.Close, contentDescription = "삭제", tint = Color.Gray)
-						}
-					}
-				}
-			}
-		}
-	}
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (recentSearches.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("최근 검색 기록이 없습니다.", color = Color.Gray)
+            }
+        } else {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "최근 검색",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                TextButton(
+                    onClick = { onClearAll() },
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    Text(
+                        "모두 삭제하기",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray
+                    )
+                }
+            }
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 1.dp),
+                color = Color.Black
+            )
+
+
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                items(recentSearches) { term ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onSearch(term) }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(term, modifier = Modifier.weight(1f), fontSize = 16.sp)
+                        IconButton(onClick = { onRemove(term) }, modifier = Modifier.size(24.dp)) {
+                            Icon(Icons.Default.Close, contentDescription = "삭제", tint = Color.Gray)
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 
@@ -260,187 +261,129 @@ private fun RecentSearchSection(
 
 @Composable
 private fun SearchResultSection(
-	searchResults: List<MedicineItem>,
-	onItemClick: (MedicineItem) -> Unit
+    searchResults: List<MedicineItem>,
+    onItemClick: (MedicineItem) -> Unit
 ) {
-	if (searchResults.isNotEmpty()) {
-		Text("검색 결과", style = MaterialTheme.typography.titleMedium)
-		Spacer(modifier = Modifier.height(8.dp))
-		
-		LazyColumn(modifier = Modifier.fillMaxSize()) {
-			items(searchResults) { item ->
-				OutlinedCard(
-					border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-					modifier = Modifier
-						.fillMaxWidth()
-						.padding(vertical = 4.dp)
-						.clickable {
-							onItemClick(item)
-						},
-					elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-					colors = CardDefaults.cardColors(containerColor = Color.White),
-				) {
-					Column(Modifier.padding(16.dp)) {
-						Text(item.itemName ?: "정보 없음", style = MaterialTheme.typography.titleMedium)
-						Spacer(Modifier.height(4.dp))
-						Text(
-							text = item.efcyQesitm ?: "",
-							maxLines = 3,
-							overflow = TextOverflow.Ellipsis,
-							style = MaterialTheme.typography.bodyMedium,
-							color = MaterialTheme.colorScheme.onSurface
-						)
-					}
-				}
-			}
-		};
-	} else {
-		Text("검색 결과가 없습니다.", color = Color.Gray, modifier = Modifier.padding(top = 16.dp))
-	}
-}
+    if (searchResults.isNotEmpty()) {
+        Text("검색 결과", style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.height(8.dp))
 
-@Composable
-fun MedicineSearchBar(
-	value: String,
-	onValueChange: (String) -> Unit,
-	onSearch: () -> Unit,
-	modifier: Modifier = Modifier
-) {
-	val keyboardController = LocalSoftwareKeyboardController.current
-	Row(
-		modifier = modifier.fillMaxWidth(),
-		verticalAlignment = Alignment.CenterVertically
-	) {
-		OutlinedTextField(
-			value = value,
-			onValueChange = onValueChange,
-			textStyle = MaterialTheme.typography.bodyLarge,
-			label = { Text("약 검색") },
-			modifier = Modifier.weight(1f),
-			singleLine = true,
-			placeholder = { Text("약 이름을 입력하세요", color = Color.Gray) },
-//			leadingIcon = {
-//				Icon(
-//					imageVector = Icons.Default.Search,
-//					contentDescription = "검색 아이콘"
-//				)
-//			},
-			trailingIcon = {
-				if (value.isNotBlank()) {
-					IconButton(onClick = { onValueChange("") }) {
-						Icon(
-							imageVector = Icons.Default.Close,
-							contentDescription = "입력 초기화"
-						)
-					}
-				}
-			},
-			keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-			keyboardActions = KeyboardActions(onSearch = {
-				onSearch()
-				keyboardController?.hide()
-			}
-			),
-			shape = RoundedCornerShape(16.dp)
-		)
-		IconButton(
-			modifier = Modifier.padding(top = 10.dp),
-			onClick = {
-				onSearch()
-				keyboardController?.hide()
-			}) {
-			Icon(
-				imageVector = Icons.Default.Search,
-				contentDescription = "검색 아이콘"
-			)
-		}
-	}
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(searchResults) { item ->
+                OutlinedCard(
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                        .clickable {
+                            onItemClick(item)
+                        },
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                ) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text(item.itemName ?: "정보 없음", style = MaterialTheme.typography.titleMedium)
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = item.efcyQesitm ?: "",
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+        };
+    } else {
+        Text("검색 결과가 없습니다.", color = Color.Gray, modifier = Modifier.padding(top = 16.dp))
+    }
 }
 
 @Composable
 fun RecentMedicineSearchesSection(
-	searches: List<RecentMealSearch>,
-	onDeleteAllRecentMealSearches: () -> Unit,
-	onItemClick: (String) -> Unit,
-	onItemDelete: (RecentMealSearch) -> Unit
+    searches: List<RecentMealSearch>,
+    onDeleteAllRecentMealSearches: () -> Unit,
+    onItemClick: (String) -> Unit,
+    onItemDelete: (RecentMealSearch) -> Unit
 ) {
-	if (searches.isEmpty()) {
-		Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-			Text("최근 검색 기록이 없습니다.", color = Color.Gray)
-		}
-	} else {
-		Column(
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 12.dp),
-			horizontalAlignment = Alignment.CenterHorizontally
-		) {
-			Row(
-				verticalAlignment = Alignment.CenterVertically
-			) {
-				Text(
-					"최근 검색",
-					style = MaterialTheme.typography.bodyMedium
-				)
-				Spacer(modifier = Modifier.weight(1f))
-				TextButton(
-					onClick = { onDeleteAllRecentMealSearches() },
-					contentPadding = PaddingValues(0.dp)
-				) {
-					Text(
-						"모두 삭제하기",
-						style = MaterialTheme.typography.bodySmall,
-						color = Color.Gray
-					)
-				}
-			}
-			HorizontalDivider(
-				modifier = Modifier.padding(vertical = 1.dp),
-				color = Color.Black
-			)
-			LazyColumn {
-				items(searches, key = { it.id }) { search ->
-					RecentMedicineSearchItem(
-						search = search,
-						onClick = { onItemClick(search.name) },
-						onDelete = { onItemDelete(search) }
-					)
-				}
-			}
-		}
-	}
+    if (searches.isEmpty()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("최근 검색 기록이 없습니다.", color = Color.Gray)
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "최근 검색",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                TextButton(
+                    onClick = { onDeleteAllRecentMealSearches() },
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    Text(
+                        "모두 삭제하기",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray
+                    )
+                }
+            }
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 1.dp),
+                color = Color.Black
+            )
+            LazyColumn {
+                items(searches, key = { it.id }) { search ->
+                    RecentMedicineSearchItem(
+                        search = search,
+                        onClick = { onItemClick(search.name) },
+                        onDelete = { onItemDelete(search) }
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
 private fun RecentMedicineSearchItem(
-	search: RecentMealSearch,
-	onClick: () -> Unit,
-	onDelete: () -> Unit
+    search: RecentMealSearch,
+    onClick: () -> Unit,
+    onDelete: () -> Unit
 ) {
-	Row(
-		modifier = Modifier
-			.fillMaxWidth()
-			.clickable(onClick = onClick)
-			.padding(vertical = 12.dp),
-		verticalAlignment = Alignment.CenterVertically
-	) {
-		Icon(
-			imageVector = Icons.Default.Search,
-			contentDescription = "최근 검색 아이콘",
-			tint = Color.Gray,
-			modifier = Modifier.padding(end = 16.dp)
-		)
-		Text(
-			text = search.name,
-			style = MaterialTheme.typography.bodyLarge,
-			modifier = Modifier.weight(1f)
-		)
-		IconButton(onClick = onDelete, modifier = Modifier.size(24.dp)) {
-			Icon(
-				imageVector = Icons.Default.Close,
-				contentDescription = "기록 삭제",
-				tint = Color.Gray
-			)
-		}
-	}
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.Search,
+            contentDescription = "최근 검색 아이콘",
+            tint = Color.Gray,
+            modifier = Modifier.padding(end = 16.dp)
+        )
+        Text(
+            text = search.name,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f)
+        )
+        IconButton(onClick = onDelete, modifier = Modifier.size(24.dp)) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "기록 삭제",
+                tint = Color.Gray
+            )
+        }
+    }
 }

@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 import com.cases.carefull.domain.model.DiseaseInfo
+import com.cases.carefull.features.carefullcommon.components.SearchBar
 
 private val sampleDiseaseData = listOf(
     DiseaseInfo("고혈압", "고혈압은 혈압이 높은 상태입니다."),
@@ -52,51 +53,24 @@ private val sampleDiseaseData = listOf(
 
 @Composable
 fun DiseaseSearchScreen() {
-    var query by remember { mutableStateOf(TextFieldValue("")) }
+    var query by remember { mutableStateOf("") }
+//    var query by remember { mutableStateOf(TextFieldValue("")) }
     var searchResult by remember { mutableStateOf<DiseaseInfo?>(null) }
     val recentSearches = remember { mutableStateListOf<String>() }
     val context = LocalContext.current
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        SearchBar(
+            modifier = Modifier,
+            query = query,
+            onQueryChange = { query = it },
+            onSearch = {
+                val input = query
 
-        // 검색 입력창
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .background(Color(0xFFF5F5F5), RoundedCornerShape(24.dp))
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .fillMaxWidth()
-        ) {
-            Icon(imageVector = Icons.Default.PhotoCamera, contentDescription = "카메라")
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            TextField(
-                value = query,
-                onValueChange = { query = it },
-                placeholder = { Text("무엇이든 물어보세요") },
-                singleLine = true,
-                modifier = Modifier.weight(1f),
-                colors = TextFieldDefaults.colors(
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                )
-            )
-
-            if (query.text.isNotEmpty()) {
-                IconButton(onClick = { query = TextFieldValue("") }) {
-                    Icon(imageVector = Icons.Default.Cancel, contentDescription = "지우기")
-                }
-            }
-
-            IconButton(onClick = {
-                val input = query.text.trim()
-                if (input.isEmpty()) {
-                    Toast.makeText(context, "검색어를 입력하세요", Toast.LENGTH_SHORT).show()
-                    return@IconButton
-                }
                 if (!recentSearches.contains(input)) {
                     recentSearches.add(0, input)
                     if (recentSearches.size > 10) recentSearches.removeAt(recentSearches.lastIndex)
@@ -105,10 +79,59 @@ fun DiseaseSearchScreen() {
                 if (searchResult == null) {
                     Toast.makeText(context, "검색 결과가 없습니다.", Toast.LENGTH_SHORT).show()
                 }
-            }) {
-                Icon(imageVector = Icons.Default.Search, contentDescription = "검색")
-            }
-        }
+            },
+            placeholder = "무엇이든 물어보세요",
+        )
+//         검색 입력창
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically,
+//            modifier = Modifier
+//                .background(Color(0xFFF5F5F5), RoundedCornerShape(24.dp))
+//                .padding(horizontal = 16.dp, vertical = 8.dp)
+//                .fillMaxWidth()
+//        ) {
+//            Icon(imageVector = Icons.Default.PhotoCamera, contentDescription = "카메라")
+//
+//            Spacer(modifier = Modifier.width(8.dp))
+//
+//            TextField(
+//                value = query,
+//                onValueChange = { query = it },
+//                placeholder = { Text("무엇이든 물어보세요") },
+//                singleLine = true,
+//                modifier = Modifier.weight(1f),
+//                colors = TextFieldDefaults.colors(
+//                    unfocusedIndicatorColor = Color.Transparent,
+//                    focusedIndicatorColor = Color.Transparent,
+//                    disabledIndicatorColor = Color.Transparent,
+//                    errorIndicatorColor = Color.Transparent
+//                )
+//            )
+//
+//            if (query.text.isNotEmpty()) {
+//                IconButton(onClick = { query = TextFieldValue("") }) {
+//                    Icon(imageVector = Icons.Default.Cancel, contentDescription = "지우기")
+//                }
+//            }
+//
+//            IconButton(onClick = {
+//                val input = query.text.trim()
+//                if (input.isEmpty()) {
+//                    Toast.makeText(context, "검색어를 입력하세요", Toast.LENGTH_SHORT).show()
+//                    return@IconButton
+//                }
+//                if (!recentSearches.contains(input)) {
+//                    recentSearches.add(0, input)
+//                    if (recentSearches.size > 10) recentSearches.removeAt(recentSearches.lastIndex)
+//                }
+//                searchResult = sampleDiseaseData.find { it.name == input }
+//                if (searchResult == null) {
+//                    Toast.makeText(context, "검색 결과가 없습니다.", Toast.LENGTH_SHORT).show()
+//                }
+//            }) {
+//                Icon(imageVector = Icons.Default.Search, contentDescription = "검색")
+//            }
+//        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -132,14 +155,19 @@ fun DiseaseSearchScreen() {
         if (recentSearches.isEmpty()) {
             Text("검색 기록이 없습니다.", color = Color.Gray)
         } else {
-            LazyColumn(modifier = Modifier.fillMaxWidth().heightIn(max = 160.dp)) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 160.dp)
+            ) {
                 items(recentSearches) { item ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
                             .clickable {
-                                query = TextFieldValue(item)
+                                query = item
+//                                query = TextFieldValue(item)
                                 searchResult = sampleDiseaseData.find { it.name == item }
                             },
                         horizontalArrangement = Arrangement.SpaceBetween,
