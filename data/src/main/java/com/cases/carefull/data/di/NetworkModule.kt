@@ -3,6 +3,7 @@ package com.cases.carefull.data.di
 import androidx.room.PrimaryKey
 import com.cases.carefull.data.network.ChatbotApiService
 import com.cases.carefull.data.network.DietApiService
+import com.cases.carefull.data.network.DiseaseApiService
 import com.cases.carefull.data.network.HospitalApiService
 import com.cases.carefull.data.network.MedicineApiService
 import com.google.gson.Gson
@@ -25,6 +26,7 @@ object NetworkModule {
 
 	private const val DIET_URL = "https://apis.data.go.kr/1471000/FoodNtrCpntDbInfo02/"
 	private const val MEDICINE_URL = "http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/"
+	private const val DISEASE_URL = "https://api.kdca.go.kr/api/provide/"
 	private const val HOSPITAL_URL = "https://apis.data.go.kr/B551182/"
 	private const val Chatbot_URL = "https://api.openai.com/"
 
@@ -70,6 +72,23 @@ object NetworkModule {
 	@Singleton
 	fun provideMedicineApiService(@MedicineRetrofit retrofit: Retrofit): MedicineApiService {
 		return retrofit.create(MedicineApiService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	@DiseaseRetrofit
+	fun provideDiseaseRetrofit(okHttpClient: OkHttpClient): Retrofit {
+		return Retrofit.Builder()
+			.baseUrl(DISEASE_URL)
+			.client(okHttpClient)
+			.addConverterFactory(TikXmlConverterFactory.create(TikXml.Builder().exceptionOnUnreadXml(false).build()))
+			.build()
+	}
+
+	@Provides
+	@Singleton
+	fun provideDiseaseApiService(@DiseaseRetrofit retrofit: Retrofit): DiseaseApiService {
+		return retrofit.create(DiseaseApiService::class.java)
 	}
 
 	@Provides

@@ -4,9 +4,11 @@ import android.util.Log
 import com.cases.carefull.data.datasource.HospitalDataSource
 import com.cases.carefull.data.di.DepartmentCode
 import com.cases.carefull.data.mapper.toDomain
+import com.cases.carefull.domain.model.DepartmentCodeItem
 import com.cases.carefull.domain.model.Hospital
 import com.cases.carefull.domain.repository.HospitalRepository
 import com.cases.carefull.domain.util.DataResourceResult
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -70,6 +72,12 @@ class HospitalRepositoryImpl @Inject constructor(
                 emit(DataResourceResult.Error(exception))
             }
         )
+    }
+
+    override fun getDepartmentCodes(): List<DepartmentCodeItem> {
+        return departmentCodes.map { (name, code) ->
+            DepartmentCodeItem(name = name, code = code)
+        }
     }
 
     private fun getTargetEvaluationNamesFor(department: String): List<String> {

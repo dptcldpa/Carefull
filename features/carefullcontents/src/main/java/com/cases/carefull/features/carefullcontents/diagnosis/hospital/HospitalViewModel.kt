@@ -3,8 +3,7 @@ package com.cases.carefull.features.carefullcontents.diagnosis.hospital
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cases.carefull.data.di.DepartmentCode
-import com.cases.carefull.data.model.DepartmentCodeItem
+import com.cases.carefull.domain.model.DepartmentCodeItem
 import com.cases.carefull.domain.model.Hospital
 import com.cases.carefull.domain.model.Location
 import com.cases.carefull.domain.repository.HospitalRepository
@@ -13,10 +12,7 @@ import com.cases.carefull.domain.util.DataResourceResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -27,15 +23,12 @@ import javax.inject.Inject
 class HospitalViewModel @Inject constructor(
     private val hospitalRepository: HospitalRepository,
     private val locationRepository: LocationRepository,
-    @DepartmentCode private val departmentCodeMap: Map<String, String>,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HospitalUiState())
     val uiState = _uiState.asStateFlow()
 
-    val departmentList: List<DepartmentCodeItem> = departmentCodeMap.map { (name, code) ->
-        DepartmentCodeItem(name = name, code = code)
-    }
+    val departmentList: List<DepartmentCodeItem> = hospitalRepository.getDepartmentCodes()
 
     init {
         val department = savedStateHandle.get<String>("department") ?: "정보 없음"
@@ -156,7 +149,12 @@ class HospitalViewModel @Inject constructor(
 
     fun loadCurrentLocationAndHospitals() {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
             val location = locationRepository.getCurrentLocation()
+
+            _uiState.update { it.copy(isLoading = false) }
+
             location?.let {
                 _uiState.update { state ->
                     state.copy(

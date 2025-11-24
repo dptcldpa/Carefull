@@ -1,7 +1,8 @@
-package com.cases.carefull.data.di
+package com.cases.carefull.di
 
 import android.content.Context
-import com.cases.carefull.data.model.DepartmentCodeItem
+import com.cases.carefull.data.di.DepartmentCode
+import com.cases.carefull.domain.model.DepartmentCodeItem
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.Module
