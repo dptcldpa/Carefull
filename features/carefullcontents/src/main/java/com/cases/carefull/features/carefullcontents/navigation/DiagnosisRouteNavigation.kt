@@ -14,7 +14,9 @@ import androidx.navigation.navArgument
 import androidx.navigation.toRoute
 import com.cases.carefull.features.carefullcommon.navigation.DiagnosisRoute
 import com.cases.carefull.features.carefullcontents.diagnosis.chatbot.ChatBotScreen
+import com.cases.carefull.features.carefullcontents.diagnosis.disease.DiseaseDetailScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.disease.DiseaseSearchScreen
+import com.cases.carefull.features.carefullcontents.diagnosis.disease.DiseaseViewModel
 import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalListScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalSearchScreen
 import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalViewModel
@@ -25,6 +27,7 @@ import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineV
 @OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.diagnosisGraph(
 	medicineViewModel: MedicineViewModel,
+	diseaseViewModel: DiseaseViewModel,
 	hospitalViewModel: HospitalViewModel,
 	navController: NavHostController
 ) {
@@ -58,13 +61,16 @@ fun NavGraphBuilder.diagnosisGraph(
 	}
 	// 검색 - 병원
 	composable<DiagnosisRoute.HospitalSearchScreen> {
-		HospitalSearchScreen(
-			viewModel = hospitalViewModel
-		)
+		HospitalSearchScreen()
 	}
 	// 검색 - 질환
 	composable<DiagnosisRoute.DiseaseSearchScreen> {
-		DiseaseSearchScreen()
+		DiseaseSearchScreen(
+			viewModel = diseaseViewModel,
+			onDiseaseClick = { contentSn ->
+				navController.navigate(DiagnosisRoute.DiseaseDetailScreen(contentSn))
+			}
+		)
 	}
 	// 검색 - 약
 	composable<DiagnosisRoute.MedicineSearchScreen> {
@@ -73,6 +79,15 @@ fun NavGraphBuilder.diagnosisGraph(
 			onNavigateToMedicineInfo = {
 				navController.navigate(DiagnosisRoute.MedicineInfoScreen)
 			}
+		)
+	}
+	// 질병 상세
+	composable<DiagnosisRoute.DiseaseDetailScreen> { backStackEntry ->
+		val contentSn = backStackEntry.toRoute<DiagnosisRoute.DiseaseDetailScreen>().contentSn
+		DiseaseDetailScreen(
+			contentSn = contentSn,
+			viewModel = diseaseViewModel,
+			onBackClick = { navController.popBackStack() }
 		)
 	}
 }

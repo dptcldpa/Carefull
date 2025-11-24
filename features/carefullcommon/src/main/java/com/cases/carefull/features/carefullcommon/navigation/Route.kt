@@ -61,6 +61,9 @@ sealed interface DiagnosisRoute : Route {
 	
 	@Serializable
 	data object MedicineSearchScreen : DiagnosisRoute
+
+    @Serializable
+    data class DiseaseDetailScreen(val contentSn: String) : DiagnosisRoute
 }
 
 @Serializable

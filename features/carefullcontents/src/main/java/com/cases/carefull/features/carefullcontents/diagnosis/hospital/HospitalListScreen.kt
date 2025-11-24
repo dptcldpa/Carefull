@@ -147,6 +147,20 @@ fun HospitalListScreen(
         }
     }
 
+    LaunchedEffect(uiState.mapCenterLatitude, uiState.mapCenterLongitude, naverMap) {
+        val lat = uiState.mapCenterLatitude
+        val lon = uiState.mapCenterLongitude
+
+        if (lat != null && lon != null && naverMap != null) {
+            val cameraUpdate = CameraUpdate.scrollAndZoomTo(LatLng(lat, lon), 14.0)
+            naverMap?.moveCamera(cameraUpdate)
+
+            val locationOverlay = naverMap?.locationOverlay
+            locationOverlay?.isVisible = true
+            locationOverlay?.position = LatLng(lat, lon)
+        }
+    }
+
     var showBestHospitals by remember { mutableStateOf(true) }
     var showAllHospitals by remember { mutableStateOf(true) }
 
@@ -313,6 +327,8 @@ fun HospitalListScreen(
     }
 }
 
+
+
 @Composable
 fun rememberMapViewWithLifecycle(onMapReady: (NaverMap) -> Unit): MapView {
     val context = LocalContext.current
@@ -328,7 +344,10 @@ fun rememberMapViewWithLifecycle(onMapReady: (NaverMap) -> Unit): MapView {
             override fun onDestroy(owner: LifecycleOwner) = mapView.onDestroy()
         }
 
-        mapView.getMapAsync(onMapReady)
+        mapView.getMapAsync { map ->
+            map.locationOverlay.isVisible = true
+            onMapReady(map)
+        }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }

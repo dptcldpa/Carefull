@@ -15,6 +15,7 @@ import com.cases.carefull.common.MainViewModel
 import com.cases.carefull.features.carefullcommon.navigation.LayoutAsset
 import com.cases.carefull.features.carefullcommon.navigation.MainRoute
 import com.cases.carefull.features.carefullcommon.navigation.Route
+import com.cases.carefull.features.carefullcontents.diagnosis.disease.DiseaseViewModel
 import com.cases.carefull.features.carefullcontents.diagnosis.hospital.HospitalViewModel
 import com.cases.carefull.features.carefullcontents.diagnosis.medicine.MedicineViewModel
 import com.cases.carefull.features.carefullcontents.navigation.diagnosisGraph
@@ -27,6 +28,7 @@ import com.cases.carefull.features.carefullmainui.navigation.myPageGraph
 fun MainNavigation(
 	viewModel: MainViewModel = hiltViewModel(),
 	medicineViewModel: MedicineViewModel = hiltViewModel(),
+	diseaseViewModel: DiseaseViewModel = hiltViewModel(),
 	hospitalViewModel: HospitalViewModel = hiltViewModel()
 ) {
 	val navController = rememberNavController()
@@ -54,6 +56,7 @@ fun MainNavigation(
 			routineGraph(navController)
 			
 			diagnosisGraph(medicineViewModel = medicineViewModel,
+				diseaseViewModel = diseaseViewModel,
 				hospitalViewModel = hospitalViewModel,
 				navController)
 			
