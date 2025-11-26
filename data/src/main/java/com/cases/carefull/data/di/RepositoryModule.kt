@@ -5,6 +5,7 @@ import com.cases.carefull.data.repository.ChatbotRepositoryImpl
 import com.cases.carefull.data.repository.ExerciseRepositoryImpl
 import com.cases.carefull.data.repository.HospitalRepositoryImpl
 import com.cases.carefull.data.repository.LocationRepositoryImpl
+import com.cases.carefull.data.repository.DiseaseRepositoryImpl
 import com.cases.carefull.data.repository.MedicineRepositoryImpl
 import com.cases.carefull.data.repository.PoseRepositoryImpl
 import com.cases.carefull.data.repository.RankingRepositoryImpl
@@ -20,6 +21,7 @@ import com.cases.carefull.domain.repository.ChatbotRepository
 import com.cases.carefull.domain.repository.ExerciseRepository
 import com.cases.carefull.domain.repository.HospitalRepository
 import com.cases.carefull.domain.repository.LocationRepository
+import com.cases.carefull.domain.repository.DiseaseRepository
 import com.cases.carefull.domain.repository.MedicineRepository
 import com.cases.carefull.domain.repository.PoseRepository
 import com.cases.carefull.domain.repository.RankingRepository
@@ -96,6 +98,12 @@ abstract class RepositoryModule {
         medicineRepositoryImpl: MedicineRepositoryImpl
     ): MedicineRepository
 
+    @Binds
+    @ViewModelScoped
+    abstract fun bindDiseaseRepository(
+        diseaseRepositoryImpl: DiseaseRepositoryImpl
+    ): DiseaseRepository
+    
     @Binds
     @ViewModelScoped
     abstract fun bindUserRepository(

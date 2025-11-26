@@ -1,3 +1,3 @@
-package com.cases.carefull.data.model
+package com.cases.carefull.domain.model
 
 data class DepartmentCodeItem(val name: String, val code: String)

@@ -16,11 +16,19 @@ annotation class HospitalApiKey
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class DiseaseApiKey
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class DietRetrofit
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class MedicineRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class DiseaseRetrofit
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
