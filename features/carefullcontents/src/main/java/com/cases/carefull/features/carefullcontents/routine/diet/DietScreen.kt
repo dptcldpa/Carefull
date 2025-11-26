@@ -44,7 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.cases.carefull.domain.model.CalendarViewType
-import com.cases.carefull.domain.model.diet.DietCollection
+import com.cases.carefull.domain.model.diet.FoodItem
 import com.cases.carefull.domain.model.diet.MealType
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.calendar.Calendar
@@ -72,7 +72,7 @@ fun DietRoute(
         onAddMealClick = { mealType ->
             val dateString = uiState.dateDietState.selectedDate.toString()
             navController.navigate(
-                RoutineRoute.DietSearchScreen(
+                RoutineRoute.DietSearchRoute(
                     mealType = mealType.name,
                     date = dateString
                 )
@@ -91,7 +91,7 @@ fun DietScreen(
     onDatePickerMonthChanged: (Long) -> Unit,
     onGoToToday: () -> Unit,
     onAddMealClick: (MealType) -> Unit,
-    onRemoveMealClick: (DietCollection) -> Unit
+    onRemoveMealClick: (FoodItem) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -144,9 +144,13 @@ fun DietScreen(
             HorizontalDivider(modifier = Modifier.padding(bottom = 8.dp))
 
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                val mealsByTimeForDay = section?.meals?.groupBy {
+                val mealsByTimeForDay = section?.meals?.groupBy { foodItem ->
                     try {
-                        MealType.valueOf(it.mealType)
+                        if (foodItem.type.isNotEmpty()) {
+                            MealType.valueOf(foodItem.type)
+                        } else {
+                            MealType.SNACK // 타입이 없으면 기본값 (간식 등)
+                        }
                     } catch (e: IllegalArgumentException) {
                         MealType.SNACK
                     }
@@ -265,10 +269,10 @@ fun NutritionSummary(uiState: MainDietUiState) {
 @Composable
 fun MealSection(
     mealType: MealType,
-    addedFoods: List<DietCollection>,
+    addedFoods: List<FoodItem>,
 //	onCameraClick: () -> Unit,
     onAddClick: () -> Unit,
-    onRemoveClick: (DietCollection) -> Unit
+    onRemoveClick: (FoodItem) -> Unit
 ) {
     Card(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
@@ -350,7 +354,7 @@ fun MealSection(
 
 @Composable
 fun FoodItemRow(
-    food: DietCollection,
+    food: FoodItem,
     onRemove: () -> Unit
 ) {
     Column(
@@ -365,8 +369,8 @@ fun FoodItemRow(
             Text(
                 text = stringResource(
                     id = R.string.meal_with_weight_format,
-                    food.mealName,
-                    food.weight
+                    food.name,
+                    food.servingSize
                 ),
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -462,23 +466,23 @@ fun DietScreenPreview() {
         selectedDateSection = DietDateSection(
             date = LocalDate.now(),
             meals = listOf(
-                DietCollection(
-                    mealName = "닭가슴살",
-                    weight = 100,
+                FoodItem(
+                    name = "닭가슴살",
+                    servingSize = 100,
                     kcal = 110,
-                    mealType = MealType.LUNCH.name
+                    type = MealType.LUNCH.name
                 ),
-                DietCollection(
-                    mealName = "현미밥",
-                    weight = 210,
+                FoodItem(
+                    name = "현미밥",
+                    servingSize = 210,
                     kcal = 350,
-                    mealType = MealType.LUNCH.name
+                    type = MealType.LUNCH.name
                 ),
-                DietCollection(
-                    mealName = "프로틴 쉐이크",
-                    weight = 30,
+                FoodItem(
+                    name = "프로틴 쉐이크",
+                    servingSize = 30,
                     kcal = 120,
-                    mealType = MealType.SNACK.name
+                    type = MealType.SNACK.name
                 )
             ),
             totalCalories = 580,

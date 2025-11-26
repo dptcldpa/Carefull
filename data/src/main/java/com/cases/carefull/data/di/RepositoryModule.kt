@@ -13,7 +13,7 @@ import com.cases.carefull.data.repository.SocialRepositoryImpl
 import com.cases.carefull.data.repository.UserRepositoryImpl
 import com.cases.carefull.data.repository.diet.BodyStatsRepositoryImpl
 import com.cases.carefull.data.repository.diet.DietRecordRepositoryImpl
-import com.cases.carefull.data.repository.diet.DietSearchRecordRepositoryImpl
+import com.cases.carefull.data.repository.diet.RecentMealSearchRepositoryImpl
 import com.cases.carefull.data.repository.diet.FavoriteFoodRepositoryImpl
 import com.cases.carefull.data.repository.diet.FoodSearchRepositoryImpl
 import com.cases.carefull.domain.repository.CalendarRepository
@@ -29,7 +29,7 @@ import com.cases.carefull.domain.repository.SocialRepository
 import com.cases.carefull.domain.repository.UserRepository
 import com.cases.carefull.domain.repository.diet.BodyStatsRepository
 import com.cases.carefull.domain.repository.diet.DietRecordRepository
-import com.cases.carefull.domain.repository.diet.DietSearchRecordRepository
+import com.cases.carefull.domain.repository.diet.RecentMealSearchRepository
 import com.cases.carefull.domain.repository.diet.FavoriteFoodRepository
 import com.cases.carefull.domain.repository.diet.FoodSearchRepository
 import dagger.Binds
@@ -70,9 +70,9 @@ abstract class RepositoryModule {
 
     @Binds
     @ViewModelScoped
-    abstract fun bindDietSearchRecordRepository(
-        dietSearchRecordRepositoryImpl: DietSearchRecordRepositoryImpl
-    ): DietSearchRecordRepository
+    abstract fun bindRecentMealSearchRepository(
+        recentMealSearchRepositoryImpl: RecentMealSearchRepositoryImpl
+    ): RecentMealSearchRepository
 
     @Binds
     @ViewModelScoped
