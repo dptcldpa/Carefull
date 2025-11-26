@@ -3,7 +3,6 @@ package com.cases.carefull.features.carefullcontents.routine.diet
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cases.carefull.data.mapper.toSafeInt
 import com.cases.carefull.domain.model.diet.FavoriteFood
 import com.cases.carefull.domain.model.diet.FoodDataInputType
 import com.cases.carefull.domain.model.diet.FoodItem
@@ -14,6 +13,7 @@ import com.cases.carefull.domain.repository.diet.FoodSearchRepository
 import com.cases.carefull.domain.repository.diet.RecentMealSearchRepository
 import com.cases.carefull.domain.usecase.bmr.GetSavedBmrUseCase
 import com.cases.carefull.domain.util.DataResourceResult
+import com.cases.carefull.domain.util.toSafeInt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
