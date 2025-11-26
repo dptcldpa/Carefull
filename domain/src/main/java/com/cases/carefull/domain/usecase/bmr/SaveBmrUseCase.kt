@@ -4,9 +4,9 @@ import com.cases.carefull.domain.model.diet.Bmr
 import com.cases.carefull.domain.repository.diet.BodyStatsRepository
 
 class SaveBmrUseCase(
-	private val bodyStatsRepository: BodyStatsRepository
+    private val bodyStatsRepository: BodyStatsRepository
 ) {
-	suspend operator fun invoke(bmrToSave: Bmr) {
-		bodyStatsRepository.updateMyBmr(bmrToSave)
-	}
+    suspend operator fun invoke(bmrToSave: Bmr) {
+        bodyStatsRepository.updateBmr(bmrToSave)
+    }
 }

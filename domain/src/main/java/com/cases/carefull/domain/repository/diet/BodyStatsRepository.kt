@@ -4,6 +4,6 @@ import com.cases.carefull.domain.model.diet.Bmr
 import kotlinx.coroutines.flow.Flow
 
 interface BodyStatsRepository {
-    fun getMyBmr(userId: String): Flow<Bmr?>
-    suspend fun updateMyBmr(bmr: Bmr)
+    fun getBmr(userId: String): Flow<Bmr?>
+    suspend fun updateBmr(bmr: Bmr)
 }

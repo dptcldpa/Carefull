@@ -1,19 +1,17 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cases.carefull.domain.model.diet.DietCollection
-import com.cases.carefull.domain.model.diet.FavoriteMeal
-import com.cases.carefull.domain.model.diet.Gender
-import com.cases.carefull.domain.model.diet.MealType
-import com.cases.carefull.domain.model.diet.RecentMealSearch
+import com.cases.carefull.data.mapper.toSafeInt
+import com.cases.carefull.domain.model.diet.FavoriteFood
+import com.cases.carefull.domain.model.diet.FoodDataInputType
+import com.cases.carefull.domain.model.diet.FoodItem
+import com.cases.carefull.domain.model.diet.RecentFoodSearch
 import com.cases.carefull.domain.repository.diet.DietRecordRepository
-import com.cases.carefull.domain.repository.diet.DietSearchRecordRepository
 import com.cases.carefull.domain.repository.diet.FavoriteFoodRepository
 import com.cases.carefull.domain.repository.diet.FoodSearchRepository
-import com.cases.carefull.domain.usecase.bmr.CalculateBmrUseCase
+import com.cases.carefull.domain.repository.diet.RecentMealSearchRepository
 import com.cases.carefull.domain.usecase.bmr.GetSavedBmrUseCase
 import com.cases.carefull.domain.util.DataResourceResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,23 +20,21 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.LocalTime
 import java.time.YearMonth
-import java.time.ZoneId
 import java.time.temporal.TemporalAdjusters
 
 @HiltViewModel
 class DietViewModel @Inject constructor(
     private val dietRecordRepository: DietRecordRepository,
-    private val dietSearchRecordRepository: DietSearchRecordRepository,
+    private val recentMealSearchRepository: RecentMealSearchRepository,
     private val favoriteFoodRepository: FavoriteFoodRepository,
     private val foodSearchRepository: FoodSearchRepository,
     private val getSavedBmrUseCase: GetSavedBmrUseCase,
-    private val calculateBmrUseCase: CalculateBmrUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MainDietUiState())
@@ -46,52 +42,263 @@ class DietViewModel @Inject constructor(
     private val _navigationEvent = MutableSharedFlow<NavigationEvent>()
     val searchQuery = savedStateHandle.getStateFlow(key = "searchQuery", initialValue = "")
     val navigationEvent = _navigationEvent.asSharedFlow()
+    private val userId = "test" //카카오 연동시 수정예정
 
     init {
-        loadMyBmr()
-        observeAllMeals()
-        observeFavorites()
+        observeMealsForDate(LocalDate.now())
+        observeSavedBmr()
+        observeFavoriteFoods()
         observeRecentSearches()
     }
 
-    fun onFavoriteMealWeightConfirmed(updatedWeight: Int, mealType: MealType, date: LocalDate) {
+    fun onSearchFoods(query: String) {
+        if (query.isBlank()) {
+            return
+        }
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, isError = false) }
+
+            launch {
+                runCatching {
+                    recentMealSearchRepository.saveRecentSearch(query)
+                }
+            }
+
+            val result = foodSearchRepository.searchFoods(query = query)
+            _uiState.update { state ->
+                when (result) {
+                    is DataResourceResult.Success -> {
+                        state.copy(
+                            isLoading = false,
+                            dietSearchState = state.dietSearchState.copy(
+                                searchResults = result.data
+                            )
+                        )
+                    }
+
+                    is DataResourceResult.Error -> {
+                        state.copy(
+                            isLoading = false,
+                            isError = true
+                        )
+                    }
+
+                    else -> state.copy(isLoading = false)
+                }
+            }
+        }
+    }
+
+    private fun observeRecentSearches() {
+        viewModelScope.launch {
+            recentMealSearchRepository.getRecentSearches().collectLatest { searches ->
+                _uiState.update {
+                    it.copy(
+                        dietSearchState = it.dietSearchState.copy(
+                            recentSearches =
+                                searches
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun onDeleteRecentSearch(search: RecentFoodSearch) {
+        viewModelScope.launch {
+            recentMealSearchRepository.deleteRecentSearch(search)
+        }
+    }
+
+    fun onClearAllRecentMealSearches() {
+        viewModelScope.launch {
+            recentMealSearchRepository.clearAllRecentSearches()
+        }
+    }
+
+    private fun observeFavoriteFoods() {
+        viewModelScope.launch {
+            favoriteFoodRepository.getAllFavoriteFoods().collectLatest { favorites ->
+                _uiState.update {
+                    it.copy(
+                        favoriteState = it.favoriteState.copy(
+                            favoriteFoods = favorites
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun onDeleteFavoriteFood(favoriteFood: FavoriteFood) {
+        viewModelScope.launch {
+            favoriteFoodRepository.deleteFavoriteFood(favoriteFood)
+        }
+    }
+
+    fun onSearchQueryChanged(query: String) {
+        savedStateHandle["searchQuery"] = query
+        if (query.isBlank()) {
+            _uiState.update {
+                it.copy(
+                    dietSearchState = it.dietSearchState.copy(
+                        searchResults = emptyList()
+                    )
+                )
+            }
+        }
+    }
+
+    fun onAddFood(
+        foodItem: FoodItem,
+        mealType: String,
+        date: LocalDate,
+        updateWeight: Int
+    ) {
+        val updatedFoodItem = foodItem.adjustPortion(updateWeight)
+        val currentUser = userId
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            val result = dietRecordRepository.addMeal(updatedFoodItem, currentUser, mealType, date)
+            when (result) {
+                is DataResourceResult.Success -> {
+                    onClearSearchQuery()
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false
+                        )
+                    }
+                    _navigationEvent.emit(NavigationEvent.NavigateBackToDietScreen)
+                }
+
+                is DataResourceResult.Error -> {
+                    _uiState.update { it.copy(isLoading = false, isError = true) }
+                }
+
+                is DataResourceResult.Loading -> {
+                    _uiState.update { it.copy(isLoading = false) }
+                }
+            }
+        }
+    }
+
+    fun onRemoveMeal(dietInfo: FoodItem) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, isError = false) }
+            val result = dietRecordRepository.removeMeal(dietInfo.documentId)
+            when (result) {
+                is DataResourceResult.Success -> {
+                    _uiState.update { it.copy(isLoading = false, isError = false) }
+                }
+
+                is DataResourceResult.Error -> {
+                    _uiState.update { it.copy(isLoading = false, isError = true) }
+                }
+
+                is DataResourceResult.Loading -> {
+                    _uiState.update { it.copy(isLoading = true, isError = false) }
+                }
+            }
+        }
+    }
+
+    fun onClearSearchQuery() {
+        _uiState.update {
+            it.copy(
+                dietSearchState = it.dietSearchState.copy(
+                    searchResults = emptyList()
+                )
+            )
+        }
+    }
+
+    fun onCustomInputChanged(type: FoodDataInputType, value: String) {
+        val isValidInput = when (type) {
+            FoodDataInputType.NAME -> true
+            else -> value.isEmpty() || value.all { it.isDigit() }
+        }
+
+        if (isValidInput) {
+            _uiState.update { state ->
+                val currentInputState = state.customInputState
+                val newInputState = when (type) {
+                    FoodDataInputType.NAME -> currentInputState.copy(name = value)
+                    FoodDataInputType.SERVING_SIZE -> currentInputState.copy(servingSize = value)
+                    FoodDataInputType.CARBOHYDRATE -> currentInputState.copy(carbohydrate = value)
+                    FoodDataInputType.PROTEIN -> currentInputState.copy(protein = value)
+                    FoodDataInputType.FAT -> currentInputState.copy(fat = value)
+                }
+                state.copy(customInputState = newInputState)
+            }
+        }
+    }
+
+    fun onAddCustomFood(date: LocalDate, mealType: String) {
+        val input = _uiState.value.customInputState
+
+        if (input.name.isBlank() || input.servingSize.toSafeInt() <= 0) {
+            return
+        }
+
+        val newFood = FoodItem(
+            name = input.name,
+            servingSize = input.servingSize.toSafeInt(),
+            kcal = input.calculatedKcal.toSafeInt(),
+            carbohydrate = input.carbohydrate.toSafeInt(),
+            protein = input.protein.toSafeInt(),
+            fat = input.fat.toSafeInt(),
+        )
+
+        viewModelScope.launch {
+            onAddFood(newFood, mealType, date, newFood.servingSize)
+            if (input.isFavorite) {
+                val favoriteFood = FavoriteFood(
+                    name = newFood.name,
+                    servingSize = newFood.servingSize,
+                    kcal = newFood.kcal,
+                    carbohydrate = newFood.carbohydrate,
+                    protein = newFood.protein,
+                    fat = newFood.fat
+                )
+                favoriteFoodRepository.saveFavoriteFood(favoriteFood)
+            }
+            hideCustomInputDialog()
+            _navigationEvent.emit(NavigationEvent.NavigateBackToDietScreen)
+        }
+    }
+
+    fun onCustomInputFavoriteChanged(isFavorite: Boolean) {
+        _uiState.update {
+            it.copy(customInputState = it.customInputState.copy(isFavorite = isFavorite))
+        }
+    }
+
+    fun onAddFavoriteFood(updatedWeight: Int, mealType: String, date: LocalDate) {
         val favoriteToAdd = _uiState.value.favoriteState.selectedFavoriteForEditing ?: return
 
         viewModelScope.launch {
-            var dietCollection = DietCollection(
-                mealName = favoriteToAdd.name,
-                weight = favoriteToAdd.weight,
+            var foodItem = FoodItem(
+                name = favoriteToAdd.name,
+                servingSize = favoriteToAdd.servingSize,
                 kcal = favoriteToAdd.kcal,
                 carbohydrate = favoriteToAdd.carbohydrate,
                 protein = favoriteToAdd.protein,
                 fat = favoriteToAdd.fat
             )
-            dietCollection = dietCollection.divideWeight(updatedWeight)
-            onAddMeal(
-                dietCollection = dietCollection,
+            foodItem = foodItem.adjustPortion(updatedWeight)
+            onAddFood(
+                foodItem = foodItem,
                 mealType = mealType,
                 date = date,
+                updateWeight = foodItem.servingSize
             )
-            dismissEditWeightDialog()
+            hideEditServingSizeDialog()
             _navigationEvent.emit(NavigationEvent.NavigateBackToDietScreen)
         }
     }
 
-    fun deleteFavoriteMeal(meal: FavoriteMeal) {
-        viewModelScope.launch {
-            favoriteFoodRepository.deleteFavorite(meal)
-        }
-    }
-
-    private fun observeFavorites() {
-        viewModelScope.launch {
-            favoriteFoodRepository.getFavorites().collect { favorites ->
-                _uiState.update { it.copy(favoriteState = it.favoriteState.copy(favoriteMeals = favorites)) }
-            }
-        }
-    }
-
-    fun dismissEditWeightDialog() {
+    fun hideEditServingSizeDialog() {
         _uiState.update {
             it.copy(
                 favoriteState =
@@ -100,7 +307,7 @@ class DietViewModel @Inject constructor(
         }
     }
 
-    fun onFavoriteMealClicked(favorite: FavoriteMeal) {
+    fun onFavoriteFoodSelected(favorite: FavoriteFood) {
         _uiState.update {
             it.copy(
                 favoriteState =
@@ -130,162 +337,73 @@ class DietViewModel @Inject constructor(
         }
     }
 
-    fun observeAllMeals() {
+    fun showCustomInputDialog() {
+        _uiState.update {
+            it.copy(customInputState = it.customInputState.copy(isDialogVisible = true))
+        }
+    }
+
+    fun hideCustomInputDialog() {
+        _uiState.update {
+            it.copy(customInputState = CustomInputState(isDialogVisible = false))
+        }
+    }
+
+    private fun observeSavedBmr() {
         viewModelScope.launch {
+            getSavedBmrUseCase("test").collect { savedBmr ->
+                if (savedBmr != null) {
+                    val baseBmrState = BmrUiState(
+                        movementLevelMetabolism = savedBmr.tdee
+                    )
+                    _uiState.update {
+                        it.copy(
+                            bmrState = baseBmrState
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun observeMealsForDate(date: LocalDate) {
+viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            dietRecordRepository.getAllMeal().collect { result ->
+
+            dietRecordRepository.getMealByDate(date, userId).collect { result ->
                 when (result) {
                     is DataResourceResult.Success -> {
                         val meals = result.data
-                        val sections = meals.entries
-                            .sortedByDescending { it.key }
-                            .map { (date, meals) ->
-                                DietDateSection(
-                                    date = date,
-                                    meals = meals,
-                                    totalCalories = meals.sumOf { it.kcal },
-                                    totalCarbs = meals.sumOf { it.carbohydrate },
-                                    totalProteins = meals.sumOf { it.protein },
-                                    totalFats = meals.sumOf { it.fat }
-                                )
-                            }
+                        val currentSection = DietDateSection(
+                            date = date,
+                            meals = meals,
+                            totalCalories = meals.sumOf { it.kcal },
+                            totalCarbs = meals.sumOf { it.carbohydrate },
+                            totalProteins = meals.sumOf { it.protein },
+                            totalFats = meals.sumOf { it.fat }
+                        )
                         _uiState.update { currentState ->
-                            val sectionForSelectedDate =
-                                sections.find { it.date == currentState.dateDietState.selectedDate }
-                            val newDateDietState = currentState.dateDietState.copy(
-                                allDietSections = sections,
-                                allMealLoggedDates = sections.map { it.date }.toSet(),
-                                selectedDateSection = sectionForSelectedDate,
-                                totalCalories = sectionForSelectedDate?.totalCalories ?: 0,
-                                totalCarbs = sectionForSelectedDate?.totalCarbs ?: 0,
-                                totalProteins = sectionForSelectedDate?.totalProteins ?: 0,
-                                totalFats = sectionForSelectedDate?.totalFats ?: 0
-                            )
                             currentState.copy(
                                 isLoading = false,
                                 isError = false,
-                                dateDietState = newDateDietState
+                                dateDietState = currentState.dateDietState.copy(
+                                    selectedDate = date,
+                                    selectedDateSection = currentSection,
+                                    totalCalories = currentSection.totalCalories,
+                                    totalCarbs = currentSection.totalCarbs,
+                                    totalProteins = currentSection.totalProteins,
+                                    totalFats = currentSection.totalFats
+                                )
                             )
                         }
                     }
 
                     is DataResourceResult.Error -> {
+                        println("DEBUG_DIET Error: ${result.exception.message}")
                         _uiState.update { it.copy(isLoading = false, isError = true) }
                     }
 
-                    is DataResourceResult.Loading -> {
-                    }
-                }
-            }
-        }
-    }
-
-    fun onAddMeal(
-        dietCollection: DietCollection,
-        mealType: MealType,
-        date: LocalDate,
-        updateWeight: Int? = null
-    ) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            val updatedDietCollection =
-                updateWeight?.let { dietCollection.divideWeight(it) } ?: dietCollection
-            val currentTime = LocalTime.now()
-            val combinedDateTime = date.atTime(currentTime)
-            val createdAtTimestamp = combinedDateTime.atZone(ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli()
-            val updatedAtTimestamp = System.currentTimeMillis()
-            val newDietCollection = updatedDietCollection.copy(
-                mealType = mealType.name,
-                createdAt = createdAtTimestamp,
-                updatedAt = updatedAtTimestamp
-            )
-            val result = dietRecordRepository.addMeal(newDietCollection)
-            when (result) {
-                is DataResourceResult.Success -> {
-                    _uiState.update { it.copy(isLoading = false) }
-                    emptySearchList()
-                    observeAllMeals()
-                }
-
-                is DataResourceResult.Error -> {
-                    _uiState.update { it.copy(isLoading = false, isError = true) }
-                }
-
-                is DataResourceResult.Loading -> {
-                }
-            }
-        }
-    }
-
-    fun onRemoveMeal(dietInfo: DietCollection) {
-        viewModelScope.launch {
-            val result = dietRecordRepository.removeMeal(dietInfo.documentId)
-            when (result) {
-                is DataResourceResult.Success -> {
-                    observeAllMeals()
-                }
-
-                is DataResourceResult.Error -> {
-                    _uiState.update { it.copy(isLoading = false, isError = true) }
-                }
-
-                is DataResourceResult.Loading -> {
-                    _uiState.update { it.copy(isLoading = true) }
-                }
-            }
-        }
-    }
-
-    fun onSearchQueryChanged(query: String) {
-        savedStateHandle["searchQuery"] = query
-        if (query.isBlank()) {
-            _uiState.update {
-                it.copy(
-                    dietSearchState = it.dietSearchState.copy(searchResults = emptyList())
-                )
-            }
-        }
-    }
-
-    fun emptySearchList() {
-        _uiState.update {
-            it.copy(
-                dietSearchState = it.dietSearchState.copy(searchResults = emptyList())
-            )
-        }
-    }
-
-    private fun loadMyBmr() {
-        viewModelScope.launch {
-            getSavedBmrUseCase("test").collect { savedBmr ->
-                if (savedBmr != null) {
-                    val baseBmrState = BmrUiState(
-                        savedBmr = savedBmr,
-                        gender = if (savedBmr.gender) Gender.MALE else Gender.FEMALE,
-                        height = savedBmr.height.toString(),
-                        weight = savedBmr.weight.toString(),
-                        age = savedBmr.age.toString(),
-                        movementLevel = savedBmr.movementLevel
-                    )
-
-                    val result = calculateBmrUseCase(
-                        gender = baseBmrState.gender,
-                        height = savedBmr.height,
-                        weight = savedBmr.weight,
-                        age = savedBmr.age,
-                        movementLevel = baseBmrState.movementLevel
-                    )
-                    val finalBmrState = baseBmrState.copy(
-                        calculatedBmr = result.bmr,
-                        movementLevelMetabolism = result.tdee
-                    )
-                    _uiState.update {
-                        it.copy(
-                            bmrState = finalBmrState
-                        )
-                    }
+                    is DataResourceResult.Loading -> {}
                 }
             }
         }
@@ -297,29 +415,26 @@ class DietViewModel @Inject constructor(
             hideDatePicker()
             return
         }
+        observeMealsForDate(date)
+        _uiState.update { currentState ->
+            currentState.copy(
+                dietSearchState = currentState.dietSearchState.copy(
+                    searchResults = emptyList()
+                ),
+                dateDietState = currentState.dateDietState.copy(
+                    selectedDate = date,
+                    isDatePickerVisible = false
+                )
+            )
+        }
+    }
 
+    fun hideDatePicker() {
         _uiState.update {
             it.copy(
-                isLoading = true,
-                dietSearchState = it.dietSearchState.copy(searchResults = emptyList())
+                dateDietState = it.dateDietState.copy(isDatePickerVisible = false)
             )
         }
-        _uiState.update { currentState ->
-            val sectionForSelectedDate =
-                currentState.dateDietState.allDietSections.find { it.date == date }
-            val newDateDietState = currentState.dateDietState.copy(
-                selectedDate = date,
-                selectedDateSection = sectionForSelectedDate,
-                totalCalories = sectionForSelectedDate?.totalCalories ?: 0,
-                totalCarbs = sectionForSelectedDate?.totalCarbs ?: 0,
-                totalProteins = sectionForSelectedDate?.totalProteins ?: 0,
-                totalFats = sectionForSelectedDate?.totalFats ?: 0
-            )
-            currentState.copy(
-                dateDietState = newDateDietState
-            )
-        }
-        hideDatePicker()
     }
 
     fun showDatePicker() {
@@ -332,14 +447,6 @@ class DietViewModel @Inject constructor(
                     datePickerDisplayedMonth = initialMonth,
                     datePickerCalendarDates = getDaysOfMonth(initialMonth)
                 )
-            )
-        }
-    }
-
-    fun hideDatePicker() {
-        _uiState.update {
-            it.copy(
-                dateDietState = it.dateDietState.copy(isDatePickerVisible = false)
             )
         }
     }
@@ -379,160 +486,17 @@ class DietViewModel @Inject constructor(
         onDateSelected(LocalDate.now())
     }
 
-    private fun observeRecentSearches() {
-        viewModelScope.launch {
-            dietSearchRecordRepository.getRecentSearches().collect { searches ->
-                _uiState.update {
-                    it.copy(
-                        dietSearchState = it.dietSearchState.copy(recentSearches = searches)
-                    )
-                }
-            }
-        }
-    }
-
-    fun onRecentMealSearch() {
-        val query = searchQuery.value
-        if (query.isBlank()) {
-            emptySearchList()
-            return
-        }
-        viewModelScope.launch {
-            dietSearchRecordRepository.addSearch(query)
-            _uiState.update {
-                it.copy(
-                    isLoading = true,
-                    dietSearchState = it.dietSearchState.copy(searchResults = emptyList())
-                )
-            }
-            val result: List<DietCollection> = foodSearchRepository.searchMeals(query = query)
-            _uiState.update {
-                it.copy(
-                    isLoading = false,
-                    dietSearchState = it.dietSearchState.copy(searchResults = result)
-                )
-            }
-        }
-    }
-
-    fun onRecentSearchClicked(query: String) {
-        savedStateHandle["searchQuery"] = query
-        onRecentMealSearch()
-    }
-
-    fun onDeleteRecentSearch(search: RecentMealSearch) {
-        viewModelScope.launch {
-            dietSearchRecordRepository.deleteSearch(search)
-        }
-    }
-
-    fun onClearAllRecentMealSearches() {
-        viewModelScope.launch {
-            dietSearchRecordRepository.clearAllSearches()
-        }
-    }
-
-    fun showCustomInputDialog() {
-        _uiState.update {
-            it.copy(customInputState = it.customInputState.copy(isDialogVisible = true))
-        }
-    }
-
-    fun hideCustomInputDialog() {
-        _uiState.update {
-            it.copy(customInputState = CustomInputState(isDialogVisible = false))
-        }
-    }
-
-    fun onCustomInputNameChanged(name: String) {
-        _uiState.update {
-            it.copy(customInputState = it.customInputState.copy(name = name))
-        }
-    }
-
-    fun onCustomInputWeightChanged(weight: String) {
-        if (weight.isDigitsOnly()) {
-            _uiState.update {
-                it.copy(customInputState = it.customInputState.copy(weight = weight))
-            }
-        }
-    }
-
-    fun onCustomInputCarbsChanged(carbs: String) {
-        if (carbs.isDigitsOnly()) {
-            _uiState.update {
-                it.copy(customInputState = it.customInputState.copy(carbohydrate = carbs))
-            }
-        }
-    }
-
-    fun onCustomInputProteinChanged(protein: String) {
-        if (protein.isDigitsOnly()) {
-            _uiState.update {
-                it.copy(customInputState = it.customInputState.copy(protein = protein))
-            }
-        }
-    }
-
-    fun onCustomInputFatChanged(fat: String) {
-        if (fat.isDigitsOnly()) {
-            _uiState.update {
-                it.copy(customInputState = it.customInputState.copy(fat = fat))
-            }
-        }
-    }
-
-    fun onCustomInputFavoriteChanged(isFavorite: Boolean) {
-        _uiState.update {
-            it.copy(customInputState = it.customInputState.copy(isFavorite = isFavorite))
-        }
-    }
-
     fun calculateCustomInputKcal() {
         val customState = _uiState.value.customInputState
-        val carbsGram = customState.carbohydrate.toIntOrNull() ?: 0
-        val proteinGram = customState.protein.toIntOrNull() ?: 0
-        val fatGram = customState.fat.toIntOrNull() ?: 0
-        val totalKcal = (carbsGram * 4) + (proteinGram * 4) + (fatGram * 9)
+        val carbs = customState.carbohydrate.toIntOrNull() ?: 0
+        val protein = customState.protein.toIntOrNull() ?: 0
+        val fat = customState.fat.toIntOrNull() ?: 0
+        val totalKcal = FoodItem.calculateCalories(carbs, protein, fat)
 
         _uiState.update {
             it.copy(
                 customInputState = it.customInputState.copy(calculatedKcal = totalKcal.toString())
             )
         }
-    }
-
-    fun onCustomMealConfirm(date: LocalDate) {
-        val customState = _uiState.value.customInputState
-        if (!customState.isConfirmEnabled) return
-
-        val newMeal = DietCollection(
-            mealName = customState.name,
-            weight = customState.weight.toInt(),
-            kcal = customState.calculatedKcal.toInt(),
-            carbohydrate = customState.carbohydrate.toInt(),
-            protein = customState.protein.toInt(),
-            fat = customState.fat.toInt()
-        )
-        viewModelScope.launch {
-            onAddMeal(
-                dietCollection = newMeal,
-                mealType = MealType.SNACK,
-                date = date
-            )
-            if (customState.isFavorite) {
-                val favoriteMeal = FavoriteMeal(
-                    name = newMeal.mealName,
-                    weight = newMeal.weight,
-                    kcal = newMeal.kcal,
-                    carbohydrate = newMeal.carbohydrate,
-                    protein = newMeal.protein,
-                    fat = newMeal.fat
-                )
-                favoriteFoodRepository.addFavorite(favoriteMeal)
-            }
-            _navigationEvent.emit(NavigationEvent.NavigateBackToDietScreen)
-        }
-        hideCustomInputDialog()
     }
 }
