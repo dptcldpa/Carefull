@@ -9,3 +9,15 @@ data class ExerciseCollection(
 	val weeklyCounts: Map<String, Int> = emptyMap(),
 	val dailyCounts: Map<String, Int> = emptyMap()
 )
+
+data class ExerciseStatistics(
+	val type: ExerciseType,
+	val totalCount: Int,
+	val weeklyCount: Int,
+	val dailyCount: Int
+)
+
+data class ExerciseRecordForDate(
+	val name: String,
+	val count: Int
+)

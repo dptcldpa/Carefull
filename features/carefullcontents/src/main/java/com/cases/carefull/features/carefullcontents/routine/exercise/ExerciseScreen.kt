@@ -40,6 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.cases.carefull.domain.model.exercise.ExerciseState
+import com.cases.carefull.domain.model.exercise.ExerciseStatistics
 import com.cases.carefull.domain.model.exercise.ExerciseType
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
@@ -58,8 +59,7 @@ fun ExerciseRoute(
         onClickExercise = { exerciseUiModel ->
             navController.navigate(
                 RoutineRoute.WorkOutRoute(
-                    exerciseType = exerciseUiModel.type,
-                    count = 10
+                    exerciseType = exerciseUiModel.type
                 )
             )
         }
@@ -81,9 +81,10 @@ fun ExerciseScreen(
         if (uiState.isLoading) {
             CircularProgressIndicator()
         } else if (uiState.dailyExercise.isNotEmpty()) {
-            val todayExerciseName = uiState.dailyExercise.first().type
+            val todayExerciseType = uiState.dailyExercise.first()
+            val exerciseName = todayExerciseType.type
             Text(
-                stringResource(R.string.workout_title_format, todayExerciseName),
+                stringResource(R.string.workout_title_format, exerciseName),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -132,6 +133,9 @@ fun ExerciseCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val name = uiModel.type.type
+    val description = stringResource(uiModel.type.descriptionResId)
+
     val cardModifier = if (isTodayExercise) {
         modifier
             .fillMaxWidth()
@@ -176,12 +180,12 @@ fun ExerciseCard(
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = uiModel.name,
+                    text = name,
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = uiModel.description,
+                    text = description,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -224,11 +228,12 @@ fun ExerciseCard(
 @Composable
 fun ExerciseScreenPreview() {
     val fakeExerciseList = ExerciseType.entries.map { exerciseType ->
-        exerciseType.toUiModel(
+        ExerciseStatistics(
+            type = exerciseType,
             totalCount = 152,
             weeklyCount = 35,
             dailyCount = if (exerciseType == ExerciseType.DUMBBELL_CURL) 10 else 0
-        )
+        ).toUiModel()
     }
     val fakeTodayExercise = ExerciseType.DUMBBELL_CURL
     val fakeUiState = ExerciseUiState(
@@ -239,13 +244,8 @@ fun ExerciseScreenPreview() {
         isError = false,
         showDialog = false,
         selectedExercise = null,
-        exercisesResults = emptyList(),
-        exerciseCounts = emptyMap(),
         exerciseList = fakeExerciseList,
         dailyExercise = ExerciseType.entries,
-        totalExerciseCounts = emptyMap(),
-        weeklyExerciseCounts = emptyMap(),
-        dailyExerciseCounts = emptyMap(),
         completedDailyExerciseDates = emptySet(),
     )
 
@@ -257,145 +257,3 @@ fun ExerciseScreenPreview() {
         )
     }
 }
-
-//@Composable
-//fun ExerciseCountDialog(
-//    exerciseName: ExerciseType,
-//    onDismiss: () -> Unit,
-//    onConfirm: (Int) -> Unit
-//) {
-//    var count by remember { mutableIntStateOf(10) }
-//
-//    Dialog(
-//        onDismissRequest = onDismiss,
-//        properties = DialogProperties(
-//        )
-//    ) {
-//        Surface(
-//            shape = RoundedCornerShape(16.dp),
-//            color = MaterialTheme.colorScheme.surface,
-//            tonalElevation = 8.dp
-//        )
-//        {
-//            Card(
-//                modifier = Modifier.fillMaxWidth(),
-//                shape = MaterialTheme.shapes.large,
-//                colors = CardDefaults.cardColors(
-//                    containerColor = MaterialTheme.colorScheme.surface,
-//                    contentColor = MaterialTheme.colorScheme.onSurface
-//                )
-//            ) {
-//                Column(
-//                    modifier = Modifier.padding(24.dp),
-//                    horizontalAlignment = Alignment.CenterHorizontally,
-//                    verticalArrangement = Arrangement.spacedBy(16.dp)
-//                ) {
-//                    Row {
-//                        Spacer(modifier = Modifier.weight(0.5f))
-//                        Text(
-//                            text = exerciseName.type,
-//                            style = MaterialTheme.typography.titleLarge,
-//                            fontWeight = FontWeight.Bold
-//                        )
-//                        Spacer(modifier = Modifier.weight(0.25f))
-//                        TextButton(onClick = onDismiss) {
-//                            Text(
-//                                text = stringResource(R.string.common_close),
-//                                style = MaterialTheme.typography.labelLarge,
-//                                color = Color.Gray,
-//                                modifier = Modifier.padding(bottom = 10.dp)
-//                            )
-//                        }
-//                    }
-//                    Row {
-//                        Text(
-//                            text = "$count",
-//                            style = MaterialTheme.typography.titleLarge
-//                        )
-//                        Spacer(modifier = Modifier.width(5.dp))
-//                        Text(
-//                            text = stringResource(R.string.unit_count),
-//                            style = MaterialTheme.typography.titleLarge,
-//                        )
-//                    }
-//
-//                    Row(
-//                        verticalAlignment = Alignment.Bottom,
-//                        horizontalArrangement = Arrangement.Center
-//                    ) {
-//                        Button(
-//                            onClick = {
-//                                if (count > 4) repeat(5) {
-//                                    count--
-//                                }
-//                            },
-//                            modifier = Modifier.size(40.dp),
-//                            contentPadding = PaddingValues(0.dp)
-//                        ) {
-//                            Text(
-//                                "-5",
-//                                style = MaterialTheme.typography.bodyLarge
-//                            )
-//                        }
-//                        Spacer(modifier = Modifier.width(10.dp))
-//                        Button(
-//                            onClick = { if (count > 1) count-- },
-//                            modifier = Modifier.size(40.dp),
-//                            contentPadding = PaddingValues(0.dp)
-//                        ) {
-//                            Text(
-//                                "-1",
-//                                style = MaterialTheme.typography.bodyLarge
-//                            )
-//                        }
-//
-//                        Spacer(modifier = Modifier.width(10.dp))
-//                        Button(
-//                            onClick = { count++ },
-//                            modifier = Modifier.size(40.dp),
-//                            contentPadding = PaddingValues(0.dp)
-//                        ) {
-//                            Text(
-//                                "+1",
-//                                style = MaterialTheme.typography.bodyLarge
-//                            )
-//                        }
-//                        Spacer(modifier = Modifier.width(10.dp))
-//                        Button(
-//                            onClick = {
-//                                repeat(5) {
-//                                    count++
-//                                }
-//                            },
-//                            modifier = Modifier.size(40.dp),
-//                            contentPadding = PaddingValues(0.dp)
-//                        ) {
-//                            Text(
-//                                "+5",
-//                                style = MaterialTheme.typography.bodyLarge
-//                            )
-//                        }
-//                    }
-//                    Row(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        horizontalArrangement = Arrangement.End
-//                    ) {
-//
-//                        Spacer(modifier = Modifier.width(8.dp))
-//                        Button(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .height(50.dp),
-//                            shape = MaterialTheme.shapes.large,
-//                            onClick = { onConfirm(count) }) {
-//                            Text(
-//                                stringResource(R.string.common_confirm),
-//                                style = MaterialTheme.typography.titleLarge
-//                            )
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}

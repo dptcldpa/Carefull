@@ -1,6 +1,6 @@
 package com.cases.carefull.data.repository
 
-import com.cases.carefull.data.dto.ExerciseCollectionDTO
+import com.cases.carefull.data.dto.exercise.ExerciseCollectionDto
 import com.cases.carefull.domain.model.MyRankInfo
 import com.cases.carefull.domain.model.Ranker
 import com.cases.carefull.domain.model.exercise.ExerciseType
@@ -37,7 +37,7 @@ class RankingRepositoryImpl @Inject constructor() : RankingRepository {
 					.limit(100.toLong())
 					.get()
 					.await()
-			val dtoList = rankingList.toObjects(ExerciseCollectionDTO::class.java)
+			val dtoList = rankingList.toObjects(ExerciseCollectionDto::class.java)
 			dtoList.map { dto ->
 				Ranker(
 					userId = dto.user_id,
@@ -62,7 +62,7 @@ class RankingRepositoryImpl @Inject constructor() : RankingRepository {
 					.limit(1)
 					.get()
 					.await()
-			val myRecordDto = myRanking.toObjects(ExerciseCollectionDTO::class.java).firstOrNull()
+			val myRecordDto = myRanking.toObjects(ExerciseCollectionDto::class.java).firstOrNull()
 			if (myRecordDto == null) {
 				MyRankInfo(rank = -1, myRecord = null)
 			} else {

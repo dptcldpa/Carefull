@@ -1,9 +1,9 @@
-package com.cases.carefull.domain.model.exercise.analyzer
+package com.cases.carefull.domain.model.exercise.workout
 
+import com.cases.carefull.domain.model.exercise.ExerciseAnalyzer
 import com.cases.carefull.domain.model.exercise.ExerciseState
 import com.cases.carefull.domain.model.exercise.Pose
 import com.cases.carefull.domain.model.exercise.getAngle
-import com.cases.carefull.domain.repository.ExerciseAnalyzer
 
 class DumbbellShoulderPressAnalyzer(private val isLeftHand: Boolean) : ExerciseAnalyzer {
     override fun analyze(pose: Pose): ExerciseState {

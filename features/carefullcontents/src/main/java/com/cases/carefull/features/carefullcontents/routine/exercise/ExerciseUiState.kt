@@ -1,34 +1,25 @@
 package com.cases.carefull.features.carefullcontents.routine.exercise
 
-import com.cases.carefull.domain.model.exercise.ExerciseCollection
 import com.cases.carefull.domain.model.exercise.ExerciseState
 import com.cases.carefull.domain.model.exercise.ExerciseType
 import com.cases.carefull.domain.model.exercise.Pose
 import java.time.LocalDate
 
 data class ExerciseUiState(
+	val isLoading: Boolean = false,
+	val isError: Boolean = false,
+	val showDialog: Boolean = false,
+
+	val exerciseList: List<ExerciseUiModel> = emptyList(),
+	val dailyExercise:List<ExerciseType> = emptyList(),
+
+	val selectedExercise: ExerciseType?=null,
 	val count: Int = 0,
 	val userPose: ExerciseState = ExerciseState.NONE,
 	val detectedPose: Pose? = null,
-	
-	val isLoading: Boolean = true,
-	val isError: Boolean = false,
-	
-	var showDialog: Boolean = false,
-	val selectedExercise: ExerciseType?=null,
-	val exercisesResults: List<ExerciseCollection> = emptyList(),
-	val exerciseCounts: Map<ExerciseType, Int> = emptyMap(),
-	val exerciseList: List<ExerciseUiModel> = emptyList(),
-	
-	val dailyExercise:List<ExerciseType> = emptyList(),
-	
-	val totalExerciseCounts: Map<ExerciseType, Int> = emptyMap(),
+	val analysisState: StreamAnalysisState = StreamAnalysisState.DETECTING_FACE,
 
-	val weeklyExerciseCounts: Map<ExerciseType, Int> = emptyMap(),
-	val dailyExerciseCounts: Map<ExerciseType, Int> = emptyMap(),
-
-	val completedDailyExerciseDates: Set<LocalDate> = emptySet(),
-	val analysisState: StreamAnalysisState = StreamAnalysisState.DETECTING_FACE
+	val completedDailyExerciseDates: Set<LocalDate> = emptySet()
 )
 
 enum class StreamAnalysisState {
@@ -36,3 +27,12 @@ enum class StreamAnalysisState {
 	FACE_DETECTED_SUCCESS,
 	ANALYZING_EXERCISE
 }
+
+
+
+
+//	val exercisesResults: List<ExerciseCollection> = emptyList(),
+//	val exerciseCounts: Map<ExerciseType, Int> = emptyMap(),
+//	val totalExerciseCounts: Map<ExerciseType, Int> = emptyMap(),
+//	val weeklyExerciseCounts: Map<ExerciseType, Int> = emptyMap(),
+//	val dailyExerciseCounts: Map<ExerciseType, Int> = emptyMap(),

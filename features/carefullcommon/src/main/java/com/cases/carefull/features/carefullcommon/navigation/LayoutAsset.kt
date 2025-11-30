@@ -131,7 +131,7 @@ object LayoutAsset {
         MainRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +
                 RoutineRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +
                 listOf(
-                    RoutineRoute.WorkOutRoute(ExerciseType.SQUAT, 0)
+                    RoutineRoute.WorkOutRoute(ExerciseType.SQUAT)
                 ) +
                 DiagnosisRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +
                 FeedRoute::class.sealedSubclasses.mapNotNull { it.objectInstance } +

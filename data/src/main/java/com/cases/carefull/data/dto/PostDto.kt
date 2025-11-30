@@ -1,6 +1,5 @@
 package com.cases.carefull.data.dto
 
-import com.cases.carefull.domain.model.SocialCategory
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.ServerTimestamp
 import java.util.Date

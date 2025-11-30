@@ -9,6 +9,8 @@ import com.cases.carefull.data.datasource.HospitalDataSource
 import com.cases.carefull.data.datasource.HospitalDataSourceImpl
 import com.cases.carefull.data.datasource.KaKaoDataSource
 import com.cases.carefull.data.datasource.KakaoDataSourceImpl
+import com.cases.carefull.data.datasource.PoseDataSource
+import com.cases.carefull.data.datasource.PoseDataSourceImpl
 import com.cases.carefull.data.datasource.UserDataSource
 import com.cases.carefull.data.firestore.UserDataSourceImpl
 import dagger.Binds
@@ -50,4 +52,10 @@ abstract class DataSourceModule {
 	abstract fun bindChatbotDataSource(
 		chatbotDataSourceImpl: ChatbotDataSourceImpl
 	): ChatbotDataSource
+
+	@Binds
+	@Singleton
+	abstract fun bindPoseDataSource(
+		poseDataSourceImpl: PoseDataSourceImpl
+	): PoseDataSource
 }

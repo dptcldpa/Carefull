@@ -25,7 +25,7 @@ sealed interface RoutineRoute : Route {
     data object ExerciseRoute : RoutineRoute
 
     @Serializable
-    data class WorkOutRoute(val exerciseType: ExerciseType, val count: Int) : RoutineRoute
+    data class WorkOutRoute(val exerciseType: ExerciseType) : RoutineRoute
 
     @Serializable
     data object DietRoute : RoutineRoute
