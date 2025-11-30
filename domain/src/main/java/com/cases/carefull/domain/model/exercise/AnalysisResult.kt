@@ -7,3 +7,9 @@ sealed class AnalysisState {
 
     data class AnalyzingPose(val pose: Pose) : AnalysisState()
 }
+
+data class RepetitionResult (
+    val count: Int,
+    val currentPose: ExerciseState,
+    val isRepetitionCompleted: Boolean = false
+)

@@ -222,8 +222,7 @@ fun HomeScreen(
 						onClick = {
 							navController.navigate(
 								RoutineRoute.WorkOutRoute(
-									exerciseType = uiState.dailyExercise.first(),
-									count = 10
+									exerciseType = uiState.dailyExercise.first()
 								)
 							)
 						}

@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class FoodSearchRepositoryImpl @Inject constructor(
     private val apiService: DietApiService,
-    @DietApiKey private val dietApiKey: String,
+    @param:DietApiKey private val dietApiKey: String,
 ) : FoodSearchRepository {
     override suspend fun searchFoods(query: String): DataResourceResult<List<FoodItem>> =
         runCatching {

@@ -1,11 +1,11 @@
 package com.cases.carefull.features.carefullcontents.routine.exercise
 
 import android.Manifest
+import android.annotation.SuppressLint
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
-import androidx.camera.core.UseCase
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.BorderStroke
@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +42,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.toRoute
+import com.cases.carefull.domain.model.exercise.ExerciseState
 import com.cases.carefull.domain.model.exercise.ExerciseType
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
@@ -49,6 +51,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 
+@SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun WorkOutRoute(
@@ -58,26 +61,24 @@ fun WorkOutRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val route = navController.currentBackStackEntry?.toRoute<RoutineRoute.WorkOutRoute>()
     val exerciseType = route?.exerciseType
-    val imageAnalysisUseCase = remember { viewModel.getCameraAnalysisUseCase() }
     val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
+    val cameraAnalyzer = viewModel.getCameraAnalyzer()
+
+    LaunchedEffect(exerciseType) {
+        if (exerciseType != null) {
+            viewModel.initialize(exerciseType)
+        }
+    }
 
     WorkOutScreen(
-        imageAnalysisUseCase = imageAnalysisUseCase,
+        uiState = uiState,
         hasPermission = cameraPermissionState.status.isGranted,
         requestPermission = { cameraPermissionState.launchPermissionRequest() },
-        uiState = uiState,
         onStopClick = {
-            if (exerciseType != null) {
-                viewModel.saveWorkoutResult(exerciseType)
-            }
+            exerciseType?.let { viewModel.saveWorkoutResult(it) }
             navController.popBackStack()
         },
-        initialize = {
-            if (exerciseType != null) {
-                viewModel.initialize(exerciseType)
-            }
-        },
-        exerciseType = exerciseType
+        cameraAnalyzer = cameraAnalyzer
     )
 }
 
@@ -85,27 +86,18 @@ fun WorkOutRoute(
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun WorkOutScreen(
-    imageAnalysisUseCase: UseCase,
+    uiState: ExerciseUiState,
     hasPermission: Boolean,
     requestPermission: () -> Unit,
-    uiState: ExerciseUiState,
-    exerciseType: ExerciseType?,
     onStopClick: () -> Unit,
-    initialize: () -> Unit,
+    cameraAnalyzer: Any,
     isPreview: Boolean = false
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    if (!isPreview) {
-        LaunchedEffect(exerciseType) {
-            if (exerciseType != null) {
-                initialize()
-            }
-        }
-        LaunchedEffect(hasPermission) {
-            if (!hasPermission) {
-                requestPermission()
-            }
+    LaunchedEffect(hasPermission) {
+        if (!hasPermission) {
+            requestPermission()
         }
     }
 
@@ -114,6 +106,13 @@ fun WorkOutScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
+        if (uiState.selectedExercise == null) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                 CircularProgressIndicator()
+            }
+            return
+        }
+
         if (hasPermission) {
             Column(
                 modifier = Modifier
@@ -125,7 +124,7 @@ fun WorkOutScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = exerciseType!!.type,
+                        text = uiState.selectedExercise.type,
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -171,9 +170,10 @@ fun WorkOutScreen(
                     CameraView(
                         modifier = Modifier.fillMaxSize(),
                         lifecycleOwner = lifecycleOwner,
-                        imageAnalysisUseCase = imageAnalysisUseCase
+                        analyzer = cameraAnalyzer
                     )
                 }
+
                 val detectedPose = uiState.detectedPose
                 if (detectedPose != null) {
                     PoseOverlay(
@@ -196,7 +196,7 @@ fun WorkOutScreen(
 fun CameraView(
     modifier: Modifier = Modifier,
     lifecycleOwner: LifecycleOwner,
-    imageAnalysisUseCase: UseCase
+    analyzer: Any
 ) {
     val context = LocalContext.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
@@ -214,6 +214,17 @@ fun CameraView(
                 val preview = Preview.Builder().build().also {
                     it.surfaceProvider = previewView.surfaceProvider
                 }
+                val imageAnalysis = ImageAnalysis.Builder()
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .build()
+                    .apply {
+                        (analyzer as? ImageAnalysis.Analyzer)?.let { safeAnalyzer ->
+                            setAnalyzer(
+                                ContextCompat.getMainExecutor(context),
+                                safeAnalyzer
+                            )
+                        }
+                    }
                 val cameraSelector = CameraSelector.Builder()
                     .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                     .build()
@@ -223,7 +234,7 @@ fun CameraView(
                         lifecycleOwner,
                         cameraSelector,
                         preview,
-                        imageAnalysisUseCase as ImageAnalysis
+                        imageAnalysis
                     )
                 } catch (e: Exception) {
                 }
@@ -236,16 +247,23 @@ fun CameraView(
 @Composable
 @androidx.compose.ui.tooling.preview.Preview
 fun WorkOutScreenPreview() {
-    val fakeExerciseUiState = ExerciseUiState(count = 10)
+    val fakeUiState = ExerciseUiState(
+        count = 12,
+        userPose = ExerciseState.UP,
+        isLoading = false,
+        isError = false,
+        selectedExercise = ExerciseType.DUMBBELL_CURL,
+        analysisState = StreamAnalysisState.ANALYZING_EXERCISE,
+        dailyExercise = listOf(ExerciseType.SQUAT)
+    )
+
     CarefullTheme {
         WorkOutScreen(
-            imageAnalysisUseCase = ImageAnalysis.Builder().build(),
+            uiState = fakeUiState,
             hasPermission = true,
             requestPermission = {},
-            uiState = fakeExerciseUiState,
-            exerciseType = ExerciseType.DUMBBELL_CURL,
             onStopClick = {},
-            initialize = {},
+            cameraAnalyzer = Any(),
             isPreview = true
         )
     }
