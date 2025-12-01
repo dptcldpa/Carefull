@@ -1,6 +1,7 @@
 package com.cases.carefull.data.di
 
 import com.cases.carefull.data.repository.CalendarRepositoryImpl
+import com.cases.carefull.data.repository.CareFullLocationRepositoryImpl
 import com.cases.carefull.data.repository.ChatbotRepositoryImpl
 import com.cases.carefull.data.repository.DiseaseRepositoryImpl
 import com.cases.carefull.data.repository.HospitalRepositoryImpl
@@ -18,6 +19,7 @@ import com.cases.carefull.data.repository.exercise.PoseRepositoryImpl
 import com.cases.carefull.data.repository.exercise.TodayWorkOutRepositoryImpl
 import com.cases.carefull.data.repository.exercise.WorkOutRecordRepositoryImpl
 import com.cases.carefull.domain.repository.CalendarRepository
+import com.cases.carefull.domain.repository.CareFullLocationRepository
 import com.cases.carefull.domain.repository.ChatbotRepository
 import com.cases.carefull.domain.repository.DiseaseRepository
 import com.cases.carefull.domain.repository.HospitalRepository
@@ -133,8 +135,8 @@ abstract class RepositoryModule {
     @Binds
     @ViewModelScoped
     abstract fun bindLocationRepository(
-        locationRepositoryImpl: LocationRepositoryImpl
-    ): LocationRepository
+        careFullLocationRepositoryImpl: CareFullLocationRepositoryImpl
+    ): CareFullLocationRepository
 
     @Binds
     @ViewModelScoped

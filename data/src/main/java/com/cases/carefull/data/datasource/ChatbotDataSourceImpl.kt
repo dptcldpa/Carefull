@@ -33,24 +33,15 @@ class ChatbotDataSourceImpl @Inject constructor(
         """.trimIndent()
 
         val finalInput = systemMessage + prompt
-
         val request = ChatbotRequestDto(input = finalInput)
 
-        return try {
-            val response = chatbotApiService.getChatCompletion(request)
+        val response = chatbotApiService.getChatCompletion(request)
 
-            val contentJsonString = response.output?.firstOrNull()
-                ?.content?.firstOrNull { it.type == "output_text" }
-                ?.text
-                ?: throw IllegalStateException("AI response is missing the 'text' field.")
+        val contentJsonString = response.output?.firstOrNull()
+            ?.content?.firstOrNull { it.type == "output_text" }
+            ?.text
+            ?: throw IllegalStateException("AI 응답에 'text' 필드가 없습니다.")
 
-            gson.fromJson(contentJsonString, StructuredContentDto::class.java)
-
-        } catch (e: Exception) {
-            StructuredContentDto(
-                content = "죄송합니다. AI 서버와 통신 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
-                suggestedActions = emptyList()
-            )
-        }
+        return gson.fromJson(contentJsonString, StructuredContentDto::class.java)
     }
 }

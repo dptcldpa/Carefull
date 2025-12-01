@@ -5,16 +5,18 @@ import com.cases.carefull.data.dto.StructuredContentDto
 import com.cases.carefull.domain.model.ChatbotMessage
 import com.cases.carefull.domain.model.SuggestedAction
 import com.cases.carefull.domain.repository.ChatbotRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ChatbotRepositoryImpl @Inject constructor(
     private val chatbotDataSource: ChatbotDataSource
 ) : ChatbotRepository {
 
-    override suspend fun sendMessage(prompt: String): ChatbotMessage {
+    override suspend fun sendMessage(prompt: String): ChatbotMessage = withContext(Dispatchers.IO){
         val responseDto = chatbotDataSource.sendMessage(prompt)
 
-        return responseDto.toDomainModel()
+         responseDto.toDomainModel()
     }
 }
 

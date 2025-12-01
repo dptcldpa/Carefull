@@ -67,7 +67,8 @@ fun DiseaseSearchScreen(
 
                 viewModel.updateSearchQuery(input)
             },
-            placeholder = "무엇이든 물어보세요",
+            placeholder = "질병을 입력하세요",
+            label = "질병 검색",
         )
 //         검색 입력창
 //        Row(
@@ -154,7 +155,8 @@ fun DiseaseSearchScreen(
             diseaseListState.diseases.isEmpty() -> {
                 if (searchQuery.isNotEmpty()) {
                     Text(
-                        text = "검색 결과가 없습니다.",
+//                        text = "검색 결과가 없습니다.",
+                        text = "",
                         color = Color.Gray,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )

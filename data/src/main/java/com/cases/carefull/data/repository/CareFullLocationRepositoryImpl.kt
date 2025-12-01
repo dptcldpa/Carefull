@@ -2,8 +2,8 @@ package com.cases.carefull.data.repository
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.cases.carefull.domain.model.Location
-import com.cases.carefull.domain.repository.LocationRepository
+import com.cases.carefull.domain.model.CareFullLocation
+import com.cases.carefull.domain.repository.CareFullLocationRepository
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -14,15 +14,15 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import android.location.Location as AndroidLocation
 
-class LocationRepositoryImpl @Inject constructor(
+class CareFullLocationRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
-) : LocationRepository {
+) : CareFullLocationRepository {
 
     private val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
 
     @SuppressLint("MissingPermission")
-    override suspend fun getLastKnownLocation(): Location? {
+    override suspend fun getLastKnownLocation(): CareFullLocation? {
         return suspendCoroutine { continuation ->
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { androidLocation ->
@@ -35,7 +35,7 @@ class LocationRepositoryImpl @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun getCurrentLocation(): Location? = suspendCoroutine { continuation ->
+    override suspend fun getCurrentLocation(): CareFullLocation? = suspendCoroutine { continuation ->
         try {
             fusedLocationClient.getCurrentLocation(
                 Priority.PRIORITY_HIGH_ACCURACY,
@@ -61,8 +61,8 @@ class LocationRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun AndroidLocation.toDomainModel(): Location {
-        return Location(
+    private fun AndroidLocation.toDomainModel(): CareFullLocation {
+        return CareFullLocation(
             latitude = this.latitude,
             longitude = this.longitude
         )

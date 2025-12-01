@@ -13,8 +13,8 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 class KakaoDataSourceImpl @Inject constructor() : KaKaoDataSource {
-    override suspend fun login(context: Context): DataResourceResult<UserInfo> = runCatching {
-        suspendCancellableCoroutine<UserInfo> { continuation ->
+    override suspend fun login(context: Context): UserInfo {
+        return suspendCancellableCoroutine { continuation ->
             val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
                 if (error != null) {
                     continuation.resumeWithException(error)
@@ -41,23 +41,19 @@ class KakaoDataSourceImpl @Inject constructor() : KaKaoDataSource {
                 UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
             }
         }
-    }.fold(
-        onSuccess = { DataResourceResult.Success(it) },
-        onFailure = { DataResourceResult.Error(it) }
-    )
+    }
 
-    override suspend fun logout(): DataResourceResult<Unit> = runCatching {
-        suspendCancellableCoroutine<Unit> { continuation ->
+    override suspend fun logout() {
+        return suspendCancellableCoroutine { continuation ->
             UserApiClient.instance.logout { error ->
                 if (error != null) {
                     continuation.resumeWithException(error)
-                } else continuation.resume(Unit)
+                } else {
+                    continuation.resume(Unit)
+                }
             }
         }
-    }.fold(
-        onSuccess = { DataResourceResult.Success(Unit) },
-        onFailure = { DataResourceResult.Error(it) }
-    )
+    }
 
     override suspend fun isLoggedIn(): Boolean {
         if (!AuthApiClient.instance.hasToken()) {
@@ -69,8 +65,7 @@ class KakaoDataSourceImpl @Inject constructor() : KaKaoDataSource {
                 UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                     if (error != null) {
                         continuation.resume(null)
-                    }
-                    else {
+                    } else {
                         continuation.resume(tokenInfo)
                     }
                 }
@@ -81,8 +76,8 @@ class KakaoDataSourceImpl @Inject constructor() : KaKaoDataSource {
         }
     }
 
-    override suspend fun getCurrentUser(): DataResourceResult<UserInfo> = runCatching {
-        suspendCancellableCoroutine<UserInfo> { continuation ->
+    override suspend fun getCurrentUser(): UserInfo {
+        return suspendCancellableCoroutine { continuation ->
             UserApiClient.instance.me { user, error ->
                 if (error != null) {
                     continuation.resumeWithException(error)
@@ -99,8 +94,5 @@ class KakaoDataSourceImpl @Inject constructor() : KaKaoDataSource {
                 }
             }
         }
-    }.fold(
-        onSuccess = { DataResourceResult.Success(it) },
-        onFailure = { DataResourceResult.Error(it) }
-    )
+    }
 }
