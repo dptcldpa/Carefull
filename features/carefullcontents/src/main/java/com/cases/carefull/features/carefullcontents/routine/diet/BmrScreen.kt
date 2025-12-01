@@ -1,5 +1,6 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -46,12 +49,24 @@ import com.cases.carefull.domain.model.diet.BmrMovementLevel
 import com.cases.carefull.domain.model.diet.Gender
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun BmrRoute(
     viewModel: BmrViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     BmrScreen(
         uiState = uiState,
@@ -131,7 +146,7 @@ fun BmrScreen(
             modifier = Modifier.padding(horizontal = 32.dp)
         ) {
             OutlinedTextField(
-                value = uiState.movementLevel.description,
+                value = stringResource(uiState.movementLevel.descriptionResId),
                 onValueChange = {},
                 readOnly = true,
                 label = { Text(stringResource(R.string.movementlevel_setting)) },
@@ -149,7 +164,7 @@ fun BmrScreen(
             ) {
                 BmrMovementLevel.entries.forEach { movementLevel ->
                     DropdownMenuItem(
-                        text = { Text(text = movementLevel.description) },
+                        text = { Text(text = stringResource(id = movementLevel.descriptionResId)) },
                         onClick = {
                             onMovementLevelSelected(movementLevel)
                             isMovementLevelMenuExpanded = false
@@ -262,7 +277,6 @@ fun ResultRowComponent(
         )
     }
 }
-
 
 
 @Preview(showBackground = true)

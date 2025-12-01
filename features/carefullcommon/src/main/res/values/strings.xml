@@ -51,6 +51,12 @@
     <string name="movementlevel_setting">활동량 설정</string>
     <string name="total_daily_energy">일일대사량</string>
 
+    <string name="bmr_level_none">좌식 생활: 거의 운동하지 않으며, 대부분의 시간을 앉아서 보냄</string>
+    <string name="bmr_level_light">가벼운 활동: 가벼운 운동이나 스포츠를 주 1~3회 즐김</string>
+    <string name="bmr_level_medium">중간 활동: 보통 수준의 운동이나 스포츠를 주 3~5회 즐김</string>
+    <string name="bmr_level_heavy">강한 활동: 격렬한 운동이나 스포츠를 주 6~7회 즐김</string>
+    <string name="bmr_level_extreme">매우 강한 활동: 매우 격렬한 운동, 스포츠와 육체노동을 병행</string>
+
     <!-- =====================================프로필 정보===================================== -->
     <string name="gender">성별</string>
     <string name="gender_male">남성</string>
@@ -95,7 +101,7 @@
     <!-- ========================음식 입력 및 검색 (Food Input & Search)======================== -->
     <string name="food_search_title">음식 검색</string>
     <string name="food_manual_entry_button">직접 입력하기</string>
-    <string name="food_search_hint">음식을 입력하세요.</string>
+    <string name="food_search_hint">음식을 검색하세요</string>
     <string name="food_home_empty_message">   아직 추가된 음식이 없습니다.</string>
 
     <!-- ============================음식 정보 직접 입력 다이얼로그============================ -->

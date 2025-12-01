@@ -25,20 +25,15 @@ fun PoseOverlay(
     Canvas(modifier = modifier) {
         pose.let { domainPose ->
             val landmarks = domainPose.landmarks.values
-
-            // 화면 크기와 이미지 크기 간의 비율 계산
             val scaleX = size.width / imageWidth
             val scaleY = size.height / imageHeight
-
-            // 관절(랜드마크) 그리기
             val points = landmarks
-                .filter { it.inFrameLikelihood > 0.7f } // 신뢰도 높은 점만 그리기
+                .filter { it.inFrameLikelihood > 0.7f }
                 .map { landmark ->
                     Offset(landmark.position.x * scaleX, landmark.position.y * scaleY)
                 }
             drawPoints(points, PointMode.Points, Color.Yellow, strokeWidth = 12f)
 
-            // 연결선 그리기 함수
             fun drawLine(startType: Int, endType: Int) {
                 val startLandmark = domainPose.landmarks[startType]
                 val endLandmark = domainPose.landmarks[endType]
@@ -65,13 +60,11 @@ fun PoseOverlay(
             drawLine(PoseLandmark.RIGHT_ELBOW, PoseLandmark.RIGHT_WRIST)
             drawLine(PoseLandmark.LEFT_SHOULDER, PoseLandmark.LEFT_ELBOW)
             drawLine(PoseLandmark.LEFT_ELBOW, PoseLandmark.LEFT_WRIST)
-
             // 상체
             drawLine(PoseLandmark.LEFT_SHOULDER, PoseLandmark.RIGHT_SHOULDER)
             drawLine(PoseLandmark.LEFT_HIP, PoseLandmark.RIGHT_HIP)
             drawLine(PoseLandmark.RIGHT_SHOULDER, PoseLandmark.RIGHT_HIP)
             drawLine(PoseLandmark.LEFT_SHOULDER, PoseLandmark.LEFT_HIP)
-
             // 다리
             drawLine(PoseLandmark.LEFT_HIP, PoseLandmark.LEFT_KNEE)
             drawLine(PoseLandmark.LEFT_KNEE, PoseLandmark.LEFT_ANKLE)
@@ -103,7 +96,6 @@ fun PoseOverlayPreview() {
 
 private fun createFakePose(): Pose {
     val landmarks = mapOf(
-        // 어깨
         PoseLandmark.RIGHT_SHOULDER to Landmark(
             PoseLandmark.RIGHT_SHOULDER,
             Position(180f, 150f),

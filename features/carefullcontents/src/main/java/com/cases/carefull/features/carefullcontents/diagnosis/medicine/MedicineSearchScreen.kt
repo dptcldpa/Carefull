@@ -14,13 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -28,7 +23,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -36,15 +30,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cases.carefull.domain.model.MedicineItem
-import com.cases.carefull.domain.model.diet.RecentMealSearch
 import com.cases.carefull.features.carefullcommon.components.SearchBar
 
 @Composable
@@ -297,93 +288,5 @@ private fun SearchResultSection(
         };
     } else {
         Text("검색 결과가 없습니다.", color = Color.Gray, modifier = Modifier.padding(top = 16.dp))
-    }
-}
-
-@Composable
-fun RecentMedicineSearchesSection(
-    searches: List<RecentMealSearch>,
-    onDeleteAllRecentMealSearches: () -> Unit,
-    onItemClick: (String) -> Unit,
-    onItemDelete: (RecentMealSearch) -> Unit
-) {
-    if (searches.isEmpty()) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("최근 검색 기록이 없습니다.", color = Color.Gray)
-        }
-    } else {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    "최근 검색",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                TextButton(
-                    onClick = { onDeleteAllRecentMealSearches() },
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Text(
-                        "모두 삭제하기",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.Gray
-                    )
-                }
-            }
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 1.dp),
-                color = Color.Black
-            )
-            LazyColumn {
-                items(searches, key = { it.id }) { search ->
-                    RecentMedicineSearchItem(
-                        search = search,
-                        onClick = { onItemClick(search.name) },
-                        onDelete = { onItemDelete(search) }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun RecentMedicineSearchItem(
-    search: RecentMealSearch,
-    onClick: () -> Unit,
-    onDelete: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = "최근 검색 아이콘",
-            tint = Color.Gray,
-            modifier = Modifier.padding(end = 16.dp)
-        )
-        Text(
-            text = search.name,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f)
-        )
-        IconButton(onClick = onDelete, modifier = Modifier.size(24.dp)) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "기록 삭제",
-                tint = Color.Gray
-            )
-        }
     }
 }

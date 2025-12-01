@@ -1,10 +1,10 @@
 package com.cases.carefull.domain.repository.diet
 
-import com.cases.carefull.domain.model.diet.FavoriteMeal
+import com.cases.carefull.domain.model.diet.FavoriteFood
 import kotlinx.coroutines.flow.Flow
 
 interface FavoriteFoodRepository {
-    fun getFavorites(): Flow<List<FavoriteMeal>>
-    suspend fun addFavorite(meal: FavoriteMeal)
-    suspend fun deleteFavorite(meal: FavoriteMeal)
+    fun getAllFavoriteFoods(): Flow<List<FavoriteFood>>
+    suspend fun saveFavoriteFood(favoriteFood: FavoriteFood)
+    suspend fun deleteFavoriteFood(favoriteFood: FavoriteFood)
 }

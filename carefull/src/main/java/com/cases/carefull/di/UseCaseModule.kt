@@ -2,10 +2,12 @@ package com.cases.carefull.di
 
 import com.cases.carefull.domain.repository.MedicineRepository
 import com.cases.carefull.domain.repository.diet.BodyStatsRepository
-import com.cases.carefull.domain.usecase.bmr.CalculateBmrUseCase
 import com.cases.carefull.domain.usecase.bmr.GetSavedBmrUseCase
 import com.cases.carefull.domain.usecase.MedicineSearchUseCase
 import com.cases.carefull.domain.usecase.bmr.SaveBmrUseCase
+import com.cases.carefull.domain.usecase.exercise.CalculateWorkOutStatsUseCase
+import com.cases.carefull.domain.usecase.exercise.GetWorkOutAnalyzerUseCase
+import com.cases.carefull.domain.usecase.exercise.WorkOutCounterUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,11 +26,6 @@ object UseCaseModule {
         return MedicineSearchUseCase(repository)
     }
 
-    @Provides
-    @ViewModelScoped
-    fun provideCalculateBmrUseCase(): CalculateBmrUseCase {
-        return CalculateBmrUseCase()
-    }
 
     @Provides
     @ViewModelScoped
@@ -44,5 +41,26 @@ object UseCaseModule {
         repository: BodyStatsRepository
     ): SaveBmrUseCase {
         return SaveBmrUseCase(repository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetWorkOutAnalyzerUseCase(
+    ): GetWorkOutAnalyzerUseCase {
+        return GetWorkOutAnalyzerUseCase()
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideCalculateWorkOutStatsUseCase():
+            CalculateWorkOutStatsUseCase {
+        return CalculateWorkOutStatsUseCase()
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideWorkOutCounterUseCase():
+            WorkOutCounterUseCase {
+        return WorkOutCounterUseCase()
     }
 }

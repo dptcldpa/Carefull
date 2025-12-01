@@ -1,10 +1,9 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
 import androidx.compose.runtime.Stable
-import androidx.core.text.isDigitsOnly
-import com.cases.carefull.domain.model.diet.DietCollection
-import com.cases.carefull.domain.model.diet.FavoriteMeal
-import com.cases.carefull.domain.model.diet.RecentMealSearch
+import com.cases.carefull.domain.model.diet.FavoriteFood
+import com.cases.carefull.domain.model.diet.FoodItem
+import com.cases.carefull.domain.model.diet.RecentFoodSearch
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -21,8 +20,8 @@ data class MainDietUiState(
 )
 
 data class DietSearchState(
-    val searchResults: List<DietCollection> = emptyList(),
-    val recentSearches: List<RecentMealSearch> = emptyList()
+    val searchResults: List<FoodItem> = emptyList(),
+    val recentSearches: List<RecentFoodSearch> = emptyList()
 )
 
 data class DateDietState(
@@ -44,8 +43,8 @@ data class DateDietState(
 )
 
 data class FavoriteState(
-    val favoriteMeals: List<FavoriteMeal> = emptyList(),
-    val selectedFavoriteForEditing: FavoriteMeal? = null,
+    val favoriteFoods: List<FavoriteFood> = emptyList(),
+    val selectedFavoriteForEditing: FavoriteFood? = null,
 
     val isFavoritesDialogVisible: Boolean = false,
 )
@@ -53,25 +52,18 @@ data class FavoriteState(
 @Stable
 data class CustomInputState(
     val name: String = "",
-    val weight: String = "",
+    val servingSize: String = "",
     val carbohydrate: String = "",
     val protein: String = "",
     val fat: String = "",
     val calculatedKcal: String = "0",
     val isFavorite: Boolean = false,
     val isDialogVisible: Boolean = false
-) {
-    val isConfirmEnabled: Boolean
-        get() = name.isNotBlank() &&
-                weight.isDigitsOnly() && weight.isNotEmpty() &&
-                carbohydrate.isDigitsOnly() && carbohydrate.isNotEmpty() &&
-                protein.isDigitsOnly() && protein.isNotEmpty() &&
-                fat.isDigitsOnly() && fat.isNotEmpty()
-}
+)
 
 data class DietDateSection(
     val date: LocalDate,
-    val meals: List<DietCollection>,
+    val meals: List<FoodItem>,
     val totalCalories: Int,
     val totalCarbs: Int = 0,
     val totalProteins: Int = 0,
