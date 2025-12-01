@@ -1,11 +1,11 @@
 package com.cases.carefull.data.di
 
 import com.cases.carefull.data.repository.CalendarRepositoryImpl
+import com.cases.carefull.data.repository.CareFullLocationRepositoryImpl
 import com.cases.carefull.data.repository.ChatbotRepositoryImpl
+import com.cases.carefull.data.repository.DiseaseRepositoryImpl
 import com.cases.carefull.data.repository.ExerciseRepositoryImpl
 import com.cases.carefull.data.repository.HospitalRepositoryImpl
-import com.cases.carefull.data.repository.LocationRepositoryImpl
-import com.cases.carefull.data.repository.DiseaseRepositoryImpl
 import com.cases.carefull.data.repository.MedicineRepositoryImpl
 import com.cases.carefull.data.repository.PoseRepositoryImpl
 import com.cases.carefull.data.repository.RankingRepositoryImpl
@@ -17,11 +17,11 @@ import com.cases.carefull.data.repository.diet.DietSearchRecordRepositoryImpl
 import com.cases.carefull.data.repository.diet.FavoriteFoodRepositoryImpl
 import com.cases.carefull.data.repository.diet.FoodSearchRepositoryImpl
 import com.cases.carefull.domain.repository.CalendarRepository
+import com.cases.carefull.domain.repository.CareFullLocationRepository
 import com.cases.carefull.domain.repository.ChatbotRepository
+import com.cases.carefull.domain.repository.DiseaseRepository
 import com.cases.carefull.domain.repository.ExerciseRepository
 import com.cases.carefull.domain.repository.HospitalRepository
-import com.cases.carefull.domain.repository.LocationRepository
-import com.cases.carefull.domain.repository.DiseaseRepository
 import com.cases.carefull.domain.repository.MedicineRepository
 import com.cases.carefull.domain.repository.PoseRepository
 import com.cases.carefull.domain.repository.RankingRepository
@@ -125,8 +125,8 @@ abstract class RepositoryModule {
     @Binds
     @ViewModelScoped
     abstract fun bindLocationRepository(
-        locationRepositoryImpl: LocationRepositoryImpl
-    ): LocationRepository
+        careFullLocationRepositoryImpl: CareFullLocationRepositoryImpl
+    ): CareFullLocationRepository
 
     @Binds
     @ViewModelScoped

@@ -10,7 +10,7 @@ import com.cases.carefull.data.datasource.HospitalDataSourceImpl
 import com.cases.carefull.data.datasource.KaKaoDataSource
 import com.cases.carefull.data.datasource.KakaoDataSourceImpl
 import com.cases.carefull.data.datasource.UserDataSource
-import com.cases.carefull.data.firestore.UserDataSourceImpl
+import com.cases.carefull.data.datasource.UserDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,6 +1,6 @@
 package com.cases.carefull.domain.model
 
-data class Location(
+data class CareFullLocation(
     val latitude: Double,
     val longitude: Double
 )
