@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface TodayWorkOutRepository {
     fun fetchTodayWorkOut(): Flow<DataResourceResult<ExerciseType>>
-    suspend fun getTodayWorkOutCount(
+    fun getTodayWorkOutCount(
         userId: String,
         exerciseType: ExerciseType
-    ): DataResourceResult<Int>
+    ): Flow<DataResourceResult<Int>>
 }

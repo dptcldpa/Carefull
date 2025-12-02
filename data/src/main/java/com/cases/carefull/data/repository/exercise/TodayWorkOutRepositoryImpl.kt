@@ -8,11 +8,10 @@ import com.cases.carefull.domain.model.exercise.ExerciseType
 import com.cases.carefull.domain.repository.exercise.TodayWorkOutRepository
 import com.cases.carefull.domain.util.DataResourceResult
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -57,15 +56,16 @@ class TodayWorkOutRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getTodayWorkOutCount(
+    override fun getTodayWorkOutCount(
         userId: String,
         exerciseType: ExerciseType
-    ): DataResourceResult<Int> =
-        runCatching {
+    ): Flow<DataResourceResult<Int>> =
+        callbackFlow {
             val zoneId = ZoneId.systemDefault()
             val todayStart = LocalDate.now().atStartOfDay(zoneId).toInstant()
             val tomorrowStart = LocalDate.now().plusDays(1).atStartOfDay(zoneId).toInstant()
-            val snapshot = db.collection(FirestoreCollection.WORK_OUT_COLLECTION)
+
+            val listenerRegistration = db.collection(FirestoreCollection.WORK_OUT_COLLECTION)
                 .whereEqualTo(FirestoreCollection.USER_ID, userId)
                 .whereEqualTo(FirestoreCollection.CATEGORY_ID, exerciseType.name)
                 .whereGreaterThanOrEqualTo(
@@ -73,13 +73,22 @@ class TodayWorkOutRepositoryImpl @Inject constructor(
                     Date.from(todayStart)
                 )
                 .whereLessThan(FirestoreCollection.UPDATED_AT, Date.from(tomorrowStart))
-                .get()
-                .await()
-            val totalCount =
-                snapshot.toObjects(ExerciseCollectionDto::class.java).sumOf { it.count }
+                .addSnapshotListener { snapshot, error ->
+                    val result = runCatching {
+                        if (error != null) throw error
 
-            DataResourceResult.Success(totalCount)
-        }.getOrElse { exception ->
-            DataResourceResult.Error(exception)
+                        val totalCount = snapshot?.toObjects(ExerciseCollectionDto::class.java)
+                            ?.sumOf { it.count } ?: 0
+
+                        totalCount
+                    }
+                    val response = result.fold(
+                        onSuccess = { DataResourceResult.Success(it) },
+                        onFailure = { DataResourceResult.Error(it) }
+                    )
+                    trySend(response)
+                }
+
+            awaitClose { listenerRegistration.remove() }
         }
 }

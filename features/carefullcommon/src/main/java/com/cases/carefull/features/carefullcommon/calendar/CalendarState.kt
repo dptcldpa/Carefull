@@ -10,6 +10,6 @@ data class CalendarState(
     val viewType: CalendarViewType = CalendarViewType.MONTHLY,
     val calendarDates: List<LocalDate>,
     val selectedDateInfo: String,
-    val markedDates: Set<LocalDate> = emptySet(),
+    val dietsRecordDates: Set<LocalDate> = emptySet(),
     val dailyExerciseCompletedDates: Set<LocalDate> = emptySet()
 )

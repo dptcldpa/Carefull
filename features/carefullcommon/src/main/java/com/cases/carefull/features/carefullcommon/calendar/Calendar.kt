@@ -52,6 +52,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cases.carefull.domain.model.CalendarViewType
+import com.cases.carefull.domain.model.DayOfWeekLabel
 import com.cases.carefull.features.carefullcommon.R
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -117,7 +118,6 @@ fun Calendar(
         }
     }
 }
-
 
 @Composable
 private fun CalendarHeader(
@@ -207,16 +207,16 @@ private fun WeekDays() {
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
     ) {
-        listOf("일", "월", "화", "수", "목", "금", "토").forEach { dayText ->
+        DayOfWeekLabel.entries.forEach { dayText ->
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = dayText,
+                    text = dayText.label,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
-                    color = if (dayText == "일") Color.Red else Color.Black
+                    color = if (dayText == DayOfWeekLabel.SUNDAY) Color.Red else Color.Black
                 )
             }
         }
@@ -225,7 +225,6 @@ private fun WeekDays() {
 }
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
-
 @Composable
 private fun CalendarGrid(
     calendarState: CalendarState,
@@ -330,7 +329,6 @@ private fun CalendarFooter(
     }
 }
 
-
 @Composable
 private fun RowScope.CalendarDayBox(
     date: LocalDate,
@@ -346,7 +344,7 @@ private fun RowScope.CalendarDayBox(
         val isVisibleMonth = YearMonth.from(date) == calendarState.displayedYearMonth
         val isToday = date == LocalDate.now()
 
-        val hasLoggedMeal = calendarState.markedDates.contains(date)
+        val hasLoggedMeal = calendarState.dietsRecordDates.contains(date)
         val hasCompletedDailyExercise = calendarState.dailyExerciseCompletedDates.contains(date)
 
         CalendarDay(
@@ -378,7 +376,7 @@ private fun rememberFakeCalendarState(
             selectedDate = initialDate,
             selectedDateInfo = "${initialDate.monthValue}월 ${initialDate.dayOfMonth}일",
             calendarDates = dates,
-            markedDates = setOf(initialDate.minusDays(2), initialDate.plusDays(3)),
+            dietsRecordDates = setOf(initialDate.minusDays(2), initialDate.plusDays(3)),
             dailyExerciseCompletedDates = setOf(initialDate.minusDays(2), initialDate.plusDays(4)),
         )
     }

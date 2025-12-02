@@ -7,32 +7,32 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 data class HomeUiState(
-	val selectedDate: LocalDate = LocalDate.now(),
-	val displayedYearMonth: YearMonth = YearMonth.now(),
-	val viewType: CalendarViewType = CalendarViewType.MONTHLY,
-	val calendarDates: List<LocalDate> = emptyList(),
-	val isYearMonthPickerVisible: Boolean = false,
-	val selectedDateInfo: String = "오늘",
-	
-	val isLoading: Boolean = false,
-	val isError: Boolean = false,
-	val dailyExercise: List<ExerciseType> = emptyList(),
+    val isLoading: Boolean = false,
+    val isError: Boolean = false,
+    val errorMessage: String? = null,
 
-	val todayTotalCalories: Int = 0,
-	val movementLevelMetabolism: Int = 0,
+    val todayWorkOut: ExerciseType? = null,
+    val todayWorkOutCount: Int = 0,
+    val todayTotalCalories: Int = 0,
+    val targetCalories: Int = 0,
 
-	val loggedMealDates: Set<LocalDate> = emptySet(),
+    val selectedDateTotalCalories: Int = 0,
+    val selectedDateWorkOutRecords: List<ExerciseRecordForDate> = emptyList(),
 
-	val dailyExerciseCompletedDates: Set<LocalDate> = emptySet(),
-	val todayExerciseCount: Int = 0,
-	val hasLoggedMealToday: Boolean = false,
-	
-	val selectedDateExerciseRecords: List<ExerciseRecordForDate> = emptyList(),
-	val selectedDateTotalCalories: Int = 0,
-	
-	val pagerTargetPage: Int = START_PAGE
+    val isYearMonthPickerVisible: Boolean = false,
+    val pagerTargetPage: Int = START_PAGE,
+
+    //CalendarState
+    val selectedDate: LocalDate = LocalDate.now(),
+    val selectedYearMonth: YearMonth = YearMonth.now(),
+    val calendarViewType: CalendarViewType = CalendarViewType.MONTHLY,
+    val calendarDates: List<LocalDate> = emptyList(),
+    val selectedDateInfo: String = "오늘",
+    val dietsRecordDates: Set<LocalDate> = emptySet(),
+    val dailyExerciseCompletedDates: Set<LocalDate> = emptySet()
+
 ) {
-	companion object {
-		const val START_PAGE = Int.MAX_VALUE / 2
-	}
+    companion object {
+        const val START_PAGE = Int.MAX_VALUE / 2
+    }
 }
