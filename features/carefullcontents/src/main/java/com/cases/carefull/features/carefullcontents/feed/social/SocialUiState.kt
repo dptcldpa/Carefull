@@ -1,8 +1,8 @@
 package com.cases.carefull.features.carefullcontents.feed.social
 
-import com.cases.carefull.domain.model.Comment
-import com.cases.carefull.domain.model.Post
-import com.cases.carefull.domain.model.SocialCategory
+import com.cases.carefull.domain.model.feed.Comment
+import com.cases.carefull.domain.model.feed.Post
+import com.cases.carefull.domain.model.feed.SocialCategory
 
 data class SocialListUiState(
     val isLoading: Boolean = false,

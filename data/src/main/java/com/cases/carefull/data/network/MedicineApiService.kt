@@ -1,6 +1,6 @@
 package com.cases.carefull.data.network
 
-import com.cases.carefull.data.dto.MedicineResponseDTO
+import com.cases.carefull.data.dto.diagnosis.MedicineResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -13,5 +13,5 @@ interface MedicineApiService {
         @Query("pageNo") pageNo: Int = 1,
         @Query("numOfRows") numOfRows: Int = 20,
         @Query("type") type: String = "json"
-    ): MedicineResponseDTO
+    ): MedicineResponseDto
 }

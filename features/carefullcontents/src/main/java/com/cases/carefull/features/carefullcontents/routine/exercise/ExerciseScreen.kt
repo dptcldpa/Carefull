@@ -39,9 +39,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.cases.carefull.domain.model.exercise.ExerciseState
-import com.cases.carefull.domain.model.exercise.ExerciseStatistics
-import com.cases.carefull.domain.model.exercise.ExerciseType
+import com.cases.carefull.domain.model.routine.exercise.ExerciseState
+import com.cases.carefull.domain.model.routine.exercise.ExerciseStatistics
+import com.cases.carefull.domain.model.routine.exercise.ExerciseType
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme

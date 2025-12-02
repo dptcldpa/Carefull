@@ -1,7 +1,7 @@
 package com.cases.carefull.data.network
 
-import com.cases.carefull.data.dto.ChatbotRequestDto
-import com.cases.carefull.data.dto.ChatbotResponseDto
+import com.cases.carefull.data.dto.diagnosis.ChatbotRequestDto
+import com.cases.carefull.data.dto.diagnosis.ChatbotResponseDto
 import retrofit2.http.Body
 import retrofit2.http.POST
 

@@ -42,8 +42,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.toRoute
-import com.cases.carefull.domain.model.exercise.ExerciseState
-import com.cases.carefull.domain.model.exercise.ExerciseType
+import com.cases.carefull.domain.model.routine.exercise.ExerciseState
+import com.cases.carefull.domain.model.routine.exercise.ExerciseType
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme

@@ -1,13 +1,13 @@
 package com.cases.carefull.di
 
-import com.cases.carefull.domain.repository.MedicineRepository
-import com.cases.carefull.domain.repository.diet.BodyStatsRepository
-import com.cases.carefull.domain.usecase.bmr.GetSavedBmrUseCase
-import com.cases.carefull.domain.usecase.MedicineSearchUseCase
-import com.cases.carefull.domain.usecase.bmr.SaveBmrUseCase
-import com.cases.carefull.domain.usecase.exercise.CalculateWorkOutStatsUseCase
-import com.cases.carefull.domain.usecase.exercise.GetWorkOutAnalyzerUseCase
-import com.cases.carefull.domain.usecase.exercise.WorkOutCounterUseCase
+import com.cases.carefull.domain.repository.diagnosis.MedicineRepository
+import com.cases.carefull.domain.repository.routine.diet.BodyStatsRepository
+import com.cases.carefull.domain.usecase.routine.diet.GetSavedBmrUseCase
+import com.cases.carefull.domain.usecase.diagnosis.MedicineSearchUseCase
+import com.cases.carefull.domain.usecase.routine.diet.SaveBmrUseCase
+import com.cases.carefull.domain.usecase.routine.exercise.CalculateWorkOutStatsUseCase
+import com.cases.carefull.domain.usecase.routine.exercise.GetWorkOutAnalyzerUseCase
+import com.cases.carefull.domain.usecase.routine.exercise.WorkOutCounterUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

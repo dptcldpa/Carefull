@@ -1,8 +1,8 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
-import com.cases.carefull.domain.model.diet.Bmr
-import com.cases.carefull.domain.model.diet.BmrMovementLevel
-import com.cases.carefull.domain.model.diet.Gender
+import com.cases.carefull.domain.model.routine.diet.Bmr
+import com.cases.carefull.domain.model.routine.diet.BmrMovementLevel
+import com.cases.carefull.domain.model.routine.diet.Gender
 
 data class BmrUiState(
     val gender: Gender = Gender.MALE,

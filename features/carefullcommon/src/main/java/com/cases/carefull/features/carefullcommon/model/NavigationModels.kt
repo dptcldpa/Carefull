@@ -2,8 +2,8 @@ package com.cases.carefull.features.carefullcommon.model
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.cases.carefull.domain.model.NavType
-import com.cases.carefull.domain.model.ScreenConfig
+import com.cases.carefull.domain.model.common.NavType
+import com.cases.carefull.domain.model.common.ScreenConfig
 import com.cases.carefull.features.carefullcommon.navigation.Route
 
 

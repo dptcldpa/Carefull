@@ -1,7 +1,7 @@
 package com.cases.carefull.features.carefullcontents.routine.exercise
 
 import androidx.annotation.StringRes
-import com.cases.carefull.domain.model.exercise.ExerciseType
+import com.cases.carefull.domain.model.routine.exercise.ExerciseType
 import com.cases.carefull.features.carefullcommon.R
 
 val ExerciseType.descriptionResId: Int

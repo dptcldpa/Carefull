@@ -3,7 +3,7 @@ package com.cases.carefull.features.carefullmainui.screen.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cases.carefull.domain.model.UserInfo
-import com.cases.carefull.domain.repository.UserRepository
+import com.cases.carefull.domain.repository.account.UserRepository
 import com.cases.carefull.domain.util.DataResourceResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

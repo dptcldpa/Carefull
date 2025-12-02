@@ -51,10 +51,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.toRoute
-import com.cases.carefull.domain.model.diet.FavoriteFood
-import com.cases.carefull.domain.model.diet.FoodDataInputType
-import com.cases.carefull.domain.model.diet.FoodItem
-import com.cases.carefull.domain.model.diet.RecentFoodSearch
+import com.cases.carefull.domain.model.routine.diet.FavoriteFood
+import com.cases.carefull.domain.model.routine.diet.FoodDataInputType
+import com.cases.carefull.domain.model.routine.diet.FoodItem
+import com.cases.carefull.domain.model.routine.diet.RecentFoodSearch
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.components.CommonAlertDialog
 import com.cases.carefull.features.carefullcommon.components.CommonNumberOutLinedTextField

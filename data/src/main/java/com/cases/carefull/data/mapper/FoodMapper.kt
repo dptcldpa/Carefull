@@ -1,8 +1,8 @@
 package com.cases.carefull.data.mapper
 
-import com.cases.carefull.data.dto.diet.FoodItemDto
-import com.cases.carefull.domain.model.diet.FoodItem
-import com.cases.carefull.domain.model.diet.MealType
+import com.cases.carefull.data.dto.routine.FoodItemDto
+import com.cases.carefull.domain.model.routine.diet.FoodItem
+import com.cases.carefull.domain.model.routine.diet.MealType
 import com.cases.carefull.domain.util.toSafeInt
 
 fun FoodItemDto.toDomain(): FoodItem {

@@ -1,8 +1,8 @@
 package com.cases.carefull.features.carefullcontents.routine.exercise
 
-import com.cases.carefull.domain.model.exercise.ExerciseState
-import com.cases.carefull.domain.model.exercise.ExerciseType
-import com.cases.carefull.domain.model.exercise.Pose
+import com.cases.carefull.domain.model.routine.exercise.ExerciseState
+import com.cases.carefull.domain.model.routine.exercise.ExerciseType
+import com.cases.carefull.domain.model.routine.exercise.Pose
 import java.time.LocalDate
 
 data class ExerciseUiState(

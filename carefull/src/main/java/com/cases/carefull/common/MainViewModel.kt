@@ -9,8 +9,8 @@ import androidx.compose.material.icons.filled.LocalHospital
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
-import com.cases.carefull.domain.model.NavType
-import com.cases.carefull.domain.model.ScreenConfig
+import com.cases.carefull.domain.model.common.NavType
+import com.cases.carefull.domain.model.common.ScreenConfig
 import com.cases.carefull.features.carefullcommon.model.AppNavigationProvider
 import com.cases.carefull.features.carefullcommon.model.MainUiState
 import com.cases.carefull.features.carefullcommon.model.NavItem

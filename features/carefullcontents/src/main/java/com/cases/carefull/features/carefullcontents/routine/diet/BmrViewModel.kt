@@ -2,11 +2,11 @@ package com.cases.carefull.features.carefullcontents.routine.diet
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cases.carefull.domain.model.diet.Bmr
-import com.cases.carefull.domain.model.diet.BmrMovementLevel
-import com.cases.carefull.domain.model.diet.Gender
-import com.cases.carefull.domain.usecase.bmr.GetSavedBmrUseCase
-import com.cases.carefull.domain.usecase.bmr.SaveBmrUseCase
+import com.cases.carefull.domain.model.routine.diet.Bmr
+import com.cases.carefull.domain.model.routine.diet.BmrMovementLevel
+import com.cases.carefull.domain.model.routine.diet.Gender
+import com.cases.carefull.domain.usecase.routine.diet.GetSavedBmrUseCase
+import com.cases.carefull.domain.usecase.routine.diet.SaveBmrUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow

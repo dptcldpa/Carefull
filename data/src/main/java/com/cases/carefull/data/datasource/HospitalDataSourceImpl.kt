@@ -1,8 +1,8 @@
 package com.cases.carefull.data.datasource
 
 import com.cases.carefull.data.di.HospitalApiKey
-import com.cases.carefull.data.dto.HospitalExcellItem
-import com.cases.carefull.data.dto.HospitalItemDto
+import com.cases.carefull.data.dto.diagnosis.HospitalExcellItem
+import com.cases.carefull.data.dto.diagnosis.HospitalItemDto
 import com.cases.carefull.data.network.HospitalApiService
 import javax.inject.Inject
 

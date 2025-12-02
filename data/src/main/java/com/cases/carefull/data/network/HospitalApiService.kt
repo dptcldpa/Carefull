@@ -1,7 +1,7 @@
 package com.cases.carefull.data.network
 
-import com.cases.carefull.data.dto.HospitalExcellResponseDto
-import com.cases.carefull.data.dto.HospitalListResponseDto
+import com.cases.carefull.data.dto.diagnosis.HospitalExcellResponseDto
+import com.cases.carefull.data.dto.diagnosis.HospitalListResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 

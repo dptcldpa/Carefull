@@ -62,8 +62,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import com.cases.carefull.domain.model.Comment
-import com.cases.carefull.domain.model.Post
+import com.cases.carefull.domain.model.feed.Comment
+import com.cases.carefull.domain.model.feed.Post
 import com.cases.carefull.features.carefullcommon.components.CommonAlertDialog
 import com.cases.carefull.features.carefullcommon.components.CommonTextOutLinedTextField
 import com.cases.carefull.features.carefullcommon.components.CustomTopAppBar

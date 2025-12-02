@@ -44,8 +44,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.cases.carefull.domain.model.CalendarViewType
-import com.cases.carefull.domain.model.exercise.ExerciseRecordForDate
+import com.cases.carefull.domain.model.common.CalendarViewType
+import com.cases.carefull.domain.model.routine.exercise.ExerciseRecordForDate
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.calendar.Calendar
 import com.cases.carefull.features.carefullcommon.calendar.CalendarState

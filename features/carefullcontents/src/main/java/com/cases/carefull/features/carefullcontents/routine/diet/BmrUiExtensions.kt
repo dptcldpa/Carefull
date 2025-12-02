@@ -1,7 +1,7 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
 import androidx.annotation.StringRes
-import com.cases.carefull.domain.model.diet.BmrMovementLevel
+import com.cases.carefull.domain.model.routine.diet.BmrMovementLevel
 import com.cases.carefull.features.carefullcommon.R
 
 val BmrMovementLevel.descriptionResId: Int

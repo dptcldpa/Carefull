@@ -1,7 +1,7 @@
 package com.cases.carefull.data.mapper
 
 import android.location.Location
-import com.cases.carefull.data.dto.HospitalItemDto
+import com.cases.carefull.data.dto.diagnosis.HospitalItemDto
 import com.cases.carefull.domain.model.Hospital
 
 fun HospitalItemDto.toDomain(

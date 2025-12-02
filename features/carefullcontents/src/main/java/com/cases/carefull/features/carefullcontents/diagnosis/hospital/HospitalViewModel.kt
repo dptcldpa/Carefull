@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.cases.carefull.domain.model.CareFullLocation
 import com.cases.carefull.domain.model.DepartmentCodeItem
 import com.cases.carefull.domain.model.Hospital
-import com.cases.carefull.domain.repository.CareFullLocationRepository
-import com.cases.carefull.domain.repository.HospitalRepository
+import com.cases.carefull.domain.repository.diagnosis.CareFullLocationRepository
+import com.cases.carefull.domain.repository.diagnosis.HospitalRepository
 import com.cases.carefull.domain.util.DataResourceResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job

@@ -46,7 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import com.cases.carefull.domain.model.SocialCategory
+import com.cases.carefull.domain.model.feed.SocialCategory
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.components.CustomTopAppBar
 

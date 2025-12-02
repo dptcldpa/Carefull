@@ -51,8 +51,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cases.carefull.domain.model.CalendarViewType
-import com.cases.carefull.domain.model.DayOfWeekLabel
+import com.cases.carefull.domain.model.common.CalendarViewType
+import com.cases.carefull.domain.model.common.DayOfWeekLabel
 import com.cases.carefull.features.carefullcommon.R
 import java.time.DayOfWeek
 import java.time.LocalDate

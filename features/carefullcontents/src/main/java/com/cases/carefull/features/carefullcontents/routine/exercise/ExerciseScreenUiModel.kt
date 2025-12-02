@@ -1,8 +1,8 @@
 package com.cases.carefull.features.carefullcontents.routine.exercise
 
 import androidx.annotation.DrawableRes
-import com.cases.carefull.domain.model.exercise.ExerciseStatistics
-import com.cases.carefull.domain.model.exercise.ExerciseType
+import com.cases.carefull.domain.model.routine.exercise.ExerciseStatistics
+import com.cases.carefull.domain.model.routine.exercise.ExerciseType
 import com.cases.carefull.features.carefullcommon.R
 
 data class ExerciseUiModel(

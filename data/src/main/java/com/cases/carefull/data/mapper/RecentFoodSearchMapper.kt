@@ -1,7 +1,7 @@
 package com.cases.carefull.data.mapper
 
 import com.cases.carefull.data.entity.RecentFoodSearchEntity
-import com.cases.carefull.domain.model.diet.RecentFoodSearch
+import com.cases.carefull.domain.model.routine.diet.RecentFoodSearch
 
 fun RecentFoodSearchEntity.toDomain(): RecentFoodSearch {
     return RecentFoodSearch(
