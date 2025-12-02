@@ -2,8 +2,8 @@ package com.cases.carefull.features.carefullcontents.feed.ranking
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cases.carefull.domain.model.exercise.ExerciseType
-import com.cases.carefull.domain.repository.RankingRepository
+import com.cases.carefull.domain.model.routine.exercise.ExerciseType
+import com.cases.carefull.domain.repository.feed.RankingRepository
 import com.cases.carefull.domain.util.DataResourceResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject

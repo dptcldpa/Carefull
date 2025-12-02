@@ -2,8 +2,8 @@ package com.cases.carefull.features.carefullcontents.feed.social
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cases.carefull.domain.model.SocialCategory
-import com.cases.carefull.domain.repository.SocialRepository
+import com.cases.carefull.domain.model.feed.SocialCategory
+import com.cases.carefull.domain.repository.feed.SocialRepository
 import com.cases.carefull.domain.util.BaseResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

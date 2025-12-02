@@ -1,6 +1,6 @@
 package com.cases.carefull.data.datasource
 
-import com.cases.carefull.data.dto.DiseaseResponseDto
+import com.cases.carefull.data.dto.diagnosis.DiseaseResponseDto
 
 interface DiseaseDataSource {
     suspend fun getDiseaseList(): DiseaseResponseDto

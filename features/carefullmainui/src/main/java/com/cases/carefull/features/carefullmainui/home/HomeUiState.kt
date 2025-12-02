@@ -1,8 +1,8 @@
 package com.cases.carefull.features.carefullmainui.home
 
-import com.cases.carefull.domain.model.CalendarViewType
-import com.cases.carefull.domain.model.exercise.ExerciseRecordForDate
-import com.cases.carefull.domain.model.exercise.ExerciseType
+import com.cases.carefull.domain.model.common.CalendarViewType
+import com.cases.carefull.domain.model.routine.exercise.ExerciseRecordForDate
+import com.cases.carefull.domain.model.routine.exercise.ExerciseType
 import java.time.LocalDate
 import java.time.YearMonth
 

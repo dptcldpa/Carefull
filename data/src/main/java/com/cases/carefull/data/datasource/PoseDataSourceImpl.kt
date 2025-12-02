@@ -5,7 +5,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.mlkit.vision.MlKitAnalyzer
 import androidx.core.content.ContextCompat
 import com.cases.carefull.data.mapper.toDomainPose
-import com.cases.carefull.domain.model.exercise.AnalysisState
+import com.cases.carefull.domain.model.routine.exercise.AnalysisState
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetector
 import com.google.mlkit.vision.face.FaceDetectorOptions

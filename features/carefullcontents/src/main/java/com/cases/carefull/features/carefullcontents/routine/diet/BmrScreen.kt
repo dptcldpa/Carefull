@@ -45,8 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.cases.carefull.domain.model.diet.BmrMovementLevel
-import com.cases.carefull.domain.model.diet.Gender
+import com.cases.carefull.domain.model.routine.diet.BmrMovementLevel
+import com.cases.carefull.domain.model.routine.diet.Gender
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 import kotlinx.coroutines.flow.collectLatest

@@ -1,7 +1,7 @@
 package com.cases.carefull.features.carefullcommon.navigation
 
-import com.cases.carefull.domain.model.NavType
-import com.cases.carefull.domain.model.ScreenConfig
+import com.cases.carefull.domain.model.common.NavType
+import com.cases.carefull.domain.model.common.ScreenConfig
 import com.cases.carefull.features.carefullcommon.model.AppNavigationProvider
 import com.cases.carefull.features.carefullcommon.model.NavItem
 import jakarta.inject.Inject

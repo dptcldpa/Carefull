@@ -1,8 +1,8 @@
 package com.cases.carefull.data.mapper
 
-import com.cases.carefull.domain.model.exercise.Landmark
-import com.cases.carefull.domain.model.exercise.Pose
-import com.cases.carefull.domain.model.exercise.Position
+import com.cases.carefull.domain.model.routine.exercise.Landmark
+import com.cases.carefull.domain.model.routine.exercise.Pose
+import com.cases.carefull.domain.model.routine.exercise.Position
 import com.google.mlkit.vision.pose.Pose as MlKitPose
 
 fun MlKitPose.toDomainPose(): Pose {

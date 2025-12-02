@@ -1,10 +1,10 @@
 package com.cases.carefull.data.mapper
 
-import com.cases.carefull.data.dto.CommentDto
-import com.cases.carefull.data.dto.PostDto
-import com.cases.carefull.domain.model.Comment
-import com.cases.carefull.domain.model.Post
-import com.cases.carefull.domain.model.SocialCategory
+import com.cases.carefull.data.dto.feed.CommentDto
+import com.cases.carefull.data.dto.feed.PostDto
+import com.cases.carefull.domain.model.feed.Comment
+import com.cases.carefull.domain.model.feed.Post
+import com.cases.carefull.domain.model.feed.SocialCategory
 import java.util.Date
 
 

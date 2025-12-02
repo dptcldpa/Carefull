@@ -3,7 +3,7 @@ package com.cases.carefull.chatbot
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cases.carefull.domain.model.SuggestedAction
-import com.cases.carefull.domain.repository.ChatbotRepository
+import com.cases.carefull.domain.repository.diagnosis.ChatbotRepository
 import com.cases.carefull.features.carefullcontents.diagnosis.chatbot.ChatMessage
 import com.cases.carefull.features.carefullcontents.diagnosis.chatbot.ChatNavigationEvent
 import com.cases.carefull.features.carefullcontents.diagnosis.chatbot.ChatbotUiState

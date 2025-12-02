@@ -1,7 +1,7 @@
 package com.cases.carefull.data.datasource
 
-import com.cases.carefull.data.dto.ChatbotRequestDto
-import com.cases.carefull.data.dto.StructuredContentDto
+import com.cases.carefull.data.dto.diagnosis.ChatbotRequestDto
+import com.cases.carefull.data.dto.diagnosis.StructuredContentDto
 import com.cases.carefull.data.network.ChatbotApiService
 import com.google.gson.Gson
 import javax.inject.Inject

@@ -45,8 +45,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import com.cases.carefull.domain.model.Post
-import com.cases.carefull.domain.model.SocialCategory
+import com.cases.carefull.domain.model.feed.Post
+import com.cases.carefull.domain.model.feed.SocialCategory
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.navigation.FeedRoute
 import java.text.SimpleDateFormat

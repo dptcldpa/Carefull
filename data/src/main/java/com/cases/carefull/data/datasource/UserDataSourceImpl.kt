@@ -1,10 +1,9 @@
 package com.cases.carefull.data.datasource
 
-import com.cases.carefull.data.dto.UserDTO
+import com.cases.carefull.data.dto.account.UserDto
 import com.cases.carefull.data.mapper.toDTO
 import com.cases.carefull.data.mapper.toDomain
 import com.cases.carefull.domain.model.UserInfo
-import com.cases.carefull.domain.util.DataResourceResult
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
@@ -26,7 +25,7 @@ class UserDataSourceImpl @Inject constructor() : UserDataSource {
 
     override suspend fun readUser(userId: String): UserInfo? {
         val document = db.collection("user_collection").document(userId).get().await()
-        val userDto = document.toObject(UserDTO::class.java)
+        val userDto = document.toObject(UserDto::class.java)
         return userDto?.toDomain(id = document.id)
     }
 

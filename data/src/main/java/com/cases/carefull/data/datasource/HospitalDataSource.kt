@@ -1,7 +1,7 @@
 package com.cases.carefull.data.datasource
 
-import com.cases.carefull.data.dto.HospitalExcellItem
-import com.cases.carefull.data.dto.HospitalItemDto
+import com.cases.carefull.data.dto.diagnosis.HospitalExcellItem
+import com.cases.carefull.data.dto.diagnosis.HospitalItemDto
 
 interface HospitalDataSource {
     // 병원 목록

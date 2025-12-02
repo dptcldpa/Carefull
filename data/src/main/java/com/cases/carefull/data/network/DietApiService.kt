@@ -1,6 +1,6 @@
 package com.cases.carefull.data.network
 
-import com.cases.carefull.data.dto.diet.DietResponseDTO
+import com.cases.carefull.data.dto.diet.DietResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -12,5 +12,5 @@ interface DietApiService {
         @Query("numOfRows") numOfRows: Int = 20,
         @Query("type") type: String = "json",
         @Query("FOOD_NM_KR") query: String
-    ): DietResponseDTO
+    ): DietResponseDto
 }

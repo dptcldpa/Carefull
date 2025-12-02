@@ -1,6 +1,6 @@
 package com.cases.carefull.features.carefullcommon.calendar
 
-import com.cases.carefull.domain.model.CalendarViewType
+import com.cases.carefull.domain.model.common.CalendarViewType
 import java.time.LocalDate
 import java.time.YearMonth
 

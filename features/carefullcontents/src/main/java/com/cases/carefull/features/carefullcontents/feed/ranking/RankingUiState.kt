@@ -1,8 +1,8 @@
 package com.cases.carefull.features.carefullcontents.feed.ranking
 
-import com.cases.carefull.domain.model.MyRankInfo
-import com.cases.carefull.domain.model.Ranker
-import com.cases.carefull.domain.model.exercise.ExerciseType
+import com.cases.carefull.domain.model.feed.MyRankInfo
+import com.cases.carefull.domain.model.feed.Ranker
+import com.cases.carefull.domain.model.routine.exercise.ExerciseType
 
 data class RankingUiState (
 	val isLoading: Boolean = true,

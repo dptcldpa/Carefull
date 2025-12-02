@@ -1,7 +1,7 @@
 package com.cases.carefull.data.mapper
 
-import com.cases.carefull.data.dto.ContentItem
-import com.cases.carefull.data.dto.DiseaseResponseDto
+import com.cases.carefull.data.dto.diagnosis.ContentItem
+import com.cases.carefull.data.dto.diagnosis.DiseaseResponseDto
 import com.cases.carefull.domain.model.Disease
 import com.cases.carefull.domain.model.DiseaseContent
 

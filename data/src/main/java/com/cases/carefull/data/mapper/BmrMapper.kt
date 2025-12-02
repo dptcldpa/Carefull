@@ -1,7 +1,7 @@
 package com.cases.carefull.data.mapper
 
 import com.cases.carefull.data.entity.BmrEntity
-import com.cases.carefull.domain.model.diet.Bmr
+import com.cases.carefull.domain.model.routine.diet.Bmr
 
 fun BmrEntity.toDomain(): Bmr {
     return Bmr(

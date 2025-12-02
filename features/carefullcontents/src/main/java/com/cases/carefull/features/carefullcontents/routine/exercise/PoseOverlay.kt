@@ -9,9 +9,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PointMode
 import androidx.compose.ui.tooling.preview.Preview
-import com.cases.carefull.domain.model.exercise.Landmark
-import com.cases.carefull.domain.model.exercise.Pose
-import com.cases.carefull.domain.model.exercise.Position
+import com.cases.carefull.domain.model.routine.exercise.Landmark
+import com.cases.carefull.domain.model.routine.exercise.Pose
+import com.cases.carefull.domain.model.routine.exercise.Position
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 import com.google.mlkit.vision.pose.PoseLandmark
 

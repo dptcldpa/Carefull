@@ -1,6 +1,6 @@
 package com.cases.carefull.features.carefullcommon.navigation
 
-import com.cases.carefull.domain.model.exercise.ExerciseType
+import com.cases.carefull.domain.model.routine.exercise.ExerciseType
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,7 +1,7 @@
 package com.cases.carefull.data.mapper
 
 import com.cases.carefull.data.entity.FavoriteFoodEntity
-import com.cases.carefull.domain.model.diet.FavoriteFood
+import com.cases.carefull.domain.model.routine.diet.FavoriteFood
 
 fun FavoriteFoodEntity.toDomain(): FavoriteFood {
     return FavoriteFood(

@@ -2,15 +2,15 @@ package com.cases.carefull.features.carefullmainui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cases.carefull.domain.model.CalendarViewType
-import com.cases.carefull.domain.model.diet.FoodItem
-import com.cases.carefull.domain.model.exercise.ExerciseCollection
-import com.cases.carefull.domain.model.exercise.ExerciseRecordForDate
-import com.cases.carefull.domain.repository.CalendarRepository
-import com.cases.carefull.domain.repository.diet.DietRecordRepository
-import com.cases.carefull.domain.repository.exercise.TodayWorkOutRepository
-import com.cases.carefull.domain.repository.exercise.WorkOutRecordRepository
-import com.cases.carefull.domain.usecase.bmr.GetSavedBmrUseCase
+import com.cases.carefull.domain.model.common.CalendarViewType
+import com.cases.carefull.domain.model.routine.diet.FoodItem
+import com.cases.carefull.domain.model.routine.exercise.ExerciseCollection
+import com.cases.carefull.domain.model.routine.exercise.ExerciseRecordForDate
+import com.cases.carefull.domain.repository.common.CalendarRepository
+import com.cases.carefull.domain.repository.routine.diet.DietRecordRepository
+import com.cases.carefull.domain.repository.routine.exercise.TodayWorkOutRepository
+import com.cases.carefull.domain.repository.routine.exercise.WorkOutRecordRepository
+import com.cases.carefull.domain.usecase.routine.diet.GetSavedBmrUseCase
 import com.cases.carefull.domain.util.DataResourceResult
 import com.cases.carefull.features.carefullmainui.home.HomeUiState.Companion.START_PAGE
 import dagger.hilt.android.lifecycle.HiltViewModel

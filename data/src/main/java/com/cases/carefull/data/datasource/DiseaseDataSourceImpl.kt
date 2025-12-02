@@ -1,7 +1,7 @@
 package com.cases.carefull.data.datasource
 
 import com.cases.carefull.data.di.DiseaseApiKey
-import com.cases.carefull.data.dto.DiseaseResponseDto
+import com.cases.carefull.data.dto.diagnosis.DiseaseResponseDto
 import com.cases.carefull.data.network.DiseaseApiService
 import javax.inject.Inject
 

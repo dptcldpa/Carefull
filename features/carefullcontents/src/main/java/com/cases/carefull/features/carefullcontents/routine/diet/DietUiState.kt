@@ -1,9 +1,9 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
 import androidx.compose.runtime.Stable
-import com.cases.carefull.domain.model.diet.FavoriteFood
-import com.cases.carefull.domain.model.diet.FoodItem
-import com.cases.carefull.domain.model.diet.RecentFoodSearch
+import com.cases.carefull.domain.model.routine.diet.FavoriteFood
+import com.cases.carefull.domain.model.routine.diet.FoodItem
+import com.cases.carefull.domain.model.routine.diet.RecentFoodSearch
 import java.time.LocalDate
 import java.time.YearMonth
 

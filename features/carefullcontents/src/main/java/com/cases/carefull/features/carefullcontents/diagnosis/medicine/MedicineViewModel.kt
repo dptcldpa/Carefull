@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cases.carefull.domain.model.MedicineItem
-import com.cases.carefull.domain.usecase.MedicineSearchUseCase
+import com.cases.carefull.domain.usecase.diagnosis.MedicineSearchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
