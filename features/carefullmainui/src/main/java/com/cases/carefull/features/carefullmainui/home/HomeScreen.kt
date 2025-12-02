@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +45,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.cases.carefull.domain.model.CalendarViewType
+import com.cases.carefull.domain.model.exercise.ExerciseRecordForDate
+import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.calendar.Calendar
 import com.cases.carefull.features.carefullcommon.calendar.CalendarState
 import com.cases.carefull.features.carefullcommon.components.ComposableToast
@@ -55,298 +58,311 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
-	viewModel: HomeViewModel = hiltViewModel(),
-	navController: NavController
+    viewModel: HomeViewModel = hiltViewModel(),
+    navController: NavController
 ) {
-	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-	val todayExercise = uiState.dailyExercise.firstOrNull()
-	val pagerState = rememberPagerState(
-		initialPage = START_PAGE,
-		pageCount = { Int.MAX_VALUE }
-	)
-	val calendarState = CalendarState(
-		selectedDate = uiState.selectedDate,
-		displayedYearMonth = uiState.displayedYearMonth,
-		viewType = uiState.viewType,
-		calendarDates = uiState.calendarDates,
-		selectedDateInfo = uiState.selectedDateInfo,
-		markedDates = uiState.loggedMealDates,
-		dailyExerciseCompletedDates = uiState.dailyExerciseCompletedDates
-	)
-	val context = LocalContext.current
-	val activity = (context as? Activity)
-	val scope = rememberCoroutineScope()
-	var backPressedOnce by remember { mutableStateOf(false) }
-	
-	ComposableToast(toastEvent = viewModel.toastEvent)
-	
-	BackHandler(enabled = true) {
-		if (backPressedOnce) {
-			activity?.finish()
-		} else {
-			backPressedOnce = true
-			viewModel.oneMoreTouchExitToast()
-			scope.launch {
-				delay(2000L)
-				backPressedOnce = false
-			}
-		}
-	}
-	
-	LaunchedEffect(pagerState) {
-		snapshotFlow { pagerState.settledPage }
-			.distinctUntilChanged()
-			.collect { page ->
-				viewModel.onPageScrolled(page)
-			}
-	}
-	
-	LaunchedEffect(uiState.pagerTargetPage) {
-		if (pagerState.currentPage != uiState.pagerTargetPage) {
-			pagerState.animateScrollToPage(uiState.pagerTargetPage)
-		}
-	}
-	
-	YearMonthPickerDialog(
-		isVisible = uiState.isYearMonthPickerVisible,
-		initialYearMonth = uiState.displayedYearMonth,
-		onDismissRequest = {
-			viewModel.hideYearMonthPicker()
-		},
-		onYearMonthSelected = { selectedYearMonth ->
-			viewModel.onYearMonthSelected(selectedYearMonth)
-		}
-	)
-	
-	Column(
-		modifier = Modifier.fillMaxSize()
-	) {
-		Calendar(
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 16.dp, vertical = 8.dp),
-			calendarState = calendarState,
-			pagerState = pagerState,
-			onDateClick = { date ->
-				viewModel.onDateSelected(date)
-			},
-			onToggleViewType = {
-				viewModel.onToggleViewType()
-			},
-			onMonthPickerClick = {
-				viewModel.showYearMonthPicker()
-			},
-			onGoToToday = {
-				viewModel.onGoToToday()
-			},
-			calendarFooterContent = {
-				val shouldShowDetails = uiState.viewType == CalendarViewType.MONTHLY &&
-						(uiState.selectedDateExerciseRecords.isNotEmpty() || uiState.selectedDateTotalCalories > 0)
-				
-				if (shouldShowDetails) {
-					if (uiState.selectedDateExerciseRecords.isNotEmpty()) {
-						Column {
-							Text(
-								"운동 기록",
-								fontWeight = FontWeight.Bold,
-								style = MaterialTheme.typography.titleSmall
-							)
-							Spacer(modifier = Modifier.height(4.dp))
-							uiState.selectedDateExerciseRecords.forEach { record ->
-								Row(
-									modifier = Modifier.fillMaxWidth(),
-									horizontalArrangement = Arrangement.SpaceBetween,
-									verticalAlignment = Alignment.CenterVertically
-								) {
-									Text(
-										record.name,
-										style = MaterialTheme.typography.bodyMedium
-									)
-									Text(
-										"${record.count}회",
-										style = MaterialTheme.typography.bodyMedium,
-										color = Color.Gray
-									)
-								}
-							}
-						}
-					}
-					// 식단 기록 섹션
-					if (uiState.selectedDateTotalCalories > 0) {
-						Column {
-							Text(
-								"식단 기록",
-								fontWeight = FontWeight.Bold,
-								style = MaterialTheme.typography.titleSmall
-							)
-							Spacer(modifier = Modifier.height(4.dp))
-							Row(
-								modifier = Modifier.fillMaxWidth(),
-								horizontalArrangement = Arrangement.SpaceBetween,
-								verticalAlignment = Alignment.CenterVertically
-							) {
-								Text(
-									"총 섭취 칼로리",
-									style = MaterialTheme.typography.bodyMedium
-								)
-								Text(
-									"${uiState.selectedDateTotalCalories} kcal",
-									style = MaterialTheme.typography.bodyMedium,
-									color = Color.Gray
-								)
-							}
-						}
-					}
-				}
-			}
-		)
-		
-		Column(
-			modifier = Modifier
-				.fillMaxSize()
-				.padding(horizontal = 16.dp, vertical = 8.dp),
-		) {
-			Column(
-				verticalArrangement = Arrangement.spacedBy(12.dp)
-			) {
-				DietInfoCard(
-					todayCalories = uiState.todayTotalCalories,
-					targetCalories = uiState.movementLevelMetabolism,
-					onClick = { navController.navigate(RoutineRoute.DietRoute) }
-				)
-				if (todayExercise != null) {
-					WorkoutInfoCard(
-						exerciseName = todayExercise.type,
-						todayCount = uiState.todayExerciseCount,
-						goalCount = HomeViewModel.TODAY_EXERCISE_GOAL,
-						onClick = {
-							navController.navigate(
-								RoutineRoute.WorkOutRoute(
-									exerciseType = uiState.dailyExercise.first()
-								)
-							)
-						}
-					)
-				}
-			}
-		}
-	}
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val pagerState = rememberPagerState(
+        initialPage = START_PAGE,
+        pageCount = { Int.MAX_VALUE }
+    )
+
+    val calendarState = CalendarState(
+        selectedDate = uiState.selectedDate,
+        displayedYearMonth = uiState.selectedYearMonth,
+        viewType = uiState.calendarViewType,
+        calendarDates = uiState.calendarDates,
+        selectedDateInfo = uiState.selectedDateInfo,
+        dietsRecordDates = uiState.dietsRecordDates,
+        dailyExerciseCompletedDates = uiState.dailyExerciseCompletedDates
+    )
+
+    val context = LocalContext.current
+    val activity = (context as? Activity)
+    val scope = rememberCoroutineScope()
+    var backPressedOnce by remember { mutableStateOf(false) }
+
+    ComposableToast(toastEvent = viewModel.toastEvent)
+
+    BackHandler(enabled = true) {
+        if (backPressedOnce) {
+            activity?.finish()
+        } else {
+            backPressedOnce = true
+            viewModel.oneMoreTouchExitToast()
+            scope.launch {
+                delay(2000L)
+                backPressedOnce = false
+            }
+        }
+    }
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.settledPage }
+            .distinctUntilChanged()
+            .collect { page ->
+                viewModel.onPageScrolled(page)
+            }
+    }
+
+    LaunchedEffect(uiState.pagerTargetPage) {
+        if (pagerState.currentPage != uiState.pagerTargetPage) {
+            pagerState.animateScrollToPage(uiState.pagerTargetPage)
+        }
+    }
+
+    YearMonthPickerDialog(
+        isVisible = uiState.isYearMonthPickerVisible,
+        initialYearMonth = uiState.selectedYearMonth,
+        onDismissRequest = {
+            viewModel.onHideYearMonthPicker()
+        },
+        onYearMonthSelected = { selectedYearMonth ->
+            viewModel.onYearMonthSelected(selectedYearMonth)
+        }
+    )
+
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Calendar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            calendarState = calendarState,
+            pagerState = pagerState,
+            onDateClick = { date ->
+                viewModel.onDateSelected(date)
+            },
+            onToggleViewType = {
+                viewModel.onToggleViewType()
+            },
+            onMonthPickerClick = {
+                viewModel.onShowYearMonthPicker()
+            },
+            onGoToToday = {
+                viewModel.onGoToToday()
+            },
+            calendarFooterContent = {
+                SelectedDateDetailSection(
+                    viewType = uiState.calendarViewType,
+                    workoutRecords = uiState.selectedDateWorkOutRecords,
+                    totalCalories = uiState.selectedDateTotalCalories
+                )
+            }
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                DietInfoCard(
+                    todayCalories = uiState.todayTotalCalories,
+                    targetCalories = uiState.targetCalories,
+                    onClick = { navController.navigate(RoutineRoute.DietRoute) }
+                )
+                if (uiState.todayWorkOut != null) {
+                    WorkoutInfoCard(
+                        workOutName = uiState.todayWorkOut!!.type,
+                        todayCount = uiState.todayWorkOutCount,
+                        goalCount = HomeViewModel.TODAY_EXERCISE_GOAL,
+                        onClick = {
+                            navController.navigate(
+                                RoutineRoute.WorkOutRoute(
+                                    exerciseType = uiState.todayWorkOut!!
+                                )
+                            )
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SelectedDateDetailSection(
+    viewType: CalendarViewType,
+    workoutRecords: List<ExerciseRecordForDate>,
+    totalCalories: Int
+) {
+    val shouldShowDetails = viewType == CalendarViewType.MONTHLY &&
+            (workoutRecords.isNotEmpty() || totalCalories > 0)
+
+    if (shouldShowDetails) {
+        if (workoutRecords.isNotEmpty()) {
+            Column {
+                Text(
+                    stringResource(R.string.record_workout_title),
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                workoutRecords.forEach { record ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            record.name,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text(
+                            stringResource(R.string.unit_count_format, record.count),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+                    }
+                }
+            }
+        }
+
+        if (totalCalories > 0) {
+            Column {
+                Text(
+                    stringResource(R.string.record_diet_title),
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        stringResource(R.string.record_total_calorie_intake),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        stringResource(R.string.unit_kcal_format, totalCalories),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DietInfoCard(
-	todayCalories: Int,
-	targetCalories: Int,
-	onClick: () -> Unit
+    todayCalories: Int,
+    targetCalories: Int,
+    onClick: () -> Unit
 ) {
-	Card(
-		modifier = Modifier.fillMaxWidth(),
-		shape = RoundedCornerShape(16.dp),
-		border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-		onClick = onClick,
-		colors = CardDefaults.cardColors(
-			containerColor = Color.White
-		)
-	) {
-		Row(
-			modifier = Modifier
-				.padding(horizontal = 20.dp, vertical = 24.dp),
-			verticalAlignment = Alignment.CenterVertically
-		) {
-			Column(modifier = Modifier.weight(1f)) {
-				Text(
-					text = "오늘의 섭취 칼로리",
-					style = MaterialTheme.typography.titleMedium,
-					color = Color.Gray
-				)
-				Spacer(modifier = Modifier.height(4.dp))
-				Text(
-					text = buildAnnotatedString {
-						withStyle(
-							style = SpanStyle(
-								fontWeight = FontWeight.Bold,
-								fontSize = 22.sp
-							)
-						) {
-							append("$todayCalories")
-						}
-						append(" / $targetCalories kcal")
-					},
-					style = MaterialTheme.typography.bodyLarge
-				)
-			}
-			Icon(
-				imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-				contentDescription = "식단 입력",
-				modifier = Modifier.size(20.dp),
-				tint = Color.Gray
-			)
-		}
-	}
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        onClick = onClick,
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 20.dp, vertical = 24.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.record_today_calorie_intake),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 22.sp
+                            )
+                        ) {
+                            append("$todayCalories")
+                        }
+                        append(stringResource(R.string.calorie_goal_format, targetCalories))
+                    },
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                contentDescription = stringResource(R.string.record_button_add_diet),
+                modifier = Modifier.size(20.dp),
+                tint = Color.Gray
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkoutInfoCard(
-	exerciseName: String,
-	todayCount: Int,
-	goalCount: Int,
-	onClick: () -> Unit
+    workOutName: String,
+    todayCount: Int,
+    goalCount: Int,
+    onClick: () -> Unit
 ) {
-	Card(
-		modifier = Modifier.fillMaxWidth(),
-		shape = RoundedCornerShape(16.dp),
-		border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-		onClick = onClick,
-		colors = CardDefaults.cardColors(
-			containerColor = Color.White
-		)
-	) {
-		Row(
-			modifier = Modifier
-				.padding(horizontal = 20.dp, vertical = 24.dp),
-			verticalAlignment = Alignment.CenterVertically
-		) {
-			Column(modifier = Modifier.weight(1f)) {
-				Text(
-					text = "오늘의 운동",
-					style = MaterialTheme.typography.titleMedium,
-					color = Color.Gray
-				)
-				Spacer(modifier = Modifier.height(4.dp))
-				Row(
-					verticalAlignment = Alignment.Bottom,
-					horizontalArrangement = Arrangement.spacedBy(8.dp)
-				) {
-					Text(
-						text = exerciseName,
-						style = MaterialTheme.typography.bodyLarge,
-						fontWeight = FontWeight.Bold
-					)
-					Text(
-						text = buildAnnotatedString {
-							withStyle(
-								style = SpanStyle(
-									fontWeight = FontWeight.Bold,
-									fontSize = 22.sp
-								)
-							) {
-								append("$todayCount")
-							}
-							append(" / $goalCount 회")
-						},
-						style = MaterialTheme.typography.bodyLarge
-					)
-				}
-			}
-			Icon(
-				imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-				contentDescription = "운동 시작",
-				modifier = Modifier.size(20.dp),
-				tint = Color.Gray
-			)
-		}
-	}
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        onClick = onClick,
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 20.dp, vertical = 24.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.record_today_workout),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = workOutName,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 22.sp
+                                )
+                            ) {
+                                append("$todayCount")
+                            }
+                            append(stringResource(R.string.count_goal_format, goalCount))
+                        },
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                contentDescription = stringResource(R.string.workout_button_start),
+                modifier = Modifier.size(20.dp),
+                tint = Color.Gray
+            )
+        }
+    }
 }
-

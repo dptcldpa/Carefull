@@ -76,6 +76,7 @@
 
     <string name="unit_count_format">%1$s회</string>
     <string name="unit_rank_format">%1$s위</string>
+    <string name="unit_kcal_format">%1$s kcal</string>
 
     <!-- ==================================영양소 (Nutrients)================================== -->
     <string name="nutrient_carbohydrate">탄수화물</string>

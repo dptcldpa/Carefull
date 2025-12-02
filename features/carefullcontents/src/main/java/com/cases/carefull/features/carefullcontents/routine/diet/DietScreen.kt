@@ -110,7 +110,7 @@ fun DietScreen(
             viewType = CalendarViewType.MONTHLY,
             calendarDates = uiState.dateDietState.datePickerCalendarDates,
             selectedDateInfo = "",
-            markedDates = uiState.dateDietState.allMealLoggedDates
+            dietsRecordDates = uiState.dateDietState.allMealLoggedDates
         )
         DatePickerDialog(
             calendarState = calendarState,
