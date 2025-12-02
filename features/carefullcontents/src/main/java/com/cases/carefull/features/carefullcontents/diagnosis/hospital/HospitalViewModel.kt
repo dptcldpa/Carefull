@@ -3,11 +3,11 @@ package com.cases.carefull.features.carefullcontents.diagnosis.hospital
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cases.carefull.domain.model.CareFullLocation
 import com.cases.carefull.domain.model.DepartmentCodeItem
 import com.cases.carefull.domain.model.Hospital
-import com.cases.carefull.domain.model.Location
+import com.cases.carefull.domain.repository.CareFullLocationRepository
 import com.cases.carefull.domain.repository.HospitalRepository
-import com.cases.carefull.domain.repository.LocationRepository
 import com.cases.carefull.domain.util.DataResourceResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HospitalViewModel @Inject constructor(
     private val hospitalRepository: HospitalRepository,
-    private val locationRepository: LocationRepository,
+    private val careFullLocationRepository: CareFullLocationRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HospitalUiState())
@@ -45,7 +45,7 @@ class HospitalViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            val location = locationRepository.getLastKnownLocation()
+            val location = careFullLocationRepository.getLastKnownLocation()
             val lat = location?.latitude ?: 37.5665
             val lon = location?.longitude ?: 126.9780
 
@@ -151,7 +151,7 @@ class HospitalViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            val location = locationRepository.getCurrentLocation()
+            val location = careFullLocationRepository.getCurrentLocation()
 
             _uiState.update { it.copy(isLoading = false) }
 
@@ -167,11 +167,11 @@ class HospitalViewModel @Inject constructor(
         }
     }
 
-    fun loadCurrentLocationForSearch(onLocationLoaded: (Location) -> Unit) {
+    fun loadCurrentLocationForSearch(onLocationLoaded: (CareFullLocation) -> Unit) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            val location = locationRepository.getCurrentLocation()
+            val location = careFullLocationRepository.getCurrentLocation()
 
             _uiState.update { it.copy(isLoading = false) }
 

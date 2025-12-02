@@ -13,13 +13,16 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class HospitalRepositoryImpl @Inject constructor(
     private val hospitalDataSource: HospitalDataSource,
     @DepartmentCode private val departmentCodes: Map<String, String>
 ) : HospitalRepository {
+
     override fun getHospitals(
         query: String,
         latitude: Double,
@@ -28,51 +31,44 @@ class HospitalRepositoryImpl @Inject constructor(
 
         emit(DataResourceResult.Loading)
 
-        val result = runCatching {
-            val departmentCode = if (query.isBlank()) {
-                ""
-            } else {
-                departmentCodes[query] ?: "01"
-            }
-
-            val hospitalDtoList = hospitalDataSource.getHospitalList(
-                departmentCode, latitude, longitude
-            )
-
-            coroutineScope {
-                val hospitalsWithEval = hospitalDtoList.map { hospitalDto ->
-                    async {
-                        val evalInfoList = hospitalDataSource.getHospitalExcell(hospitalDto.ykiho ?: "")
-                        hospitalDto to evalInfoList
-                    }
-                }
-                val combinedData = hospitalsWithEval.awaitAll()
-
-                combinedData.map { (hospitalDto, evalList) ->
-                    val targetEvaluationNames = getTargetEvaluationNamesFor(query)
-
-                    val isExcellent = evalList.any { evalItem ->
-                        val isTargetEval = evalItem.asmNm in targetEvaluationNames
-                        val isGoodGrade = evalItem.asmGrd == "1"
-                        isTargetEval && isGoodGrade
-                    }
-
-                    hospitalDto.toDomain(latitude, longitude, isExcellent, query)
-                }
-            }
+        val departmentCode = if (query.isBlank()) {
+            ""
+        } else {
+            departmentCodes[query] ?: "01"
         }
 
-        result.fold(
-            onSuccess = { hospitalDomainList ->
-                emit(DataResourceResult.Success(hospitalDomainList))
-            },
-            onFailure = { exception ->
-                Log.e("HospitalRepository", "XML Parsing Failed!", exception)
-                exception.printStackTrace()
-                emit(DataResourceResult.Error(exception))
-            }
+        val hospitalDtoList = hospitalDataSource.getHospitalList(
+            departmentCode, latitude, longitude
         )
+
+        coroutineScope {
+            val hospitalsWithEval = hospitalDtoList.map { hospitalDto ->
+                async {
+                    val evalInfoList = hospitalDataSource.getHospitalExcell(hospitalDto.ykiho ?: "")
+                    hospitalDto to evalInfoList
+                }
+            }
+            val combinedData = hospitalsWithEval.awaitAll()
+
+            val hospitalDomainList = combinedData.map { (hospitalDto, evalList) ->
+                val targetEvaluationNames = getTargetEvaluationNamesFor(query)
+
+                val isExcellent = evalList.any { evalItem ->
+                    val isTargetEval = evalItem.asmNm in targetEvaluationNames
+                    val isGoodGrade = evalItem.asmGrd == "1"
+                    isTargetEval && isGoodGrade
+                }
+
+                hospitalDto.toDomain(latitude, longitude, isExcellent, query)
+            }
+            emit(DataResourceResult.Success(hospitalDomainList))
+        }
     }
+    .catch { exception ->
+        Log.e("HospitalRepository", "Error fetching hospitals", exception)
+        emit(DataResourceResult.Error(exception))
+    }
+    .flowOn(Dispatchers.IO)
 
     override fun getDepartmentCodes(): List<DepartmentCodeItem> {
         return departmentCodes.map { (name, code) ->

@@ -30,9 +30,9 @@ class DiseaseViewModel @Inject constructor(
 
     private var allDiseases: List<Disease> = emptyList()
 
-    init {
-        loadDiseaseList()
-    }
+//    init {
+//        loadDiseaseList()
+//    }
 
     private fun loadDiseaseList() {
         viewModelScope.launch {
