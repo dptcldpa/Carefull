@@ -36,3 +36,4 @@ class RecentMealSearchRepositoryImpl @Inject constructor(
         recentFoodSearchDao.clearAllRecentSearches()
     }
 }
+
