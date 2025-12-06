@@ -49,6 +49,7 @@ class DietViewModel @Inject constructor(
         observeSavedBmr()
         observeFavoriteFoods()
         observeRecentSearches()
+        savedStateHandle.get<LocalDate>("selectedDate") ?: LocalDate.now()
     }
 
     fun onSearchFoods(query: String) {
@@ -367,7 +368,7 @@ class DietViewModel @Inject constructor(
     }
 
     fun observeMealsForDate(date: LocalDate) {
-viewModelScope.launch {
+        viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             dietRecordRepository.getMealByDate(date, userId).collect { result ->

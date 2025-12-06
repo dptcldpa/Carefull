@@ -53,10 +53,10 @@ class MedicineViewModel @Inject constructor(
                     }
                 }
                 .collect { items ->
-                    Log.d("API_TEST", "ViewModel: Flow 데이터 수집 성공, ${items.size}개")
+//                    Log.d("API_TEST", "ViewModel: Flow 데이터 수집 성공, ${items.size}개")
                     _uiState.update {
                         it.copy(
-                            searchResult = items,
+//                            searchResult = items,
                             isLoading = false
                         )
                     }

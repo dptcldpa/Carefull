@@ -19,6 +19,7 @@ import kotlinx.coroutines.tasks.await
 import java.util.UUID
 import javax.inject.Inject
 import androidx.core.net.toUri
+import com.cases.carefull.data.constant.FirestoreCollection
 import com.cases.carefull.domain.model.feed.SocialCategory
 
 class SocialRepositoryImpl @Inject constructor(
@@ -26,7 +27,7 @@ class SocialRepositoryImpl @Inject constructor(
     private val firestore = Firebase.firestore
     private val storage = Firebase.storage
     private val auth = Firebase.auth
-
+    private val userId = getCurrentUserId()
     private val postCollection = firestore.collection("posts")
 
     private fun getCurrentUserId(): String? {
@@ -45,10 +46,10 @@ class SocialRepositoryImpl @Inject constructor(
     override suspend fun getPosts(category: SocialCategory): BaseResult<List<Post>> {
         return try {
             val query = if (category == SocialCategory.ALL) {
-                postCollection.orderBy("createdAt", Query.Direction.DESCENDING)
+                postCollection.orderBy(FirestoreCollection.CREATED_AT, Query.Direction.DESCENDING)
             } else {
-                postCollection.whereEqualTo("category", category.category)
-                    .orderBy("createdAt", Query.Direction.DESCENDING)
+                postCollection.whereEqualTo(FirestoreCollection.CATEGORY, category.category)
+                    .orderBy(FirestoreCollection.CREATED_AT, Query.Direction.DESCENDING)
             }
 
             val documents = query.get().await()
@@ -78,7 +79,7 @@ class SocialRepositoryImpl @Inject constructor(
     ): BaseResult<Unit> {
         return try {
             val userId =
-                getCurrentUserId() ?: return BaseResult.Error(Exception("User not logged in"))
+                userId ?: return BaseResult.Error(Exception("User not logged in"))
             var imageUrl: String? = null
             if (imageUriString != null) {
                 val imageUri = imageUriString.toUri()
@@ -107,7 +108,7 @@ class SocialRepositoryImpl @Inject constructor(
     ): BaseResult<Unit> {
         return try {
             val userId =
-                getCurrentUserId() ?: return BaseResult.Error(Exception("User not logged in"))
+                userId ?: return BaseResult.Error(Exception("User not logged in"))
             val postRef = postCollection.document(postId)
             val existingPost = postRef.get().await().toObject(PostDto::class.java)
 
@@ -140,7 +141,7 @@ class SocialRepositoryImpl @Inject constructor(
     override suspend fun deletePost(postId: String): BaseResult<Unit> {
         return try {
             val userId =
-                getCurrentUserId() ?: return BaseResult.Error(Exception("User not logged in"))
+                userId ?: return BaseResult.Error(Exception("User not logged in"))
             val postRef = postCollection.document(postId)
             val existingPost = postRef.get().await().toObject(PostDto::class.java)
 
@@ -149,13 +150,13 @@ class SocialRepositoryImpl @Inject constructor(
             }
 
             val commentsToDelete = if (existingPost.commentCount > 0) {
-                postRef.collection("comments").get().await()
+                postRef.collection(FirestoreCollection.COMMENTS).get().await()
             } else {
                 null
             }
 
             val likesToDelete = if (existingPost.likeCount > 0) {
-                postRef.collection("likes").get().await()
+                postRef.collection(FirestoreCollection.LIKES).get().await()
             } else {
                 null
             }
@@ -186,9 +187,9 @@ class SocialRepositoryImpl @Inject constructor(
 
     override suspend fun getComments(postId: String): BaseResult<List<Comment>> {
         return try {
-            val commentsCollection = postCollection.document(postId).collection("comments")
+            val commentsCollection = postCollection.document(postId).collection(FirestoreCollection.COMMENTS)
             val documents =
-                commentsCollection.orderBy("createdAt", Query.Direction.ASCENDING).get().await()
+                commentsCollection.orderBy(FirestoreCollection.CREATED_AT, Query.Direction.ASCENDING).get().await()
             val comments = documents.toObjects(CommentDto::class.java).map { it.toDomain() }
             BaseResult.Success(comments)
         } catch (e: Exception) {
@@ -199,7 +200,7 @@ class SocialRepositoryImpl @Inject constructor(
     override suspend fun addComment(postId: String, content: String): BaseResult<Unit> {
         return try {
             val userId =
-                getCurrentUserId() ?: return BaseResult.Error(Exception("User not logged in"))
+                userId ?: return BaseResult.Error(Exception("User not logged in"))
             val commentDto = CommentDto(
                 postId = postId,
                 userId = userId,
@@ -207,9 +208,9 @@ class SocialRepositoryImpl @Inject constructor(
             )
             firestore.runTransaction { transaction ->
                 val postRef = postCollection.document(postId)
-                val newCommentRef = postRef.collection("comments").document()
+                val newCommentRef = postRef.collection(FirestoreCollection.COMMENTS).document()
                 transaction.set(newCommentRef, commentDto)
-                transaction.update(postRef, "commentCount", FieldValue.increment(1))
+                transaction.update(postRef, FirestoreCollection.COMMENT_COUNT, FieldValue.increment(1))
             }.await()
 
             BaseResult.Success(Unit)
@@ -221,9 +222,9 @@ class SocialRepositoryImpl @Inject constructor(
     override suspend fun deleteComment(postId: String, commentId: String): BaseResult<Unit> {
         return try {
             val userId =
-                getCurrentUserId() ?: return BaseResult.Error(Exception("User not logged in"))
+                userId ?: return BaseResult.Error(Exception("User not logged in"))
             val commentRef =
-                postCollection.document(postId).collection("comments").document(commentId)
+                postCollection.document(postId).collection(FirestoreCollection.COMMENTS).document(commentId)
             val existingComment = commentRef.get().await().toObject(CommentDto::class.java)
 
             if (existingComment == null || existingComment.userId != userId) {
@@ -232,7 +233,7 @@ class SocialRepositoryImpl @Inject constructor(
             firestore.runTransaction { transaction ->
                 val postRef = postCollection.document(postId)
                 transaction.delete(commentRef)
-                transaction.update(postRef, "commentCount", FieldValue.increment(-1))
+                transaction.update(postRef, FirestoreCollection.COMMENT_COUNT, FieldValue.increment(-1))
             }.await()
 
             BaseResult.Success(Unit)
@@ -244,23 +245,23 @@ class SocialRepositoryImpl @Inject constructor(
     override suspend fun toggleLike(postId: String): BaseResult<Unit> {
         return try {
             val userId =
-                getCurrentUserId() ?: return BaseResult.Error(Exception("User not logged in"))
+                userId ?: return BaseResult.Error(Exception("User not logged in"))
             val postRef = postCollection.document(postId)
-            val likeRef = postRef.collection("likes").document(userId)
+            val likeRef = postRef.collection(FirestoreCollection.LIKES).document(userId)
 
             firestore.runTransaction { transaction ->
                 val likeSnapshot = transaction.get(likeRef)
 
                 if (likeSnapshot.exists()) {
                     transaction.delete(likeRef)
-                    transaction.update(postRef, "likeCount", FieldValue.increment(-1))
+                    transaction.update(postRef, FirestoreCollection.LIKES_COUNT, FieldValue.increment(-1))
                 } else {
                     val likeDto = LikeDto(
                         postId = postId,
                         userId = userId
                     )
                     transaction.set(likeRef, likeDto)
-                    transaction.update(postRef, "likeCount", FieldValue.increment(1))
+                    transaction.update(postRef, FirestoreCollection.LIKES_COUNT, FieldValue.increment(1))
                 }
             }.await()
             BaseResult.Success(Unit)
@@ -272,8 +273,8 @@ class SocialRepositoryImpl @Inject constructor(
     override suspend fun hasUserLikedPost(postId: String): BaseResult<Boolean> {
         return try {
             val userId =
-                getCurrentUserId() ?: return BaseResult.Error(Exception("User not logged in"))
-            val likeRef = postCollection.document(postId).collection("likes").document(userId)
+                userId ?: return BaseResult.Error(Exception("User not logged in"))
+            val likeRef = postCollection.document(postId).collection(FirestoreCollection.LIKES).document(userId)
             val snapshot = likeRef.get().await()
             BaseResult.Success(snapshot.exists())
         } catch (e: Exception) {
@@ -288,9 +289,9 @@ class SocialRepositoryImpl @Inject constructor(
     ): BaseResult<Unit> {
         return try {
             val userId =
-                getCurrentUserId() ?: return BaseResult.Error(Exception("User not logged in"))
+                userId ?: return BaseResult.Error(Exception("User not logged in"))
             val commentRef =
-                postCollection.document(postId).collection("comments").document(commentId)
+                postCollection.document(postId).collection(FirestoreCollection.COMMENTS).document(commentId)
             val existingComment = commentRef.get().await().toObject(CommentDto::class.java)
 
             if (existingComment == null || existingComment.userId != userId) {
@@ -298,8 +299,8 @@ class SocialRepositoryImpl @Inject constructor(
             }
             commentRef.update(
                 mapOf(
-                    "content" to newContent,
-                    "updatedAt" to FieldValue.serverTimestamp()
+                    FirestoreCollection.CONTENT to newContent,
+                    FirestoreCollection.UPDATED_AT to FieldValue.serverTimestamp()
                 )
             ).await()
 

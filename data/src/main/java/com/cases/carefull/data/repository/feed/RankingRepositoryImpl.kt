@@ -1,5 +1,6 @@
 package com.cases.carefull.data.repository.feed
 
+import com.cases.carefull.data.constant.FirestoreCollection
 import com.cases.carefull.data.dto.routine.ExerciseCollectionDto
 import com.cases.carefull.domain.model.feed.MyRankInfo
 import com.cases.carefull.domain.model.feed.Ranker
@@ -18,9 +19,9 @@ class RankingRepositoryImpl @Inject constructor() : RankingRepository {
 	
 	override suspend fun getAllUsersNicknameMap(): Map<String, String> {
 		return try {
-			val snapshot = db.collection("accounts").get().await()
+			val snapshot = db.collection(FirestoreCollection.ACCOUNTS).get().await()
 			snapshot.documents.associate { doc ->
-				doc.id to (doc.getString("nickname") ?: doc.id)
+				doc.id to (doc.getString(FirestoreCollection.NICKNAME) ?: doc.id)
 			}
 		} catch (e: Exception) {
 			emptyMap()
@@ -31,9 +32,9 @@ class RankingRepositoryImpl @Inject constructor() : RankingRepository {
 		runCatching {
 			val nicknameMap = getAllUsersNicknameMap()
 			val rankingList =
-				db.collection("work_out_collection")
-					.whereEqualTo("category_id", sport.name)
-					.orderBy("count", Query.Direction.DESCENDING)
+				db.collection(FirestoreCollection.WORK_OUT_COLLECTION)
+					.whereEqualTo(FirestoreCollection.CATEGORY_ID, sport.name)
+					.orderBy(FirestoreCollection.COUNT, Query.Direction.DESCENDING)
 					.limit(100.toLong())
 					.get()
 					.await()
@@ -56,9 +57,9 @@ class RankingRepositoryImpl @Inject constructor() : RankingRepository {
 	override suspend fun getMyRanking(userId: String, sport: ExerciseType): DataResourceResult<MyRankInfo> =
 		runCatching {
 			val myRanking =
-				db.collection("work_out_collection")
-					.whereEqualTo("category_id", sport.name)
-					.whereEqualTo("user_id", userId)
+				db.collection(FirestoreCollection.WORK_OUT_COLLECTION)
+					.whereEqualTo(FirestoreCollection.CATEGORY_ID, sport.name)
+					.whereEqualTo(userId, userId)
 					.limit(1)
 					.get()
 					.await()
@@ -67,9 +68,9 @@ class RankingRepositoryImpl @Inject constructor() : RankingRepository {
 				MyRankInfo(rank = -1, myRecord = null)
 			} else {
 				val myCount = myRecordDto.count
-				val higherRankCountSnapshot = db.collection("work_out_collection")
-					.whereEqualTo("category_id", sport.name)
-					.whereGreaterThan("count", myCount)
+				val higherRankCountSnapshot = db.collection(FirestoreCollection.WORK_OUT_COLLECTION)
+					.whereEqualTo(FirestoreCollection.CATEGORY_ID, sport.name)
+					.whereGreaterThan(FirestoreCollection.COUNT, myCount)
 					.count().get(AggregateSource.SERVER).await()
 				val myRank = higherRankCountSnapshot.count.toInt() + 1
 				val myRankerRecord = Ranker(
