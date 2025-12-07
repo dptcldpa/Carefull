@@ -48,6 +48,7 @@ import coil3.compose.AsyncImage
 import com.cases.carefull.domain.model.feed.Post
 import com.cases.carefull.domain.model.feed.SocialCategory
 import com.cases.carefull.features.carefullcommon.R
+import com.cases.carefull.features.carefullcommon.components.CommonFilterChipRow
 import com.cases.carefull.features.carefullcommon.navigation.FeedRoute
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -74,12 +75,15 @@ fun SocialListScreen(
     }
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            CategoryFilterChips(
-                categories = categories,
-                selectedCategory = uiState.selectedCategory,
-                onCategorySelected = {
-                    viewModel.fetchPosts(it)
-                }
+            CommonFilterChipRow(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                items = categories,
+                selectedItem = uiState.selectedCategory,
+                onItemSelected = { newCategory ->
+                    viewModel.fetchPosts(newCategory)
+                },
+                itemLabel = { it.category },
+                itemKey = { it.name }
             )
             Box(
                 modifier = Modifier.fillMaxSize(),

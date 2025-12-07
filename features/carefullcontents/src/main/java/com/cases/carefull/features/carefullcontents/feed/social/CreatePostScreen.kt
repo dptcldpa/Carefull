@@ -18,9 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -48,6 +46,7 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.cases.carefull.domain.model.feed.SocialCategory
 import com.cases.carefull.features.carefullcommon.R
+import com.cases.carefull.features.carefullcommon.components.SubmitButton
 import com.cases.carefull.features.carefullcommon.components.CustomTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -103,10 +102,10 @@ fun CreatePostScreen(
         )
         Card(
             modifier = Modifier
-				.padding(16.dp)
-				.fillMaxWidth()
-				.height(200.dp)
-				.clickable { imagePickerLauncher.launch("image/*") },
+                .padding(16.dp)
+                .fillMaxWidth()
+                .height(200.dp)
+                .clickable { imagePickerLauncher.launch("image/*") },
             shape = MaterialTheme.shapes.medium
         ) {
             Box(
@@ -135,9 +134,9 @@ fun CreatePostScreen(
         }
         Column(
             modifier = Modifier
-				.fillMaxSize()
-				.padding(16.dp)
-				.verticalScroll(scrollState),
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ExposedDropdownMenuBox(
@@ -152,8 +151,8 @@ fun CreatePostScreen(
                     label = { Text(stringResource(R.string.post_label_category)) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isCategoryDropdownExpanded) },
                     modifier = Modifier
-						.menuAnchor()
-						.fillMaxWidth()
+                        .menuAnchor()
+                        .fillMaxWidth()
                 )
                 ExposedDropdownMenu(
                     expanded = isCategoryDropdownExpanded,
@@ -186,29 +185,22 @@ fun CreatePostScreen(
                 onValueChange = { content = it },
                 label = { Text(stringResource(R.string.post_label_content)) },
                 modifier = Modifier
-					.fillMaxWidth()
-					.height(150.dp),
+                    .fillMaxWidth()
+                    .height(150.dp),
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Default)
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
+            SubmitButton(
+                text = if (isEditMode) stringResource(R.string.post_button_edit_complete) else stringResource(
+                    R.string.post_button_create
+                ),
                 onClick = {
                     viewModel.submitPost(title, content, selectedCategory, imageUri)
                 },
-                modifier = Modifier.fillMaxWidth(),
                 enabled = !uiState.isLoading && title.isNotBlank() && content.isNotBlank()
-            ) {
-                if (uiState.isLoading) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
-                } else {
-                    Text(
-                        if (isEditMode) stringResource(R.string.post_button_edit_complete) else stringResource(
-                            R.string.post_button_create
-                        )
-                    )
-                }
-            }
+            )
+
             uiState.error?.let { errorMessage ->
                 Text(
                     text = errorMessage,

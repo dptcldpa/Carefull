@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Comment
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Comment
 import androidx.compose.material.icons.filled.Delete
@@ -65,7 +66,7 @@ import coil3.compose.AsyncImage
 import com.cases.carefull.domain.model.feed.Comment
 import com.cases.carefull.domain.model.feed.Post
 import com.cases.carefull.features.carefullcommon.components.CommonAlertDialog
-import com.cases.carefull.features.carefullcommon.components.CommonTextOutLinedTextField
+import com.cases.carefull.features.carefullcommon.components.TextOutLinedTextField
 import com.cases.carefull.features.carefullcommon.components.CustomTopAppBar
 import com.cases.carefull.features.carefullcommon.navigation.FeedRoute
 import java.text.SimpleDateFormat
@@ -151,6 +152,7 @@ fun PostDetailScreen(
             }
         )
     }
+
     Scaffold(
         topBar = {
             CustomTopAppBar(
@@ -311,7 +313,7 @@ fun PostDetailContent(
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Icon(
-                            Icons.Filled.Comment,
+                            Icons.AutoMirrored.Filled.Comment,
                             contentDescription = stringResource(R.string.common_comment),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
@@ -455,7 +457,7 @@ fun CommentEditDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.comment_edit_title)) },
         content = {
-            CommonTextOutLinedTextField(
+            TextOutLinedTextField(
                 value = text,
                 onValueChange = { text = it },
                 modifier = Modifier.fillMaxWidth(),

@@ -57,8 +57,9 @@ import com.cases.carefull.domain.model.routine.diet.FoodItem
 import com.cases.carefull.domain.model.routine.diet.RecentFoodSearch
 import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.components.CommonAlertDialog
-import com.cases.carefull.features.carefullcommon.components.CommonNumberOutLinedTextField
-import com.cases.carefull.features.carefullcommon.components.CommonTextOutLinedTextField
+import com.cases.carefull.features.carefullcommon.components.NumberOutLinedTextField
+import com.cases.carefull.features.carefullcommon.components.TextOutLinedTextField
+import com.cases.carefull.features.carefullcommon.components.LabelValueRow
 import com.cases.carefull.features.carefullcommon.components.SearchBar
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
@@ -363,42 +364,42 @@ fun CustomInputAlertDialog(
         content = {
             LazyColumn {
                 item {
-                    CommonTextOutLinedTextField(
+                    TextOutLinedTextField(
                         modifier = Modifier,
                         value = state.name,
                         onValueChange = { onInputChange(FoodDataInputType.NAME, it) },
                         label = { Text(stringResource(R.string.label_food_name)) },
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    CommonNumberOutLinedTextField(
+                    NumberOutLinedTextField(
                         modifier = Modifier,
                         value = state.servingSize,
                         onValueChange = { onInputChange(FoodDataInputType.SERVING_SIZE, it) },
                         label = { Text(stringResource(R.string.label_weight_with_unit)) }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    CommonNumberOutLinedTextField(
+                    NumberOutLinedTextField(
                         modifier = Modifier,
                         value = state.carbohydrate,
                         onValueChange = { onInputChange(FoodDataInputType.CARBOHYDRATE, it) },
                         label = { Text(stringResource(R.string.label_carbohydrate_with_unit)) }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    CommonNumberOutLinedTextField(
+                    NumberOutLinedTextField(
                         modifier = Modifier,
                         value = state.protein,
                         onValueChange = { onInputChange(FoodDataInputType.PROTEIN, it) },
                         label = { Text(stringResource(R.string.label_protein_with_unit)) }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    CommonNumberOutLinedTextField(
+                    NumberOutLinedTextField(
                         modifier = Modifier,
                         value = state.fat,
                         onValueChange = { onInputChange(FoodDataInputType.FAT, it) },
                         label = { Text(stringResource(R.string.label_fat_with_unit)) }
                     )
                     Spacer(modifier = Modifier.height(14.dp))
-                    ResultRowComponent(
+                    LabelValueRow(
                         label = stringResource(R.string.label_total_calories),
                         value = state.calculatedKcal
                     )
@@ -451,7 +452,7 @@ fun EditWeightDialog(
             )
         },
         content = {
-            CommonNumberOutLinedTextField(
+            NumberOutLinedTextField(
                 modifier = Modifier,
                 value = weight,
                 onValueChange = { newValue ->

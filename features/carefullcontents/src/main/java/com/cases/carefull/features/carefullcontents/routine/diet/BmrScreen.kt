@@ -1,7 +1,6 @@
 package com.cases.carefull.features.carefullcontents.routine.diet
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,11 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -34,12 +29,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,6 +39,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cases.carefull.domain.model.routine.diet.BmrMovementLevel
 import com.cases.carefull.domain.model.routine.diet.Gender
 import com.cases.carefull.features.carefullcommon.R
+import com.cases.carefull.features.carefullcommon.components.SubmitButton
+import com.cases.carefull.features.carefullcommon.components.LabelValueRow
+import com.cases.carefull.features.carefullcommon.components.UnitTextField
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
 import kotlinx.coroutines.flow.collectLatest
 
@@ -106,8 +100,15 @@ fun BmrScreen(
         )
         Spacer(modifier = Modifier.height(40.dp))
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .padding(start = 32.dp, end = 32.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
+            Text(
+                text = stringResource(R.string.gender),
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Spacer(modifier = Modifier.weight(1f))
             RadioButton(
                 selected = (uiState.gender == Gender.MALE),
                 onClick = { onGenderSelected(Gender.MALE) }
@@ -120,20 +121,22 @@ fun BmrScreen(
             )
             Text(text = stringResource(id = R.string.gender_female))
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextFieldComponent(
+        UnitTextField(
+            modifier = Modifier.fillMaxWidth(),
             label = stringResource(R.string.height),
             value = uiState.height,
             onValueChange = onHeightChanged,
             unit = stringResource(id = R.string.unit_cm)
         )
-        OutlinedTextFieldComponent(
+        UnitTextField(
+            modifier = Modifier.fillMaxWidth(),
             label = stringResource(R.string.weight),
             value = uiState.weight,
             onValueChange = onWeightChanged,
             unit = stringResource(id = R.string.unit_kg)
         )
-        OutlinedTextFieldComponent(
+        UnitTextField(
+            modifier = Modifier.fillMaxWidth(),
             label = stringResource(R.string.age),
             value = uiState.age,
             onValueChange = onAgeChanged,
@@ -174,110 +177,30 @@ fun BmrScreen(
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
-        ResultRowComponent(
+        LabelValueRow(
             label = stringResource(R.string.basal_metabolic_rate),
+            unit = stringResource(R.string.unit_kcal),
             value = uiState.calculatedBmr.toString()
         )
         Spacer(modifier = Modifier.height(16.dp))
-        ResultRowComponent(
+        LabelValueRow(
             label = stringResource(R.string.total_daily_energy),
+            unit = stringResource(R.string.unit_kcal),
             value = uiState.movementLevelMetabolism.toString(),
             isHighlighted = true
         )
         Spacer(modifier = Modifier.weight(1f))
-        Button(
+        SubmitButton(
+            text = stringResource(R.string.common_save),
             onClick = onSaveClicked,
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(56.dp)
-                .padding(bottom = 16.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                contentColor = Color.White
-            ),
             enabled = !uiState.isLoading &&
                     uiState.height.isNotBlank() &&
                     uiState.weight.isNotBlank() &&
                     uiState.age.isNotBlank() &&
                     uiState.isBmrChanged
-        ) {
-            Text(
-                text = stringResource(R.string.common_save),
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-    }
-}
-
-@Composable
-fun OutlinedTextFieldComponent(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    unit: String = ""
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 32.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f)
-        )
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = Modifier
-                .width(80.dp)
-                .padding(top = 5.dp, bottom = 5.dp),
-            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-        Text(
-            text = unit,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.width(30.dp)
         )
     }
 }
-
-@Composable
-fun ResultRowComponent(
-    label: String,
-    value: String,
-    isHighlighted: Boolean = false
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 32.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            modifier = Modifier.weight(1f),
-            text = label,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = if (isHighlighted) FontWeight.Bold else FontWeight.Normal
-        )
-        Text(
-            text = value,
-            style = if (isHighlighted) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.End,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Text(
-            modifier = Modifier.padding(start = 8.dp),
-            text = stringResource(R.string.unit_kcal),
-            style = MaterialTheme.typography.bodyLarge
-        )
-    }
-}
-
 
 @Preview(showBackground = true)
 @Composable
@@ -300,31 +223,6 @@ fun BmrScreenPreview() {
             onAgeChanged = {},
             onMovementLevelSelected = {},
             onSaveClicked = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun OutlinedTextFieldComponentPreview() {
-    CarefullTheme {
-        OutlinedTextFieldComponent(
-            label = "신장",
-            value = "180",
-            onValueChange = {},
-            unit = "cm"
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ResultRowComponentPreview() {
-    CarefullTheme {
-        ResultRowComponent(
-            label = "기초 대사량",
-            value = "1767",
-            isHighlighted = true
         )
     }
 }
