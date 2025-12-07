@@ -31,7 +31,6 @@ class SocialRepositoryImpl @Inject constructor(
     private val postCollection = firestore.collection("posts")
 
     private fun getCurrentUserId(): String? {
-//		return auth.currentUser?.uid
         return "test"
     }
 
@@ -46,10 +45,10 @@ class SocialRepositoryImpl @Inject constructor(
     override suspend fun getPosts(category: SocialCategory): BaseResult<List<Post>> {
         return try {
             val query = if (category == SocialCategory.ALL) {
-                postCollection.orderBy(FirestoreCollection.CREATED_AT, Query.Direction.DESCENDING)
+                postCollection.orderBy(FirestoreCollection.CREATEDAT, Query.Direction.DESCENDING)
             } else {
                 postCollection.whereEqualTo(FirestoreCollection.CATEGORY, category.category)
-                    .orderBy(FirestoreCollection.CREATED_AT, Query.Direction.DESCENDING)
+                    .orderBy(FirestoreCollection.CREATEDAT, Query.Direction.DESCENDING)
             }
 
             val documents = query.get().await()
@@ -187,9 +186,11 @@ class SocialRepositoryImpl @Inject constructor(
 
     override suspend fun getComments(postId: String): BaseResult<List<Comment>> {
         return try {
-            val commentsCollection = postCollection.document(postId).collection(FirestoreCollection.COMMENTS)
+            val commentsCollection =
+                postCollection.document(postId).collection(FirestoreCollection.COMMENTS)
             val documents =
-                commentsCollection.orderBy(FirestoreCollection.CREATED_AT, Query.Direction.ASCENDING).get().await()
+                commentsCollection.orderBy(FirestoreCollection.CREATEDAT, Query.Direction.ASCENDING)
+                    .get().await()
             val comments = documents.toObjects(CommentDto::class.java).map { it.toDomain() }
             BaseResult.Success(comments)
         } catch (e: Exception) {
@@ -210,7 +211,11 @@ class SocialRepositoryImpl @Inject constructor(
                 val postRef = postCollection.document(postId)
                 val newCommentRef = postRef.collection(FirestoreCollection.COMMENTS).document()
                 transaction.set(newCommentRef, commentDto)
-                transaction.update(postRef, FirestoreCollection.COMMENT_COUNT, FieldValue.increment(1))
+                transaction.update(
+                    postRef,
+                    FirestoreCollection.COMMENTCOUNT,
+                    FieldValue.increment(1)
+                )
             }.await()
 
             BaseResult.Success(Unit)
@@ -224,7 +229,8 @@ class SocialRepositoryImpl @Inject constructor(
             val userId =
                 userId ?: return BaseResult.Error(Exception("User not logged in"))
             val commentRef =
-                postCollection.document(postId).collection(FirestoreCollection.COMMENTS).document(commentId)
+                postCollection.document(postId).collection(FirestoreCollection.COMMENTS)
+                    .document(commentId)
             val existingComment = commentRef.get().await().toObject(CommentDto::class.java)
 
             if (existingComment == null || existingComment.userId != userId) {
@@ -233,7 +239,11 @@ class SocialRepositoryImpl @Inject constructor(
             firestore.runTransaction { transaction ->
                 val postRef = postCollection.document(postId)
                 transaction.delete(commentRef)
-                transaction.update(postRef, FirestoreCollection.COMMENT_COUNT, FieldValue.increment(-1))
+                transaction.update(
+                    postRef,
+                    FirestoreCollection.COMMENTCOUNT,
+                    FieldValue.increment(-1)
+                )
             }.await()
 
             BaseResult.Success(Unit)
@@ -254,14 +264,22 @@ class SocialRepositoryImpl @Inject constructor(
 
                 if (likeSnapshot.exists()) {
                     transaction.delete(likeRef)
-                    transaction.update(postRef, FirestoreCollection.LIKES_COUNT, FieldValue.increment(-1))
+                    transaction.update(
+                        postRef,
+                        FirestoreCollection.LIKECOUNT,
+                        FieldValue.increment(-1)
+                    )
                 } else {
                     val likeDto = LikeDto(
                         postId = postId,
                         userId = userId
                     )
                     transaction.set(likeRef, likeDto)
-                    transaction.update(postRef, FirestoreCollection.LIKES_COUNT, FieldValue.increment(1))
+                    transaction.update(
+                        postRef,
+                        FirestoreCollection.LIKECOUNT,
+                        FieldValue.increment(1)
+                    )
                 }
             }.await()
             BaseResult.Success(Unit)
@@ -274,7 +292,8 @@ class SocialRepositoryImpl @Inject constructor(
         return try {
             val userId =
                 userId ?: return BaseResult.Error(Exception("User not logged in"))
-            val likeRef = postCollection.document(postId).collection(FirestoreCollection.LIKES).document(userId)
+            val likeRef = postCollection.document(postId).collection(FirestoreCollection.LIKES)
+                .document(userId)
             val snapshot = likeRef.get().await()
             BaseResult.Success(snapshot.exists())
         } catch (e: Exception) {
@@ -291,7 +310,8 @@ class SocialRepositoryImpl @Inject constructor(
             val userId =
                 userId ?: return BaseResult.Error(Exception("User not logged in"))
             val commentRef =
-                postCollection.document(postId).collection(FirestoreCollection.COMMENTS).document(commentId)
+                postCollection.document(postId).collection(FirestoreCollection.COMMENTS)
+                    .document(commentId)
             val existingComment = commentRef.get().await().toObject(CommentDto::class.java)
 
             if (existingComment == null || existingComment.userId != userId) {
@@ -300,7 +320,7 @@ class SocialRepositoryImpl @Inject constructor(
             commentRef.update(
                 mapOf(
                     FirestoreCollection.CONTENT to newContent,
-                    FirestoreCollection.UPDATED_AT to FieldValue.serverTimestamp()
+                    FirestoreCollection.UPDATEDAT to FieldValue.serverTimestamp()
                 )
             ).await()
 

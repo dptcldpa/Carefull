@@ -2,7 +2,6 @@ package com.cases.carefull.features.carefullmainui.home
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,15 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,12 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -50,6 +37,7 @@ import com.cases.carefull.features.carefullcommon.R
 import com.cases.carefull.features.carefullcommon.calendar.Calendar
 import com.cases.carefull.features.carefullcommon.calendar.CalendarState
 import com.cases.carefull.features.carefullcommon.components.ComposableToast
+import com.cases.carefull.features.carefullcommon.components.DailySummaryCard
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import com.cases.carefull.features.carefullmainui.home.HomeUiState.Companion.START_PAGE
 import kotlinx.coroutines.delay
@@ -160,23 +148,31 @@ fun HomeScreen(
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                DietInfoCard(
-                    todayCalories = uiState.todayTotalCalories,
-                    targetCalories = uiState.targetCalories,
-                    onClick = { navController.navigate(RoutineRoute.DietRoute) }
+                DailySummaryCard(
+                    title = stringResource(R.string.record_today_calorie_intake),
+                    currentValue = uiState.todayTotalCalories,
+                    goalText = stringResource(R.string.calorie_goal_format, uiState.targetCalories),
+                    onClick = { navController.navigate(RoutineRoute.DietRoute) },
+                    contentDescription = stringResource(R.string.record_button_add_diet),
+                    modifier = Modifier,
+                    prefixText = null
                 )
                 if (uiState.todayWorkOut != null) {
-                    WorkoutInfoCard(
-                        workOutName = uiState.todayWorkOut!!.type,
-                        todayCount = uiState.todayWorkOutCount,
-                        goalCount = HomeViewModel.TODAY_EXERCISE_GOAL,
+                    DailySummaryCard(
+                        title = stringResource(R.string.record_today_workout),
+                        currentValue = uiState.todayWorkOutCount,
+                        goalText = stringResource(
+                            R.string.count_goal_format,
+                            HomeViewModel.TODAY_EXERCISE_GOAL
+                        ),
                         onClick = {
                             navController.navigate(
-                                RoutineRoute.WorkOutRoute(
-                                    exerciseType = uiState.todayWorkOut!!
-                                )
+                                RoutineRoute.WorkOutRoute(exerciseType = uiState.todayWorkOut!!)
                             )
-                        }
+                        },
+                        contentDescription = stringResource(R.string.workout_button_start),
+                        modifier = Modifier,
+                        prefixText = uiState.todayWorkOut!!.type
                     )
                 }
             }
@@ -246,123 +242,6 @@ private fun SelectedDateDetailSection(
                     )
                 }
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DietInfoCard(
-    todayCalories: Int,
-    targetCalories: Int,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-        onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 20.dp, vertical = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(R.string.record_today_calorie_intake),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.Gray
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 22.sp
-                            )
-                        ) {
-                            append("$todayCalories")
-                        }
-                        append(stringResource(R.string.calorie_goal_format, targetCalories))
-                    },
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                contentDescription = stringResource(R.string.record_button_add_diet),
-                modifier = Modifier.size(20.dp),
-                tint = Color.Gray
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun WorkoutInfoCard(
-    workOutName: String,
-    todayCount: Int,
-    goalCount: Int,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-        onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 20.dp, vertical = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(R.string.record_today_workout),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.Gray
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = workOutName,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(
-                                style = SpanStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 22.sp
-                                )
-                            ) {
-                                append("$todayCount")
-                            }
-                            append(stringResource(R.string.count_goal_format, goalCount))
-                        },
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                contentDescription = stringResource(R.string.workout_button_start),
-                modifier = Modifier.size(20.dp),
-                tint = Color.Gray
-            )
         }
     }
 }

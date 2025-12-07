@@ -1,9 +1,11 @@
 package com.cases.carefull.data.constant
 
-internal object FirestoreCollection{
+internal object FirestoreCollection {
     const val FOOD_COLLECTION = "food_collection"
     const val CREATED_AT = "created_at"
+    const val CREATEDAT = "createdAt"
     const val UPDATED_AT = "updated_at"
+    const val UPDATEDAT = "updatedAt"
     const val USER_ID = "user_id"
     const val WORK_OUT_COLLECTION = "work_out_collection"
     const val CATEGORY_ID = "category_id"
@@ -11,9 +13,9 @@ internal object FirestoreCollection{
     const val COUNT = "count"
     const val CONTENT = "content"
     const val COMMENTS = "comments"
-    const val COMMENT_COUNT = "commentCount"
+    const val COMMENTCOUNT = "commentCount"
     const val LIKES = "likes"
-    const val LIKES_COUNT = "likes_count"
+    const val LIKECOUNT = "likeCount"
     const val ACCOUNTS = "accounts"
     const val NICKNAME = "nickname"
 }

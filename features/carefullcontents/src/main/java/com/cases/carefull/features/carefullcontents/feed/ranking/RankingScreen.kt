@@ -12,14 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -38,6 +35,7 @@ import com.cases.carefull.domain.model.feed.MyRankInfo
 import com.cases.carefull.domain.model.feed.Ranker
 import com.cases.carefull.domain.model.routine.exercise.ExerciseType
 import com.cases.carefull.features.carefullcommon.R
+import com.cases.carefull.features.carefullcommon.components.CommonFilterChipRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,24 +47,23 @@ fun RankingScreen(
 
     Column(
         modifier = Modifier
-			.fillMaxSize()
-			.padding(horizontal = 16.dp)
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
     ) {
-        LazyRow(
-            modifier = Modifier
-				.fillMaxWidth()
-				.padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 8.dp)
-        ) {
-            items(sports, key = { it.type }) { sport ->
-                FilterChip(
-                    selected = uiState.selectedSport == sport,
-                    onClick = { viewModel.onSportSelected(sport) },
-                    label = { Text(sport.type) }
-                )
+        CommonFilterChipRow(
+            modifier = Modifier.padding(vertical = 8.dp),
+            items = sports,
+            selectedItem = uiState.selectedSport,
+            onItemSelected = { sport ->
+                viewModel.onSportSelected(sport)
+            },
+            itemLabel = { sport ->
+                sport.type
+            },
+            itemKey = { sport ->
+                sport.name
             }
-        }
+        )
         HorizontalDivider(thickness = 1.dp)
 
         if (!uiState.isLoading && uiState.myRankInfo?.myRecord != null) {
@@ -107,14 +104,13 @@ fun RankingScreen(
 fun MyRankItem(myRankInfo: MyRankInfo) {
     Surface(
         modifier = Modifier
-			.fillMaxWidth()
-			.padding(top = 4.dp, bottom = 4.dp),
-//		colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+            .fillMaxWidth()
+            .padding(top = 4.dp, bottom = 4.dp),
     ) {
         Row(
             modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 16.dp, vertical = 12.dp),
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -157,8 +153,8 @@ fun RankListItem(
     ) {
         Row(
             modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 16.dp, vertical = 12.dp),
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
