@@ -65,7 +65,7 @@ fun SocialListScreen(
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.fetchPosts(uiState.selectedCategory)
+                viewModel.loadPosts(true,uiState.selectedCategory)
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -73,6 +73,7 @@ fun SocialListScreen(
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             CommonFilterChipRow(
@@ -80,7 +81,7 @@ fun SocialListScreen(
                 items = categories,
                 selectedItem = uiState.selectedCategory,
                 onItemSelected = { newCategory ->
-                    viewModel.fetchPosts(newCategory)
+                    viewModel.loadPosts(true,newCategory)
                 },
                 itemLabel = { it.category },
                 itemKey = { it.name }

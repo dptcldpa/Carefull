@@ -6,7 +6,6 @@ import com.cases.carefull.domain.model.routine.exercise.ExerciseType
 import com.cases.carefull.domain.util.DataResourceResult
 
 interface RankingRepository {
-	suspend fun getAllUsersNicknameMap(): Map<String, String>
 	suspend fun getRankingList(sport: ExerciseType): DataResourceResult<List<Ranker>>
 	suspend fun getMyRanking(userId:String,sport: ExerciseType): DataResourceResult<MyRankInfo>
 }

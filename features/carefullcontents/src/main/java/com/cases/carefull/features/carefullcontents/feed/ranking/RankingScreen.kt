@@ -65,35 +65,46 @@ fun RankingScreen(
             }
         )
         HorizontalDivider(thickness = 1.dp)
-
-        if (!uiState.isLoading && uiState.myRankInfo?.myRecord != null) {
-            MyRankItem(myRankInfo = uiState.myRankInfo!!)
+        uiState.myRankInfo?.let { info ->
+            if (!uiState.isLoading && info.myRecord != null) {
+                MyRankItem(myRankInfo = info)
+            }
         }
 
         HorizontalDivider(thickness = 1.dp)
-        if (uiState.isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        } else if (uiState.isError) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(stringResource(R.string.error_fetch_data_failed))
-            }
-        } else if (uiState.rankingList.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(stringResource(R.string.error_no_ranking_data))
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(vertical = 16.dp)
-            ) {
-                itemsIndexed(uiState.rankingList) { index, rankItem ->
-                    RankListItem(
-                        rankNumber = index + 1,
-                        rankData = rankItem
-                    )
+        Box(modifier = Modifier.weight(1f)) {
+            when {
+                uiState.isLoading -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                uiState.error != null -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(uiState.error!!.asString())
+                    }
+                }
+
+                uiState.rankingList.isEmpty() -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(stringResource(R.string.no_ranking_data))
+                    }
+                }
+
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(vertical = 16.dp)
+                    ) {
+                        itemsIndexed(uiState.rankingList) { index, rankItem ->
+                            RankListItem(
+                                rankNumber = index + 1,
+                                rankData = rankItem
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -106,6 +117,7 @@ fun MyRankItem(myRankInfo: MyRankInfo) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 4.dp, bottom = 4.dp),
+        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f)
     ) {
         Row(
             modifier = Modifier
@@ -115,7 +127,9 @@ fun MyRankItem(myRankInfo: MyRankInfo) {
         ) {
             Text(
                 stringResource(R.string.unit_rank_format, myRankInfo.rank),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.width(12.dp))
             //더미 이미지
@@ -172,7 +186,7 @@ fun RankListItem(
                 )
             }
             Text(
-                text = stringResource(R.string.unit_rank_format, rankData.totalCount),
+                text = stringResource(R.string.unit_count_format, rankData.totalCount),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.SemiBold

@@ -2,98 +2,96 @@ package com.cases.carefull.features.carefullcontents.feed.ranking
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cases.carefull.domain.model.feed.FeedException
+import com.cases.carefull.domain.model.feed.MyRankInfo
 import com.cases.carefull.domain.model.routine.exercise.ExerciseType
 import com.cases.carefull.domain.repository.feed.RankingRepository
 import com.cases.carefull.domain.util.DataResourceResult
+import com.cases.carefull.features.carefullcommon.R
+import com.cases.carefull.features.carefullcontents.util.UiText
+import com.cases.carefull.features.carefullcontents.util.UiText.StringResource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
-import kotlinx.coroutines.async
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
 class RankingViewModel @Inject constructor(
     private val rankingRepository: RankingRepository
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(RankingUiState())
-    val uiState = _uiState.asStateFlow()
+    private val _selectedSport = MutableStateFlow(ExerciseType.DUMBBELL_CURL)
 
-    val userId = "CareFull"
+    private val postId: String = "CareFull"
 
-    init {
-        fetchRankingList(_uiState.value.selectedSport)
-    }
-
-    fun onSportSelected(sport: ExerciseType) {
-        if (sport == _uiState.value.selectedSport && !_uiState.value.isError) return
-        fetchRankingList(sport)
-    }
-
-    fun fetchRankingList(sport: ExerciseType) {
-        viewModelScope.launch {
-            val rankingListFlow = flow { emit(rankingRepository.getRankingList(sport)) }
-            val myRankFlow = flow { emit(rankingRepository.getMyRanking(userId, sport)) }
-
-            combine(rankingListFlow, myRankFlow) { rankingResult, myRankResult ->
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val uiState: StateFlow<RankingUiState> = _selectedSport
+        .flatMapLatest { sport ->
+            combine(
+                flow { emit(rankingRepository.getRankingList(sport)) },
+                flow { emit(fetchMyRanking(sport)) }
+            ) { rankingResult, myRankResult ->
                 if (rankingResult is DataResourceResult.Success && myRankResult is DataResourceResult.Success) {
-                    Pair(rankingResult.data, myRankResult.data)
+                    RankingUiState(
+                        isLoading = false,
+                        selectedSport = sport,
+                        rankingList = rankingResult.data,
+                        myRankInfo = myRankResult.data,
+                        error = null
+                    )
                 } else {
-                    null
+                    val exception = (rankingResult as? DataResourceResult.Error)?.exception
+                        ?: (myRankResult as? DataResourceResult.Error)?.exception
+                        ?: Exception("Unknown Error")
+
+                    RankingUiState(
+                        isLoading = false,
+                        selectedSport = sport,
+                        error = convertToUiText(exception)
+                    )
                 }
             }
                 .onStart {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = true,
-                            selectedSport = sport,
-                            isError = false
-                        )
-                    }
-                }
-                .catch { e ->
-                    _uiState.update { it.copy(isLoading = false, isError = true) }
-                }
-                .collect { resultPair ->
-                    _uiState.update { state ->
-                        if (resultPair != null) {
-                            state.copy(
-                                isLoading = false,
-                                rankingList = resultPair.first,
-                                myRankInfo = resultPair.second
-                            )
-                        } else {
-                            state.copy(isLoading = false, isError = true)
-                        }
-                    }
+                    emit(RankingUiState(isLoading = true, selectedSport = sport))
                 }
         }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = RankingUiState(
+                isLoading = true,
+                selectedSport = ExerciseType.DUMBBELL_CURL
+            )
+        )
+
+    private suspend fun fetchMyRanking(sport: ExerciseType): DataResourceResult<MyRankInfo> {
+        val currentUserId = postId
+        return if (currentUserId != null) {
+            rankingRepository.getMyRanking(currentUserId, sport)
+        } else {
+            DataResourceResult.Error(FeedException.Unauthorized)
+        }
     }
-//	fun fetchRankingList(sport: ExerciseType) {
-//		viewModelScope.launch {
-//			_uiState.update { it.copy(isLoading = true, selectedSport = sport, isError = false) }
-//			val rankingListDeferred = async { rankingRepository.getRankingList(sport) }
-//			val myRankDeferred = async { rankingRepository.getMyRanking(userId, sport) }
-//
-//			val rankingListResult = rankingListDeferred.await()
-//			val myRankResult = myRankDeferred.await()
-//
-//			if (rankingListResult is DataResourceResult.Success && myRankResult is DataResourceResult.Success) {
-//				_uiState.update {
-//					it.copy(
-//						isLoading = false,
-//						rankingList = rankingListResult.data,
-//						myRankInfo = myRankResult.data
-//					)
-//				}
-//			} else {
-//				_uiState.update { it.copy(isLoading = false, isError = true) }
-//			}
-//		}
-//	}
+
+    fun onSportSelected(sport: ExerciseType) {
+        _selectedSport.value = sport
+    }
+
+    private fun convertToUiText(e: Throwable): UiText {
+        return when (e) {
+            is FeedException.NotFound -> StringResource(R.string.error_no_ranking_data)
+            is FeedException.Unauthorized -> StringResource(R.string.error_no_permission)
+            is FeedException.NetworkError -> StringResource(R.string.error_fetch_data_failed)
+            else -> {
+                 e.message?.let { UiText.DynamicString(it) }
+                    ?: UiText.StringResource(R.string.error_unknown)
+            }
+        }
+    }
 }

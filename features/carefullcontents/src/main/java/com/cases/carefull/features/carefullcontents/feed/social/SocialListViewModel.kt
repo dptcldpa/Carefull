@@ -2,9 +2,15 @@ package com.cases.carefull.features.carefullcontents.feed.social
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cases.carefull.domain.model.feed.FeedException
 import com.cases.carefull.domain.model.feed.SocialCategory
-import com.cases.carefull.domain.repository.feed.SocialRepository
-import com.cases.carefull.domain.util.BaseResult
+import com.cases.carefull.domain.repository.feed.SocialCommentRepository
+import com.cases.carefull.domain.repository.feed.SocialPostRepository
+import com.cases.carefull.domain.util.DataResourceResult
+import com.cases.carefull.domain.util.FeedConfig
+import com.cases.carefull.features.carefullcommon.R
+import com.cases.carefull.features.carefullcontents.util.UiText
+import com.cases.carefull.features.carefullcontents.util.UiText.StringResource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,48 +21,75 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SocialListViewModel @Inject constructor(
-    private val socialRepository: SocialRepository
+    private val socialPostRepository: SocialPostRepository,
+    private val socialCommentRepository: SocialCommentRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SocialListUiState())
     val uiState: StateFlow<SocialListUiState> = _uiState.asStateFlow()
 
     init {
-        fetchPosts(SocialCategory.ALL)
+        loadPosts(isRefresh = true)
     }
 
-    fun fetchPosts(category: SocialCategory, isLoading: Boolean = false) {
+    fun loadPosts(isRefresh: Boolean, category: SocialCategory? = null) {
+        val currentCategory = category ?: uiState.value.selectedCategory
+        if (uiState.value.isLoading) return
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
+                    isRefreshing = isRefresh,
                     isLoading = true,
-                    isRefreshing = !isLoading,
-                    error = null,
-                    selectedCategory = category
+                    selectedCategory = currentCategory,
+                    error = null
                 )
             }
 
-            when (val result = socialRepository.getPosts(category)) {
-                is BaseResult.Success -> {
-                    _uiState.update {
-                        it.copy(
+            val lastPost = if (isRefresh) null else uiState.value.posts.lastOrNull()
+
+            val result = socialPostRepository.getPosts(currentCategory, lastPost)
+
+            when (result) {
+                is DataResourceResult.Success -> {
+                    val newPosts = result.data
+                    _uiState.update { state ->
+                        state.copy(
                             isLoading = false,
                             isRefreshing = false,
-                            posts = result.data
+                            posts = if (isRefresh) newPosts else state.posts + newPosts,
+                            isEndReached = newPosts.size < FeedConfig.POST_PAGING_SIZE,
+                            error = null
                         )
                     }
                 }
 
-                is BaseResult.Error -> {
+                is DataResourceResult.Error -> _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        isRefreshing = false,
+                        error = convertToUiText(result.exception)
+                    )
+                }
+
+                else -> {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            isRefreshing = false,
-                            error = result.exception.message ?: "게시글 로드 중 오류 발생"
+                            isRefreshing = false
                         )
-
                     }
                 }
+            }
+        }
+    }
+
+    private fun convertToUiText(e: Throwable): UiText {
+        return when (e) {
+            is FeedException.NotFound -> StringResource(R.string.error_no_ranking_data)
+            is FeedException.Unauthorized -> StringResource(R.string.error_no_permission)
+            is FeedException.NetworkError -> StringResource(R.string.error_fetch_data_failed)
+            else -> {
+                UiText.StringResource(R.string.error_unknown)
             }
         }
     }
