@@ -6,9 +6,10 @@ import com.cases.carefull.data.repository.diagnosis.ChatbotRepositoryImpl
 import com.cases.carefull.data.repository.diagnosis.DiseaseRepositoryImpl
 import com.cases.carefull.data.repository.diagnosis.HospitalRepositoryImpl
 import com.cases.carefull.data.repository.diagnosis.MedicineRepositoryImpl
-import com.cases.carefull.data.repository.feed.RankingRepositoryImpl
-import com.cases.carefull.data.repository.feed.SocialRepositoryImpl
+import com.cases.carefull.data.repository.feed.ranking.RankingRepositoryImpl
 import com.cases.carefull.data.repository.account.UserRepositoryImpl
+import com.cases.carefull.data.repository.feed.social.SocialCommentRepositoryImpl
+import com.cases.carefull.data.repository.feed.social.SocialPostRepositoryImpl
 import com.cases.carefull.data.repository.routine.diet.BodyStatsRepositoryImpl
 import com.cases.carefull.data.repository.routine.diet.DietRecordRepositoryImpl
 import com.cases.carefull.data.repository.routine.diet.FavoriteFoodRepositoryImpl
@@ -24,8 +25,9 @@ import com.cases.carefull.domain.repository.diagnosis.DiseaseRepository
 import com.cases.carefull.domain.repository.diagnosis.HospitalRepository
 import com.cases.carefull.domain.repository.diagnosis.MedicineRepository
 import com.cases.carefull.domain.repository.feed.RankingRepository
-import com.cases.carefull.domain.repository.feed.SocialRepository
 import com.cases.carefull.domain.repository.account.UserRepository
+import com.cases.carefull.domain.repository.feed.SocialCommentRepository
+import com.cases.carefull.domain.repository.feed.SocialPostRepository
 import com.cases.carefull.domain.repository.routine.diet.BodyStatsRepository
 import com.cases.carefull.domain.repository.routine.diet.DietRecordRepository
 import com.cases.carefull.domain.repository.routine.diet.FavoriteFoodRepository
@@ -120,12 +122,6 @@ abstract class RepositoryModule {
 
     @Binds
     @ViewModelScoped
-    abstract fun bindSocialRepository(
-        socialRepositoryImpl: SocialRepositoryImpl
-    ): SocialRepository
-
-    @Binds
-    @ViewModelScoped
     abstract fun bindHospitalRepository(
         hospitalRepositoryImpl: HospitalRepositoryImpl
     ): HospitalRepository
@@ -147,4 +143,16 @@ abstract class RepositoryModule {
     abstract fun bindPoseRepository(
         poseRepositoryImpl: PoseRepositoryImpl
     ): PoseRepository
+
+    @Binds
+    @ViewModelScoped
+    abstract fun bindSocialPostListRepository(
+        socialPostRepositoryImpl: SocialPostRepositoryImpl
+    ): SocialPostRepository
+
+    @Binds
+    @ViewModelScoped
+    abstract fun bindSocialCommentListRepository(
+        socialCommentRepositoryImpl: SocialCommentRepositoryImpl
+    ): SocialCommentRepository
 }

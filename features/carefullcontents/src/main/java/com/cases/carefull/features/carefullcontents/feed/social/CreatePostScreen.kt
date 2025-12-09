@@ -203,7 +203,7 @@ fun CreatePostScreen(
 
             uiState.error?.let { errorMessage ->
                 Text(
-                    text = errorMessage,
+                    text = errorMessage.toString(),
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(top = 8.dp)
                 )

@@ -181,6 +181,8 @@
     <string name="dialog_title_confirm_delete_comment">댓글 삭제 확인</string>
     <string name="dialog_message_confirm_delete_comment">이 댓글을 정말로 삭제하시겠습니까?</string>
 
+    <string name="no_ranking_data">랭킹 데이터가 없습니다.</string>
+
     <string name="post_info_format_user_category">%1$s | %2$s</string>
     <string name="post_info_format_user_category2">%1$s - %2$s</string>
 
@@ -269,8 +271,11 @@
     <string name="error_edit_failed">수정 실패</string>
     <string name="error_create_failed">작성 실패</string>
     <string name="error_no_post">게시글이 없습니다.</string>
-    <string name="error_no_ranking_data">랭킹 데이터가 없습니다.</string>
+    <string name="error_no_ranking_data">랭킹 데이터를 불러올 수 없습니다.</string>
     <string name="error_id_info_required">아이디 정보 필요</string>
+    <string name="error_no_permission">접근 권한이 없습니다.</string>
+    <string name="error_login_required">로그인이 필요한 서비스입니다.</string>
+    <string name="error_unknown">알 수 없는 오류가 발생했습니다.</string>
 
     <string name="app_exit_toast">한 번 더 누르면 종료됩니다.</string>
 

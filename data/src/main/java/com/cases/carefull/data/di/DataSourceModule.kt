@@ -11,6 +11,12 @@ import com.cases.carefull.data.datasource.KaKaoDataSource
 import com.cases.carefull.data.datasource.KakaoDataSourceImpl
 import com.cases.carefull.data.datasource.PoseDataSource
 import com.cases.carefull.data.datasource.PoseDataSourceImpl
+import com.cases.carefull.data.datasource.RankingDataSource
+import com.cases.carefull.data.datasource.RankingDataSourceImpl
+import com.cases.carefull.data.datasource.SocialCommentDataSource
+import com.cases.carefull.data.datasource.SocialCommentDataSourceImpl
+import com.cases.carefull.data.datasource.SocialPostDataSource
+import com.cases.carefull.data.datasource.SocialPostDataSourceImpl
 import com.cases.carefull.data.datasource.UserDataSource
 import com.cases.carefull.data.datasource.UserDataSourceImpl
 import dagger.Binds
@@ -58,4 +64,22 @@ abstract class DataSourceModule {
 	abstract fun bindPoseDataSource(
 		poseDataSourceImpl: PoseDataSourceImpl
 	): PoseDataSource
+
+	@Binds
+	@Singleton
+	abstract fun bindSocialPostDataSource(
+		socialPostDataSourceImpl: SocialPostDataSourceImpl
+	): SocialPostDataSource
+
+	@Binds
+	@Singleton
+	abstract fun bindSocialCommentDataSource(
+		socialCommentDataSourceImpl: SocialCommentDataSourceImpl
+	): SocialCommentDataSource
+
+	@Binds
+	@Singleton
+	abstract fun bindRankingDataSource(
+		rankingDataSourceImpl: RankingDataSourceImpl
+	): RankingDataSource
 }

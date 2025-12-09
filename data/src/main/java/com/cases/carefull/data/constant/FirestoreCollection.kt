@@ -18,4 +18,5 @@ internal object FirestoreCollection {
     const val LIKECOUNT = "likeCount"
     const val ACCOUNTS = "accounts"
     const val NICKNAME = "nickname"
+    const val POSTS = "posts"
 }
