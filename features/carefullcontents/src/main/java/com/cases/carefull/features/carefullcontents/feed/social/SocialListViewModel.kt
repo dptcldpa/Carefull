@@ -2,15 +2,12 @@ package com.cases.carefull.features.carefullcontents.feed.social
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cases.carefull.domain.model.feed.FeedException
 import com.cases.carefull.domain.model.feed.SocialCategory
 import com.cases.carefull.domain.repository.feed.SocialCommentRepository
 import com.cases.carefull.domain.repository.feed.SocialPostRepository
 import com.cases.carefull.domain.util.DataResourceResult
 import com.cases.carefull.domain.util.FeedConfig
-import com.cases.carefull.features.carefullcommon.R
-import com.cases.carefull.features.carefullcontents.util.UiText
-import com.cases.carefull.features.carefullcontents.util.UiText.StringResource
+import com.cases.carefull.features.carefullcontents.util.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -67,7 +64,7 @@ class SocialListViewModel @Inject constructor(
                     it.copy(
                         isLoading = false,
                         isRefreshing = false,
-                        error = convertToUiText(result.exception)
+                        error = result.exception.asUiText()
                     )
                 }
 
@@ -79,17 +76,6 @@ class SocialListViewModel @Inject constructor(
                         )
                     }
                 }
-            }
-        }
-    }
-
-    private fun convertToUiText(e: Throwable): UiText {
-        return when (e) {
-            is FeedException.NotFound -> StringResource(R.string.error_no_ranking_data)
-            is FeedException.Unauthorized -> StringResource(R.string.error_no_permission)
-            is FeedException.NetworkError -> StringResource(R.string.error_fetch_data_failed)
-            else -> {
-                UiText.StringResource(R.string.error_unknown)
             }
         }
     }

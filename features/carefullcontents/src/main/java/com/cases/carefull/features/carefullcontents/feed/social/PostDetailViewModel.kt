@@ -3,13 +3,10 @@ package com.cases.carefull.features.carefullcontents.feed.social
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cases.carefull.domain.model.feed.FeedException
 import com.cases.carefull.domain.repository.feed.SocialCommentRepository
 import com.cases.carefull.domain.repository.feed.SocialPostRepository
 import com.cases.carefull.domain.util.DataResourceResult
-import com.cases.carefull.features.carefullcommon.R
-import com.cases.carefull.features.carefullcontents.util.UiText
-import com.cases.carefull.features.carefullcontents.util.UiText.StringResource
+import com.cases.carefull.features.carefullcontents.util.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -65,7 +62,7 @@ class PostDetailViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            error = convertToUiText(result.exception)
+                            error = result.exception.asUiText()
                         )
                     }
                 }
@@ -85,7 +82,9 @@ class PostDetailViewModel @Inject constructor(
                 }
 
                 is DataResourceResult.Error -> {
-                    _uiState.update { it.copy(error = convertToUiText(result.exception)) }
+                    _uiState.update {
+                        it.copy(error = result.exception.asUiText())
+                    }
                 }
 
                 else -> {}
@@ -110,10 +109,7 @@ class PostDetailViewModel @Inject constructor(
 
                 is DataResourceResult.Error -> {
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            error = convertToUiText(result.exception)
-                        )
+                        it.copy(error = result.exception.asUiText())
                     }
                 }
 
@@ -133,10 +129,7 @@ class PostDetailViewModel @Inject constructor(
 
                 is DataResourceResult.Error -> {
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            error = convertToUiText(result.exception)
-                        )
+                        it.copy(error = result.exception.asUiText())
                     }
                 }
 
@@ -167,7 +160,9 @@ class PostDetailViewModel @Inject constructor(
                 }
 
                 is DataResourceResult.Error -> {
-                    _uiState.update { it.copy(error = convertToUiText(result.exception)) }
+                    _uiState.update {
+                        it.copy(error = result.exception.asUiText())
+                    }
                 }
 
                 else -> {}
@@ -183,72 +178,60 @@ class PostDetailViewModel @Inject constructor(
                 }
 
                 is DataResourceResult.Error -> {
-                    _uiState.update { it.copy(error = convertToUiText(result.exception)) }
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    fun deleteComment(commentId: String) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
-            when (val result = socialCommentRepository.deleteComment(postId, commentId)) {
-                is DataResourceResult.Success -> {
-                    fetchComments()
-
-                    _uiState.update { currentState ->
-                        val updatedPost = currentState.post?.copy(
-                            commentCount = currentState.post.commentCount - 1
-                        )
-                        currentState.copy(post = updatedPost)
+                    _uiState.update {
+                        it.copy(error = result.exception.asUiText())
                     }
                 }
-
-                is DataResourceResult.Error -> {
-                    _uiState.update {
-                        it.copy(error = convertToUiText(result.exception))
-                    }
+                    else -> {}
                 }
-
-                else -> {}
             }
         }
-    }
 
-    fun deletePost() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
-            when (val result = socialPostRepository.deletePost(postId)) {
-                is DataResourceResult.Success -> {
-                    _uiState.update { it.copy(isLoading = false, isDeleted = true) }
-                }
+        fun deleteComment(commentId: String) {
+            viewModelScope.launch {
+                _uiState.update { it.copy(isLoading = true, error = null) }
+                when (val result = socialCommentRepository.deleteComment(postId, commentId)) {
+                    is DataResourceResult.Success -> {
+                        fetchComments()
 
-                is DataResourceResult.Error -> {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            error = convertToUiText(
-                                result.exception
+                        _uiState.update { currentState ->
+                            val updatedPost = currentState.post?.copy(
+                                commentCount = currentState.post.commentCount - 1
                             )
-                        )
+                            currentState.copy(post = updatedPost)
+                        }
                     }
+
+                    is DataResourceResult.Error -> {
+                        _uiState.update {
+                            it.copy(error = result.exception.asUiText())
+                        }
+                    }
+
+                    else -> {}
                 }
+            }
+        }
 
-                else -> {}
+        fun deletePost() {
+            viewModelScope.launch {
+                _uiState.update { it.copy(isLoading = true, error = null) }
+                when (val result = socialPostRepository.deletePost(postId)) {
+                    is DataResourceResult.Success -> {
+                        _uiState.update { it.copy(isLoading = false, isDeleted = true) }
+                    }
+
+                    is DataResourceResult.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                error = result.exception.asUiText()
+                            )
+                        }
+                    }
+
+                    else -> {}
+                }
             }
         }
     }
-
-    private fun convertToUiText(e: Throwable): UiText {
-        return when (e) {
-            is FeedException.NotFound -> StringResource(R.string.error_post_load_failed)
-            is FeedException.Unauthorized -> StringResource(R.string.error_no_permission)
-            is FeedException.NetworkError -> StringResource(R.string.error_fetch_data_failed)
-            else -> {
-                UiText.StringResource(R.string.error_unknown)
-            }
-        }
-    }
-}

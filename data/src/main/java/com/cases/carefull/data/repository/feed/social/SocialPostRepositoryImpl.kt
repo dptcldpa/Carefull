@@ -48,7 +48,7 @@ class SocialPostRepositoryImpl @Inject constructor(
     override suspend fun getPostDetail(postId: String): DataResourceResult<Post> =
         runCatching {
             val postDto = socialPostDataSource.getPostDetail(postId)
-            val validDto = postDto ?: throw FeedException.NotFound
+            val validDto = postDto ?: throw FeedException.NotFoundPost
             validDto.toDomain()
         }.toDataResourceResult()
 
@@ -82,7 +82,7 @@ class SocialPostRepositoryImpl @Inject constructor(
 
         } else {
             val existingPost = socialPostDataSource.getPostDetail(postId)
-                ?: throw FeedException.NotFound
+                ?: throw FeedException.NotFoundPost
 
             if (existingPost.userId != userId) {
                 throw FeedException.Unauthorized
@@ -120,7 +120,7 @@ class SocialPostRepositoryImpl @Inject constructor(
 
     override suspend fun deletePost(postId: String): DataResourceResult<Unit> = runCatching {
         val postDto = socialPostDataSource.getPostDetail(postId)
-            ?: throw FeedException.NotFound
+            ?: throw FeedException.NotFoundPost
 
         if (postDto.userId != currentUserId) {
             throw FeedException.Unauthorized
