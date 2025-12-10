@@ -41,7 +41,7 @@ class SocialCommentRepositoryImpl @Inject constructor(
             dataSource.createComment(postId, newComment)
         } else {
             val existingComment = dataSource.getComment(postId, commentId)
-                ?: throw FeedException.NotFound
+                ?: throw FeedException.NotFoundPost
 
             if (existingComment.userId != userId) {
                 throw FeedException.Unauthorized
@@ -58,7 +58,7 @@ class SocialCommentRepositoryImpl @Inject constructor(
         val userId = currentUserId
 
         val existingComment = dataSource.getComment(postId, commentId)
-            ?: throw FeedException.NotFound
+            ?: throw FeedException.NotFoundPost
 
         if (existingComment.userId != userId) {
             throw FeedException.Unauthorized

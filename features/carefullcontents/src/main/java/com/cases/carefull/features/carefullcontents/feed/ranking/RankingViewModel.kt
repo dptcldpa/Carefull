@@ -7,9 +7,7 @@ import com.cases.carefull.domain.model.feed.MyRankInfo
 import com.cases.carefull.domain.model.routine.exercise.ExerciseType
 import com.cases.carefull.domain.repository.feed.RankingRepository
 import com.cases.carefull.domain.util.DataResourceResult
-import com.cases.carefull.features.carefullcommon.R
-import com.cases.carefull.features.carefullcontents.util.UiText
-import com.cases.carefull.features.carefullcontents.util.UiText.StringResource
+import com.cases.carefull.features.carefullcontents.util.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,7 +35,9 @@ class RankingViewModel @Inject constructor(
                 flow { emit(rankingRepository.getRankingList(sport)) },
                 flow { emit(fetchMyRanking(sport)) }
             ) { rankingResult, myRankResult ->
-                if (rankingResult is DataResourceResult.Success && myRankResult is DataResourceResult.Success) {
+                if (rankingResult is DataResourceResult.Success &&
+                    myRankResult is DataResourceResult.Success
+                ) {
                     RankingUiState(
                         isLoading = false,
                         selectedSport = sport,
@@ -48,12 +48,12 @@ class RankingViewModel @Inject constructor(
                 } else {
                     val exception = (rankingResult as? DataResourceResult.Error)?.exception
                         ?: (myRankResult as? DataResourceResult.Error)?.exception
-                        ?: Exception("Unknown Error")
+                        ?:  FeedException.Unknown
 
                     RankingUiState(
                         isLoading = false,
                         selectedSport = sport,
-                        error = convertToUiText(exception)
+                        error = exception.asUiText()
                     )
                 }
             }
@@ -81,17 +81,5 @@ class RankingViewModel @Inject constructor(
 
     fun onSportSelected(sport: ExerciseType) {
         _selectedSport.value = sport
-    }
-
-    private fun convertToUiText(e: Throwable): UiText {
-        return when (e) {
-            is FeedException.NotFound -> StringResource(R.string.error_no_ranking_data)
-            is FeedException.Unauthorized -> StringResource(R.string.error_no_permission)
-            is FeedException.NetworkError -> StringResource(R.string.error_fetch_data_failed)
-            else -> {
-                 e.message?.let { UiText.DynamicString(it) }
-                    ?: UiText.StringResource(R.string.error_unknown)
-            }
-        }
     }
 }
