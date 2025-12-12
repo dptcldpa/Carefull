@@ -5,8 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.cases.carefull.domain.model.routine.diet.Bmr
 import com.cases.carefull.domain.model.routine.diet.BmrMovementLevel
 import com.cases.carefull.domain.model.routine.diet.Gender
-import com.cases.carefull.domain.usecase.routine.diet.GetSavedBmrUseCase
-import com.cases.carefull.domain.usecase.routine.diet.SaveBmrUseCase
+import com.cases.carefull.domain.usecase.routine.diet.BmrUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,8 +18,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class BmrViewModel @Inject constructor(
-    private val saveBmrUseCase: SaveBmrUseCase,
-    private val getSavedBmrUseCase: GetSavedBmrUseCase
+    private val bmrUseCases: BmrUseCases
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BmrUiState())
     val uiState = _uiState.asStateFlow()
@@ -34,19 +32,31 @@ class BmrViewModel @Inject constructor(
 
     private fun loadMyBmr() {
         viewModelScope.launch {
-            getSavedBmrUseCase(userId).collectLatest { savedBmr ->
+            bmrUseCases.getSavedBmr(userId).collectLatest { savedBmr ->
                 if (savedBmr != null) {
+                    val genderEnum = if (savedBmr.gender) Gender.MALE else Gender.FEMALE
+                    val calculationResult = bmrUseCases.calculateBmr(
+                        gender = genderEnum,
+                        height = savedBmr.height,
+                        weight = savedBmr.weight,
+                        age = savedBmr.age,
+                        movementLevel = savedBmr.movementLevel
+                    )
                     _uiState.update {
                         BmrUiState(
                             savedBmr = savedBmr,
-                            gender = if (savedBmr.gender) Gender.MALE else Gender.FEMALE,
+                            gender = genderEnum,
                             height = savedBmr.height.toString(),
                             weight = savedBmr.weight.toString(),
                             age = savedBmr.age.toString(),
                             movementLevel = savedBmr.movementLevel,
+
+                            calculatedBmr = calculationResult.bmr,
+                            movementLevelMetabolism = calculationResult.tdee,
+
                             isLoading = false,
                             isError = false
-                        ).recalculate()
+                        )
                     }
                 } else {
                     _uiState.update { it.copy(isLoading = false) }
@@ -55,29 +65,60 @@ class BmrViewModel @Inject constructor(
         }
     }
 
+    private fun updateStateWithCalculation(
+        gender: Gender = _uiState.value.gender,
+        height: String = _uiState.value.height,
+        weight: String = _uiState.value.weight,
+        age: String = _uiState.value.age,
+        movementLevel: BmrMovementLevel = _uiState.value.movementLevel
+    ) {
+        val heightInt = height.toIntOrNull() ?: 0
+        val weightInt = weight.toIntOrNull() ?: 0
+        val ageInt = age.toIntOrNull() ?: 0
+
+        val result = bmrUseCases.calculateBmr(
+            gender = gender,
+            height = heightInt,
+            weight = weightInt,
+            age = ageInt,
+            movementLevel = movementLevel
+        )
+
+        _uiState.update {
+            it.copy(
+                gender = gender,
+                height = height,
+                weight = weight,
+                age = age,
+                movementLevel = movementLevel,
+                calculatedBmr = result.bmr,
+                movementLevelMetabolism = result.tdee
+            )
+        }
+    }
+
     fun onGenderSelected(gender: Gender) {
-        _uiState.update { it.copy(gender = gender).recalculate() }
+        updateStateWithCalculation(gender = gender)
     }
 
     fun onHeightChanged(height: String) {
         if (!height.all { it.isDigit() }) return
-        _uiState.update { it.copy(height = height).recalculate() }
+        updateStateWithCalculation(height = height)
     }
 
     fun onWeightChanged(weight: String) {
         if (weight.all { it.isDigit() }) {
-            if (!weight.all { it.isDigit() }) return
-            _uiState.update { it.copy(weight = weight).recalculate() }
+            updateStateWithCalculation(weight = weight)
         }
     }
 
     fun onAgeChanged(age: String) {
         if (!age.all { it.isDigit() }) return
-        _uiState.update { it.copy(age = age).recalculate() }
+        updateStateWithCalculation(age = age)
     }
 
     fun onMovementLevelSelected(movementLevel: BmrMovementLevel) {
-        _uiState.update { it.copy(movementLevel = movementLevel).recalculate() }
+        updateStateWithCalculation(movementLevel = movementLevel)
     }
 
     fun onSaveClicked() {
@@ -103,7 +144,7 @@ class BmrViewModel @Inject constructor(
                 bmr = currentState.calculatedBmr,
                 tdee = currentState.movementLevelMetabolism
             )
-            saveBmrUseCase(bmrToSave)
+            bmrUseCases.saveBmr(bmrToSave)
             _uiState.update { it.copy(isLoading = false) }
             _eventFlow.emit(UiEvent.ShowToast("신체 정보가 저장되었습니다."))
         }

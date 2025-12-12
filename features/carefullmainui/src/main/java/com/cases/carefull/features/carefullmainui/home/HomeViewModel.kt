@@ -10,6 +10,7 @@ import com.cases.carefull.domain.repository.common.CalendarRepository
 import com.cases.carefull.domain.repository.routine.diet.DietRecordRepository
 import com.cases.carefull.domain.repository.routine.exercise.TodayWorkOutRepository
 import com.cases.carefull.domain.repository.routine.exercise.WorkOutRecordRepository
+import com.cases.carefull.domain.usecase.routine.diet.BmrUseCases
 import com.cases.carefull.domain.usecase.routine.diet.GetSavedBmrUseCase
 import com.cases.carefull.domain.util.DataResourceResult
 import com.cases.carefull.features.carefullmainui.home.HomeUiState.Companion.START_PAGE
@@ -43,7 +44,7 @@ class HomeViewModel @Inject constructor(
     private val workOutRecordRepository: WorkOutRecordRepository,
     private val todayWorkOutRepository: TodayWorkOutRepository,
     private val dietRecordRepository: DietRecordRepository,
-    private val getSavedBmrUseCase: GetSavedBmrUseCase,
+    private val getSavedBmrUseCase: GetSavedBmrUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()

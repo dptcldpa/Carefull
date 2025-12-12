@@ -42,7 +42,7 @@ class PoseDataSourceImpl @Inject constructor(
 
         val faceOptions = FaceDetectorOptions.Builder()
             .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-            .setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE) // 수정: setContourMode
+            .setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
             .build()
         faceDetector = FaceDetection.getClient(faceOptions)
 

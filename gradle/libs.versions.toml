@@ -3,6 +3,7 @@ agp = "8.11.1"
 
 
 guava = "33.4.8-android"
+javaxInject = "1"
 kotlin = "2.2.10"
 coreKtx = "1.17.0"
 kotlinxCoroutinesPlayServices = "1.10.2"
@@ -77,6 +78,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
+javax-inject = { module = "javax.inject:javax.inject", version.ref = "javaxInject" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 
 google-accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }

@@ -12,10 +12,7 @@ import com.cases.carefull.domain.model.routine.exercise.ExerciseType
 import com.cases.carefull.domain.model.routine.exercise.Pose
 import com.cases.carefull.domain.repository.routine.exercise.PoseRepository
 import com.cases.carefull.domain.repository.routine.exercise.TodayWorkOutRepository
-import com.cases.carefull.domain.repository.routine.exercise.WorkOutRecordRepository
-import com.cases.carefull.domain.usecase.routine.exercise.CalculateWorkOutStatsUseCase
-import com.cases.carefull.domain.usecase.routine.exercise.GetWorkOutAnalyzerUseCase
-import com.cases.carefull.domain.usecase.routine.exercise.WorkOutCounterUseCase
+import com.cases.carefull.domain.usecase.routine.exercise.WorkOutRecordUseCases
 import com.cases.carefull.domain.util.DataResourceResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -31,12 +28,9 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ExerciseViewModel @Inject constructor(
-    private val workOutRecordRepository: WorkOutRecordRepository,
+    private val workOutRecordUseCases: WorkOutRecordUseCases,
     private val todayWorkOutRepository: TodayWorkOutRepository,
     private val poseRepository: PoseRepository,
-    private val getWorkOutAnalyzerUseCase: GetWorkOutAnalyzerUseCase,
-    private val calculateWorkOutStatsUseCase: CalculateWorkOutStatsUseCase,
-    private val workOutCounterUseCase: WorkOutCounterUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ExerciseUiState())
     val uiState = _uiState.asStateFlow()
@@ -49,7 +43,7 @@ class ExerciseViewModel @Inject constructor(
     }
 
     fun initialize(exerciseType: ExerciseType) {
-        this.workOutAnalyzer = getWorkOutAnalyzerUseCase(exerciseType)
+        this.workOutAnalyzer = workOutRecordUseCases.getAnalyzer(exerciseType)
         _uiState.update {
             it.copy(
                 count = 0,
@@ -66,7 +60,7 @@ class ExerciseViewModel @Inject constructor(
     }
 
     private fun setupDataStream() {
-        val statsFlow = workOutRecordRepository.fetchWorkOutStats(userId)
+        val statsFlow = workOutRecordUseCases.getWorkOutList(userId)
         val todayExerciseFlow = todayWorkOutRepository.fetchTodayWorkOut()
 
         combine(statsFlow, todayExerciseFlow) { statsResult, todayResult ->
@@ -84,18 +78,14 @@ class ExerciseViewModel @Inject constructor(
             (todayResult as? DataResourceResult.Success)?.data?.let { listOf(it) } ?: emptyList()
         val isError =
             statsResult is DataResourceResult.Error || todayResult is DataResourceResult.Error
-        val statsList: List<ExerciseStatistics> = calculateWorkOutStatsUseCase(exercises)
+        val statsList: List<ExerciseStatistics> = workOutRecordUseCases.calculateStats(exercises)
         val uiModelList = statsList.map { it.toUiModel() }
 
         _uiState.update { state ->
             state.copy(
                 isLoading = false,
                 isError = isError,
-//                exercisesResults = exercises,
                 dailyExercise = dailyExerciseList,
-//                totalExerciseCounts = uiModelList.associate { it.type to it.totalCount },
-//                weeklyExerciseCounts = uiModelList.associate { it.type to it.weeklyCount },
-//                dailyExerciseCounts = uiModelList.associate { it.type to it.dailyCount },
                 exerciseList = uiModelList
             )
         }
@@ -110,7 +100,7 @@ class ExerciseViewModel @Inject constructor(
                 exerciseType = exerciseType,
                 count = totalCount
             )
-            val result = workOutRecordRepository.saveWorkOutCount(recordToSave)
+            val result = workOutRecordUseCases.saveWorkOut(recordToSave)
             when (result) {
                 is DataResourceResult.Success -> {
                     _uiState.update {
@@ -176,7 +166,7 @@ class ExerciseViewModel @Inject constructor(
 
         val newDetectedState = workOutAnalyzer.analyze(pose)
         val currentState = _uiState.value
-        val result = workOutCounterUseCase(
+        val result = workOutRecordUseCases.counter(
             currentCount = currentState.count,
             lastConfirmedPose = currentState.userPose,
             newDetectedPose = newDetectedState

@@ -29,21 +29,4 @@ data class BmrUiState(
 
             return !(isGenderSame && isHeightSame && isWeightSame && isAgeSame && isMovementLevelSame)
         }
-
-    fun recalculate(): BmrUiState {
-        val heightInt = this.height.toIntOrNull() ?: 0
-        val weightInt = this.weight.toIntOrNull() ?: 0
-        val ageInt = this.age.toIntOrNull() ?: 0
-        val (bmr, tdee) = Bmr.calculate(
-            gender = this.gender,
-            height = heightInt,
-            weight = weightInt,
-            age = ageInt,
-            movementLevel = this.movementLevel
-        )
-        return this.copy(
-            calculatedBmr = bmr,
-            movementLevelMetabolism = tdee
-        )
-    }
 }
