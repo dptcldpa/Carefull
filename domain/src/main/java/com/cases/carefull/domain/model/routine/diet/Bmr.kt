@@ -22,9 +22,13 @@ data class Bmr(
                 return BmrCalculationResult(0, 0)
             }
             val baseBmr = (10 * weight) + (6.25 * height) - (5 * age)
-            val calculatedBmr = when (gender) {
+
+            var calculatedBmr = when (gender) {
                 Gender.MALE -> baseBmr + 5
                 Gender.FEMALE -> baseBmr - 161
+            }
+            if (calculatedBmr < 0) {
+                calculatedBmr = 0.0
             }
             val tdee = calculatedBmr * movementLevel.multiplier
 

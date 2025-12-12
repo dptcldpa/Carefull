@@ -2,12 +2,18 @@ package com.cases.carefull.di
 
 import com.cases.carefull.domain.repository.diagnosis.MedicineRepository
 import com.cases.carefull.domain.repository.routine.diet.BodyStatsRepository
+import com.cases.carefull.domain.repository.routine.exercise.WorkOutRecordRepository
 import com.cases.carefull.domain.usecase.routine.diet.GetSavedBmrUseCase
 import com.cases.carefull.domain.usecase.diagnosis.MedicineSearchUseCase
+import com.cases.carefull.domain.usecase.routine.diet.BmrUseCases
+import com.cases.carefull.domain.usecase.routine.diet.CalculateBmrUseCase
 import com.cases.carefull.domain.usecase.routine.diet.SaveBmrUseCase
 import com.cases.carefull.domain.usecase.routine.exercise.CalculateWorkOutStatsUseCase
 import com.cases.carefull.domain.usecase.routine.exercise.GetWorkOutAnalyzerUseCase
+import com.cases.carefull.domain.usecase.routine.exercise.GetWorkOutListUseCase
+import com.cases.carefull.domain.usecase.routine.exercise.SaveWorkOutUseCase
 import com.cases.carefull.domain.usecase.routine.exercise.WorkOutCounterUseCase
+import com.cases.carefull.domain.usecase.routine.exercise.WorkOutRecordUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,41 +32,29 @@ object UseCaseModule {
         return MedicineSearchUseCase(repository)
     }
 
-
     @Provides
     @ViewModelScoped
-    fun provideGetSavedBmrUseCase(
-        repository: BodyStatsRepository
-    ): GetSavedBmrUseCase {
-        return GetSavedBmrUseCase(repository)
+    fun provideBmrUseCases(
+        repository: BodyStatsRepository,
+    ): BmrUseCases {
+        return BmrUseCases(
+            getSavedBmr = GetSavedBmrUseCase(repository),
+            saveBmr = SaveBmrUseCase(repository),
+            calculateBmr = CalculateBmrUseCase(repository)
+        )
     }
 
     @Provides
     @ViewModelScoped
-    fun provideSaveBmrUseCase(
-        repository: BodyStatsRepository
-    ): SaveBmrUseCase {
-        return SaveBmrUseCase(repository)
-    }
-
-    @Provides
-    @ViewModelScoped
-    fun provideGetWorkOutAnalyzerUseCase(
-    ): GetWorkOutAnalyzerUseCase {
-        return GetWorkOutAnalyzerUseCase()
-    }
-
-    @Provides
-    @ViewModelScoped
-    fun provideCalculateWorkOutStatsUseCase():
-            CalculateWorkOutStatsUseCase {
-        return CalculateWorkOutStatsUseCase()
-    }
-
-    @Provides
-    @ViewModelScoped
-    fun provideWorkOutCounterUseCase():
-            WorkOutCounterUseCase {
-        return WorkOutCounterUseCase()
+    fun provideWorkOutUseCases(
+        repository: WorkOutRecordRepository,
+    ): WorkOutRecordUseCases {
+        return WorkOutRecordUseCases(
+            getWorkOutList = GetWorkOutListUseCase(repository),
+            saveWorkOut = SaveWorkOutUseCase(repository),
+            calculateStats = CalculateWorkOutStatsUseCase(),
+            getAnalyzer = GetWorkOutAnalyzerUseCase(),
+            counter = WorkOutCounterUseCase()
+        )
     }
 }
