@@ -8,12 +8,23 @@
   AI(ML Kit)를 활용한 실시간 운동 자세 분석과 생성형 AI(ChatGPT)기반의 맞춤형 건강 상담이 결합된 통합 헬스케어 앱입니다.
 </div>
 
+## 목차
+1. [프로젝트 개요](#%EF%B8%8F-프로젝트-개요)
+2. [서비스 목표](#-서비스-목표)
+3. [기술 스택](#-기술-스택)
+4. [프로젝트 아키텍쳐](#%EF%B8%8F-프로젝트-아키텍쳐)
+5. [서비스 주요 기능](#-서비스-주요-기능)
+6. [데이터 셋](#-데이터-셋)
+7. [팀원 소개](#%E2%80%8D-팀원-소개)
+
+<br>
+
 ## 🗂️ 프로젝트 개요
 
 - **앱 이름** : CareFull
 - **팀원**
-    - 양정규(PEANUTBUTTER1001)
-    - 조해민(dptcldpa)
+    - 양정규
+    - 조해민
 - **작업 기간** : 2025.06 ~ 마켓 출시 준비 중
 - **플랫폼** : Android
 - **개발 언어** : Kotlin
@@ -30,6 +41,8 @@
 
 사용자의 운동·식단 습관화를 돕고, 개인의 상태를 분석하여 최적의 건강 정보를 제공함으로써 사용자 중심의 건강관리 서비스를 실현합니다.
 
+<br>
+
 ## 🧰 기술 스택
 
 | 분류             | 기술                                                                              |
@@ -42,9 +55,11 @@
 | AI             | On-device AI Google ML Kit(Pose Detection, Face Detection), OpenAI API (생성형 AI) |
 | SDK & API      | Fused Location Provider,Kakao SDK, Naver Map SDK                                |
 | Authentication | KaKao OAuth                                                                     |
-| DataBase       | Firestore, Room                                                                 |
+| DataBase       | Firebase (Firestore), Room                                                                 |
 | DI             | Hilt                                                                            |
-| ETC / Tools    | Figma, Github, Notion, Runtime Permission                                       |
+| ETC / Tools    | Figma, Github, Notion, Postman, Runtime Permission                                       |
+
+<br>
 
 ## 🏗️ 프로젝트 아키텍쳐
 
@@ -70,7 +85,7 @@
 
 |   <img src="https://github.com/user-attachments/assets/d8aafe14-2b04-4072-8532-44c65d5b3551" alt="squat" width="200"/>   |
 |:------------------------------------------------------------------------------------------------------------------------:|
-| On-device AI Google ML Kit를 활용하여 사용자의 <br> 관절 포인트(Skeleton)를 실시간으로 추적합니다.<br> 스쿼트 등 운동 자세의 정확도를판별하고 <br>자동으로 횟수를 카운팅합니다. |
+| On-device AI Google ML Kit를 활용하여 사용자의 <br> 관절 포인트(Skeleton)를 실시간으로 추적합니다.<br> 스쿼트 등 운동 자세의 정확도를 판별하고 <br>자동으로 횟수를 카운팅합니다. |
 
 ### 4. 식단 기록
 
@@ -82,7 +97,7 @@
 
 | <img src="https://github.com/user-attachments/assets/709605b3-f803-4037-b60f-7c753d398341" alt="chatbot" width="200"/> |
 |:----------------------------------------------------------------------------------------------------------------------:|
-|                                  OpenAI API를 활용하여 몸 상태를 챗봇에<br>질문 시 질환과 진료 과목을 추천합니다.                                  |
+|                                  OpenAI API를 활용하여 몸 상태를 챗봇에<br>입력 시 증상에 맞는 질환과 진료 과목을 추천해 줍니다.                                  |
 
 ### 6. 병원 검색
 
@@ -97,6 +112,8 @@
 | <img src="https://github.com/user-attachments/assets/1ddd0bc3-1b44-4d4e-9bb5-79808ba95fc7" alt="social" width="200"/> | <img width="200" height="418" alt="ranking" src="https://github.com/user-attachments/assets/0f80f387-481f-493e-80cf-a874559be6f5" /> |
 |:---------------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------:|
 |                                            Firebase를 활용한<br> 커뮤니티 컨텐츠입니다.                                             |                                                    주간 운동 종목별<br>운동 횟수로 순위를 보여줍니다.                                                    |
+
+<br>
 
 ## 📊 데이터 셋
 
@@ -120,3 +137,18 @@
 ### 3. 가공 및 시스템 생성 데이터
 
 - **통계·분석 데이터** : 운동 빈도, 섭취 칼로리, 영양 비율
+
+<br>
+
+## 🧑‍💻 팀원 소개
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/PEANUTBUTTER1001"><img src="https://avatars.githubusercontent.com/u/183465637?v=4" width="100px;"></td>
+    <td align="center"><a href="https://github.com/dptcldpa"><img src="https://avatars.githubusercontent.com/u/116916268?v=4" width="100px;"></td>
+  </tr>
+  <tr>
+    <td align="center"><b><a href="https://github.com/PEANUTBUTTER1001">양정규</a></b></td>
+    <td align="center"><b><a href="https://github.com/dptcldpa">조해민</a></b></td>
+  </tr>
+</table>
