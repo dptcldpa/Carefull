@@ -13,12 +13,13 @@ import com.cases.carefull.domain.model.routine.exercise.Landmark
 import com.cases.carefull.domain.model.routine.exercise.Pose
 import com.cases.carefull.domain.model.routine.exercise.Position
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
+import com.cases.carefull.features.carefullcontents.util.PoseDefaults
 import com.google.mlkit.vision.pose.PoseLandmark
 
 @Composable
 fun PoseOverlay(
-    pose: Pose,
     modifier: Modifier = Modifier,
+    pose: Pose,
     imageWidth: Int,
     imageHeight: Int
 ) {
@@ -33,43 +34,21 @@ fun PoseOverlay(
                     Offset(landmark.position.x * scaleX, landmark.position.y * scaleY)
                 }
             drawPoints(points, PointMode.Points, Color.Yellow, strokeWidth = 12f)
+            PoseDefaults.BODY_CONNECTIONS.forEach { (startId, endId) ->
+                val start = pose.landmarks[startId]
+                val end = pose.landmarks[endId]
 
-            fun drawLine(startType: Int, endType: Int) {
-                val startLandmark = domainPose.landmarks[startType]
-                val endLandmark = domainPose.landmarks[endType]
-
-                if (startLandmark != null && endLandmark != null &&
-                    startLandmark.inFrameLikelihood > 0.7f && endLandmark.inFrameLikelihood > 0.7f
+                if (start != null && end != null &&
+                    start.inFrameLikelihood > 0.7f && end.inFrameLikelihood > 0.7f
                 ) {
                     drawLine(
-                        start = Offset(
-                            startLandmark.position.x * scaleX,
-                            startLandmark.position.y * scaleY
-                        ),
-                        end = Offset(
-                            endLandmark.position.x * scaleX,
-                            endLandmark.position.y * scaleY
-                        ),
                         color = Color.White,
-                        strokeWidth = 6f
+                        strokeWidth = 6f,
+                        start = Offset(start.position.x * scaleX, start.position.y * scaleY),
+                        end = Offset(end.position.x * scaleX, end.position.y * scaleY)
                     )
                 }
             }
-            // 팔
-            drawLine(PoseLandmark.RIGHT_SHOULDER, PoseLandmark.RIGHT_ELBOW)
-            drawLine(PoseLandmark.RIGHT_ELBOW, PoseLandmark.RIGHT_WRIST)
-            drawLine(PoseLandmark.LEFT_SHOULDER, PoseLandmark.LEFT_ELBOW)
-            drawLine(PoseLandmark.LEFT_ELBOW, PoseLandmark.LEFT_WRIST)
-            // 상체
-            drawLine(PoseLandmark.LEFT_SHOULDER, PoseLandmark.RIGHT_SHOULDER)
-            drawLine(PoseLandmark.LEFT_HIP, PoseLandmark.RIGHT_HIP)
-            drawLine(PoseLandmark.RIGHT_SHOULDER, PoseLandmark.RIGHT_HIP)
-            drawLine(PoseLandmark.LEFT_SHOULDER, PoseLandmark.LEFT_HIP)
-            // 다리
-            drawLine(PoseLandmark.LEFT_HIP, PoseLandmark.LEFT_KNEE)
-            drawLine(PoseLandmark.LEFT_KNEE, PoseLandmark.LEFT_ANKLE)
-            drawLine(PoseLandmark.RIGHT_HIP, PoseLandmark.RIGHT_KNEE)
-            drawLine(PoseLandmark.RIGHT_KNEE, PoseLandmark.RIGHT_ANKLE)
         }
     }
 }
