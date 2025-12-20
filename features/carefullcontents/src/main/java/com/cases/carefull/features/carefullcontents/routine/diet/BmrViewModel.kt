@@ -6,6 +6,7 @@ import com.cases.carefull.domain.model.routine.diet.Bmr
 import com.cases.carefull.domain.model.routine.diet.BmrMovementLevel
 import com.cases.carefull.domain.model.routine.diet.Gender
 import com.cases.carefull.domain.usecase.routine.diet.BmrUseCases
+import com.cases.carefull.domain.util.DataResourceResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -32,34 +33,49 @@ class BmrViewModel @Inject constructor(
 
     private fun loadMyBmr() {
         viewModelScope.launch {
-            bmrUseCases.getSavedBmr(userId).collectLatest { savedBmr ->
-                if (savedBmr != null) {
-                    val genderEnum = if (savedBmr.gender) Gender.MALE else Gender.FEMALE
-                    val calculationResult = bmrUseCases.calculateBmr(
-                        gender = genderEnum,
-                        height = savedBmr.height,
-                        weight = savedBmr.weight,
-                        age = savedBmr.age,
-                        movementLevel = savedBmr.movementLevel
-                    )
-                    _uiState.update {
-                        BmrUiState(
-                            savedBmr = savedBmr,
-                            gender = genderEnum,
-                            height = savedBmr.height.toString(),
-                            weight = savedBmr.weight.toString(),
-                            age = savedBmr.age.toString(),
-                            movementLevel = savedBmr.movementLevel,
-
-                            calculatedBmr = calculationResult.bmr,
-                            movementLevelMetabolism = calculationResult.tdee,
-
-                            isLoading = false,
-                            isError = false
-                        )
+            bmrUseCases.getSavedBmr(userId).collectLatest { result ->
+                when (result) {
+                    is DataResourceResult.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
                     }
-                } else {
-                    _uiState.update { it.copy(isLoading = false) }
+
+                    is DataResourceResult.Success -> {
+                        val bmrData = result.data
+
+                        if (bmrData != null) {
+                            val genderEnum = if (bmrData.gender) Gender.MALE else Gender.FEMALE
+                            val calculationResult = bmrUseCases.calculateBmr(
+                                gender = genderEnum,
+                                height = bmrData.height,
+                                weight = bmrData.weight,
+                                age = bmrData.age,
+                                movementLevel = bmrData.movementLevel
+                            )
+
+                            _uiState.update {
+                                BmrUiState(
+                                    savedBmr = bmrData,
+                                    gender = genderEnum,
+                                    height = bmrData.height.toString(),
+                                    weight = bmrData.weight.toString(),
+                                    age = bmrData.age.toString(),
+                                    movementLevel = bmrData.movementLevel,
+                                    calculatedBmr = calculationResult.bmr,
+                                    movementLevelMetabolism = calculationResult.tdee,
+                                    isLoading = false,
+                                    isError = false
+                                )
+                            }
+                        } else {
+                            _uiState.update { it.copy(isLoading = false) }
+                        }
+                    }
+
+                    is DataResourceResult.Error -> {
+                        _uiState.update {
+                            it.copy(isLoading = false, isError = true)
+                        }
+                    }
                 }
             }
         }
