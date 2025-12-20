@@ -92,14 +92,26 @@ class DietViewModel @Inject constructor(
 
     private fun observeRecentSearches() {
         viewModelScope.launch {
-            recentMealSearchRepository.getRecentSearches().collectLatest { searches ->
-                _uiState.update {
-                    it.copy(
-                        dietSearchState = it.dietSearchState.copy(
-                            recentSearches =
-                                searches
-                        )
-                    )
+            recentMealSearchRepository.getRecentSearches().collectLatest { result ->
+                when (result) {
+                    is DataResourceResult.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+
+                    is DataResourceResult.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                dietSearchState = it.dietSearchState.copy(
+                                    recentSearches =
+                                        result.data
+                                )
+                            )
+                        }
+                    }
+
+                    else -> {
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
                 }
             }
         }
@@ -119,13 +131,26 @@ class DietViewModel @Inject constructor(
 
     private fun observeFavoriteFoods() {
         viewModelScope.launch {
-            favoriteFoodRepository.getAllFavoriteFoods().collectLatest { favorites ->
-                _uiState.update {
-                    it.copy(
-                        favoriteState = it.favoriteState.copy(
-                            favoriteFoods = favorites
-                        )
-                    )
+            favoriteFoodRepository.getAllFavoriteFoods().collectLatest { result ->
+                when (result) {
+                    is DataResourceResult.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+
+                    is DataResourceResult.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                favoriteState = it.favoriteState.copy(
+                                    favoriteFoods = result.data
+                                )
+                            )
+                        }
+                    }
+
+                    else -> {
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
                 }
             }
         }
@@ -161,7 +186,8 @@ class DietViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            val result = dietRecordRepository.addMeal(updatedFoodItem, currentUser, mealType, date)
+            val result =
+                dietRecordRepository.addMeal(updatedFoodItem, currentUser, mealType, date)
             when (result) {
                 is DataResourceResult.Success -> {
                     onClearSearchQuery()
@@ -352,15 +378,27 @@ class DietViewModel @Inject constructor(
 
     private fun observeSavedBmr() {
         viewModelScope.launch {
-            getSavedBmrUseCase("test").collect { savedBmr ->
-                if (savedBmr != null) {
-                    val baseBmrState = BmrUiState(
-                        movementLevelMetabolism = savedBmr.tdee
-                    )
-                    _uiState.update {
-                        it.copy(
-                            bmrState = baseBmrState
+            getSavedBmrUseCase("test").collect { result ->
+                when (result) {
+                    is DataResourceResult.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+
+                    is DataResourceResult.Success -> {
+                        val baseBmrState = BmrUiState(
+                            movementLevelMetabolism = result.data?.tdee ?: 0
                         )
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                bmrState = baseBmrState
+
+                            )
+                        }
+                    }
+
+                    else -> {
+                        _uiState.update { it.copy(isLoading = false) }
                     }
                 }
             }

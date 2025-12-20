@@ -76,12 +76,14 @@ class HomeViewModel @Inject constructor(
                 getWorkOutFlow(),
                 getCaloriesFlow(),
                 getBmrFlow()
-            ) { workoutResult, caloriesResult, bmrData ->
+            ) { workoutResult, caloriesResult, bmrResult ->
                 val isLoading = workoutResult is DataResourceResult.Loading ||
-                        caloriesResult is DataResourceResult.Loading
+                        caloriesResult is DataResourceResult.Loading ||
+                        bmrResult is DataResourceResult.Loading
 
                 val isError = workoutResult is DataResourceResult.Error ||
-                        caloriesResult is DataResourceResult.Error
+                        caloriesResult is DataResourceResult.Error ||
+                        bmrResult is DataResourceResult.Error
 
                 val (exerciseType, count) = if (workoutResult is DataResourceResult.Success) {
                     workoutResult.data
@@ -95,7 +97,11 @@ class HomeViewModel @Inject constructor(
                     0
                 }
 
-                val targetBmr = bmrData?.tdee ?: 0
+                val targetBmr = if (bmrResult is DataResourceResult.Success) {
+                    bmrResult.data?.tdee ?: 0
+                } else {
+                    0
+                }
 
                 _uiState.value.copy(
                     isLoading = isLoading,
@@ -167,6 +173,7 @@ class HomeViewModel @Inject constructor(
                     } else {
                         calendarRepository.getDaysOfWeek(date)
                     }
+
                     _uiState.update {
                         it.copy(
                             calendarDates = dates,
