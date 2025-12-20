@@ -108,7 +108,7 @@ fun WorkOutScreen(
     ) {
         if (uiState.selectedExercise == null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                 CircularProgressIndicator()
+                CircularProgressIndicator()
             }
             return
         }
@@ -177,8 +177,8 @@ fun WorkOutScreen(
                 val detectedPose = uiState.detectedPose
                 if (detectedPose != null) {
                     PoseOverlay(
-                        pose = detectedPose,
                         modifier = Modifier.fillMaxSize(),
+                        pose = detectedPose,
                         imageWidth = 480,
                         imageHeight = 640
                     )
