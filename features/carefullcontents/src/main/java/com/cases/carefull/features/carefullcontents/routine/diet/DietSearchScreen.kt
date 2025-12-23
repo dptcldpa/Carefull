@@ -51,6 +51,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.toRoute
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.cases.carefull.domain.model.routine.diet.FavoriteFood
 import com.cases.carefull.domain.model.routine.diet.FoodDataInputType
 import com.cases.carefull.domain.model.routine.diet.FoodItem
@@ -63,7 +68,9 @@ import com.cases.carefull.features.carefullcommon.components.LabelValueRow
 import com.cases.carefull.features.carefullcommon.components.SearchBar
 import com.cases.carefull.features.carefullcommon.navigation.RoutineRoute
 import com.cases.carefull.features.carefullcommon.theme.CarefullTheme
+import com.cases.carefull.features.carefullcontents.util.UiText
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOf
 import java.time.LocalDate
 
 @Composable
@@ -73,11 +80,15 @@ fun DietSearchRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+
+    val pagedSearchResults = viewModel.pagedSearchResults.collectAsLazyPagingItems()
+
     val route = navController.currentBackStackEntry?.toRoute<RoutineRoute.DietSearchRoute>()
     val mealType = route?.mealType
     val selectedDate = remember(route?.date) {
         route?.date?.let { LocalDate.parse(it) }
     }
+
     if (mealType == null || selectedDate == null) {
         return
     }
@@ -100,6 +111,7 @@ fun DietSearchRoute(
     DietSearchScreen(
         uiState = uiState,
         searchQuery = searchQuery,
+        pagedSearchResults = pagedSearchResults,
         mealType = mealType,
         selectedDate = selectedDate,
         onSearchQueryChange = viewModel::onSearchQueryChanged,
@@ -132,6 +144,7 @@ fun DietSearchRoute(
 fun DietSearchScreen(
     uiState: MainDietUiState,
     searchQuery: String,
+    pagedSearchResults: LazyPagingItems<FoodItem>,
     mealType: String,
     selectedDate: LocalDate,
     onSearchQueryChange: (String) -> Unit,
@@ -255,11 +268,66 @@ fun DietSearchScreen(
                         )
                     } else {
                         LazyColumn(modifier = Modifier.fillMaxSize()) {
-                            items(uiState.dietSearchState.searchResults) { foodItem ->
-                                FoodItemCard(
-                                    item = foodItem,
-                                    onClick = { foodToEdit = foodItem }
-                                )
+                            items(
+                                count = pagedSearchResults.itemCount,
+                            ) { index ->
+                                val foodItem = pagedSearchResults[index]
+                                if (foodItem != null) {
+                                    FoodItemCard(
+                                        item = foodItem,
+                                        onClick = { foodToEdit = foodItem }
+                                    )
+                                }
+                            }
+                            pagedSearchResults.apply {
+                                when {
+                                    loadState.refresh is LoadState.Loading -> {
+                                        item {
+                                            Box(
+                                                modifier = Modifier.fillParentMaxSize(),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                CircularProgressIndicator()
+                                            }
+                                        }
+                                    }
+                                    loadState.append is LoadState.Loading -> {
+                                        item {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(16.dp),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                CircularProgressIndicator(
+                                                    modifier = Modifier.size(
+                                                        24.dp
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    }
+                                    loadState.refresh is LoadState.Error -> {
+                                        item {
+                                            Box(
+                                                modifier = Modifier.fillParentMaxSize(),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Button(onClick = { retry() }) { Text(stringResource(R.string.common_retry)) }
+                                            }
+                                        }
+                                    }
+                                    loadState.refresh is LoadState.NotLoading && pagedSearchResults.itemCount == 0 -> {
+                                        item {
+                                            Box(
+                                                modifier = Modifier.fillParentMaxSize(),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Text(stringResource(R.string.no_search_result), color = Color.Gray)
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -268,6 +336,7 @@ fun DietSearchScreen(
         }
     }
 }
+
 
 @Composable
 fun FoodItemCard(
@@ -697,6 +766,9 @@ fun DietSearchScreenPreview_Search() {
             fat = 0
         )
     )
+    val fakePagingFlow = flowOf(PagingData.from(sampleFoodItems))
+    val fakeLazyPagingItems = fakePagingFlow.collectAsLazyPagingItems()
+
     val previewUiState = MainDietUiState(
         isLoading = false,
         dietSearchState = DietSearchState(
@@ -704,10 +776,13 @@ fun DietSearchScreenPreview_Search() {
             recentSearches = emptyList()
         )
     )
+
+
     CarefullTheme {
         DietSearchScreen(
             uiState = previewUiState,
             searchQuery = "닭",
+            pagedSearchResults = fakeLazyPagingItems,
             mealType = "저녁",
             selectedDate = date,
             onSearchQueryChange = {},
@@ -736,10 +811,15 @@ fun DietSearchScreenPreview_Search() {
 fun DietSearchScreenPreview_Default() {
     val date = LocalDate.now()
     val time = System.currentTimeMillis()
+
     val sampleRecentSearches = listOf(
         RecentFoodSearch(query = "프로틴", searchedAt = time),
         RecentFoodSearch(query = "샐러드", searchedAt = time + 1)
     )
+
+    val fakePagingFlow = flowOf(PagingData.empty<FoodItem>())
+    val fakeLazyPagingItems = fakePagingFlow.collectAsLazyPagingItems()
+
     val previewUiState = MainDietUiState(
         isLoading = false,
         dietSearchState = DietSearchState(
@@ -751,6 +831,7 @@ fun DietSearchScreenPreview_Default() {
         DietSearchScreen(
             uiState = previewUiState,
             searchQuery = "",
+            pagedSearchResults = fakeLazyPagingItems,
             mealType = "저녁",
             selectedDate = date,
             onSearchQueryChange = {},

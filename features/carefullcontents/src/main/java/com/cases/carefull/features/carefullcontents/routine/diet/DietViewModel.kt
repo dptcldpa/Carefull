@@ -3,6 +3,10 @@ package com.cases.carefull.features.carefullcontents.routine.diet
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.cases.carefull.domain.model.routine.diet.FavoriteFood
 import com.cases.carefull.domain.model.routine.diet.FoodDataInputType
 import com.cases.carefull.domain.model.routine.diet.FoodItem
@@ -14,13 +18,18 @@ import com.cases.carefull.domain.repository.routine.diet.RecentMealSearchReposit
 import com.cases.carefull.domain.usecase.routine.diet.GetSavedBmrUseCase
 import com.cases.carefull.domain.util.DataResourceResult
 import com.cases.carefull.domain.util.toSafeInt
+import com.cases.carefull.features.carefullcontents.util.FoodPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
@@ -44,6 +53,25 @@ class DietViewModel @Inject constructor(
     val navigationEvent = _navigationEvent.asSharedFlow()
     private val userId = "test" //카카오 연동시 수정예정
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val pagedSearchResults: Flow<PagingData<FoodItem>> = searchQuery
+        .flatMapLatest { query ->
+            if (query.isBlank()) {
+                emptyFlow()
+            } else {
+                Pager(
+                    config = PagingConfig(
+                        pageSize = FoodPagingSource.PAGE_SIZE,
+                        enablePlaceholders = false,
+                        initialLoadSize = FoodPagingSource.PAGE_SIZE
+                    ),
+                    pagingSourceFactory = {
+                        FoodPagingSource(foodSearchRepository, query)
+                    }
+                ).flow
+            }
+        }.cachedIn(viewModelScope)
+
     init {
         observeMealsForDate(LocalDate.now())
         observeSavedBmr()
@@ -62,29 +90,6 @@ class DietViewModel @Inject constructor(
             launch {
                 runCatching {
                     recentMealSearchRepository.saveRecentSearch(query)
-                }
-            }
-
-            val result = foodSearchRepository.searchFoods(query = query)
-            _uiState.update { state ->
-                when (result) {
-                    is DataResourceResult.Success -> {
-                        state.copy(
-                            isLoading = false,
-                            dietSearchState = state.dietSearchState.copy(
-                                searchResults = result.data
-                            )
-                        )
-                    }
-
-                    is DataResourceResult.Error -> {
-                        state.copy(
-                            isLoading = false,
-                            isError = true
-                        )
-                    }
-
-                    else -> state.copy(isLoading = false)
                 }
             }
         }
@@ -119,13 +124,23 @@ class DietViewModel @Inject constructor(
 
     fun onDeleteRecentSearch(search: RecentFoodSearch) {
         viewModelScope.launch {
-            recentMealSearchRepository.deleteRecentSearch(search)
+            launch {
+                runCatching {
+
+                    recentMealSearchRepository.deleteRecentSearch(search)
+                }
+            }
         }
     }
 
     fun onClearAllRecentMealSearches() {
         viewModelScope.launch {
-            recentMealSearchRepository.clearAllRecentSearches()
+            launch {
+                runCatching {
+
+                    recentMealSearchRepository.clearAllRecentSearches()
+                }
+            }
         }
     }
 
@@ -158,7 +173,12 @@ class DietViewModel @Inject constructor(
 
     fun onDeleteFavoriteFood(favoriteFood: FavoriteFood) {
         viewModelScope.launch {
-            favoriteFoodRepository.deleteFavoriteFood(favoriteFood)
+            launch {
+                runCatching {
+
+                    favoriteFoodRepository.deleteFavoriteFood(favoriteFood)
+                }
+            }
         }
     }
 
@@ -288,7 +308,11 @@ class DietViewModel @Inject constructor(
                     protein = newFood.protein,
                     fat = newFood.fat
                 )
-                favoriteFoodRepository.saveFavoriteFood(favoriteFood)
+                launch {
+                    runCatching {
+                        favoriteFoodRepository.saveFavoriteFood(favoriteFood)
+                    }
+                }
             }
             hideCustomInputDialog()
             _navigationEvent.emit(NavigationEvent.NavigateBackToDietScreen)

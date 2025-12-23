@@ -1,5 +1,6 @@
 package com.cases.carefull.data.di
 
+import com.cases.carefull.data.repository.account.KakaoRepositoryImpl
 import com.cases.carefull.data.repository.common.CalendarRepositoryImpl
 import com.cases.carefull.data.repository.diagnosis.CareFullLocationRepositoryImpl
 import com.cases.carefull.data.repository.diagnosis.ChatbotRepositoryImpl
@@ -18,6 +19,7 @@ import com.cases.carefull.data.repository.routine.diet.RecentMealSearchRepositor
 import com.cases.carefull.data.repository.routine.exercise.PoseRepositoryImpl
 import com.cases.carefull.data.repository.routine.exercise.TodayWorkOutRepositoryImpl
 import com.cases.carefull.data.repository.routine.exercise.WorkOutRecordRepositoryImpl
+import com.cases.carefull.domain.repository.account.KakaoRepository
 import com.cases.carefull.domain.repository.common.CalendarRepository
 import com.cases.carefull.domain.repository.diagnosis.CareFullLocationRepository
 import com.cases.carefull.domain.repository.diagnosis.ChatbotRepository
@@ -155,4 +157,10 @@ abstract class RepositoryModule {
     abstract fun bindSocialCommentListRepository(
         socialCommentRepositoryImpl: SocialCommentRepositoryImpl
     ): SocialCommentRepository
+
+    @Binds
+    @ViewModelScoped
+    abstract fun bindKakaoRepository(
+        kakaoRepositoryImpl: KakaoRepositoryImpl
+    ): KakaoRepository
 }
