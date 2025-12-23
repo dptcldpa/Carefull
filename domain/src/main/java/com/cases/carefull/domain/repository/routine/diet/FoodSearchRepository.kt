@@ -1,8 +1,9 @@
 package com.cases.carefull.domain.repository.routine.diet
 
 import com.cases.carefull.domain.model.routine.diet.FoodItem
-import com.cases.carefull.domain.util.DataResourceResult
+import com.cases.carefull.domain.model.routine.diet.MyPagingData
+import kotlinx.coroutines.flow.Flow
 
 interface FoodSearchRepository {
-    suspend fun searchFoods(query: String): DataResourceResult<List<FoodItem>>
+    fun searchFoodsByPage(query: String, page: Int, pageSize: Int): Flow<Result<MyPagingData<FoodItem>>>
 }

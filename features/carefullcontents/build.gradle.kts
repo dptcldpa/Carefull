@@ -82,5 +82,7 @@ dependencies {
     implementation(libs.bundles.hilt.runtime)
     
     implementation(libs.androidx.runtime.livedata)
-    
+
+    //paging3
+    implementation(libs.androidx.paging.compose)
 }

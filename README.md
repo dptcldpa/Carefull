@@ -50,14 +50,14 @@
 | Language       | Kotlin                                                                          |
 | Architecture   | Clean Architecture (Hybrid), MVVM                                               |
 | Asynchronous   | Coroutine, Flow                                                                 |
-| UI             | Coil, Jetpack Compose, Navigation                                               |
+| UI             | Coil, Jetpack Compose, Navigation, Paging3                                      |
 | Network        | Gson, Interceptor, OkHttp3, Retrofit2, tikxml                                   |
 | AI             | On-device AI Google ML Kit(Pose Detection, Face Detection), OpenAI API (생성형 AI) |
 | SDK & API      | Fused Location Provider,Kakao SDK, Naver Map SDK                                |
 | Authentication | KaKao OAuth                                                                     |
-| DataBase       | Firebase (Firestore), Room                                                                 |
+| DataBase       | Firebase (Firestore), Room                                                      |
 | DI             | Hilt                                                                            |
-| ETC / Tools    | Figma, Github, Notion, Postman, Runtime Permission                                       |
+| ETC / Tools    | Figma, Github, Notion, Postman, Runtime Permission                              |
 
 <br>
 
