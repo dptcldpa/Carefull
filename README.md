@@ -95,11 +95,15 @@
 
 ### 5. 챗봇
 
-| <img src="https://github.com/user-attachments/assets/709605b3-f803-4037-b60f-7c753d398341" alt="chatbot" width="200"/> |
+| <img src="https://github.com/user-attachments/assets/f5e272fa-7c6e-403a-96a5-dc0dd0d49eab" alt="chatbot" width="200"/> |
 |:----------------------------------------------------------------------------------------------------------------------:|
-|                                  OpenAI API를 활용하여 몸 상태를 챗봇에<br>입력 시 증상에 맞는 질환과 진료 과목을 추천해 줍니다.                                  |
+|                             OpenAI API를 활용하여 몸 상태를 챗봇에<br>입력 시 증상에 맞는 질환과 진료 과목을 추천해 줍니다.                              |
 
 ### 6. 병원 검색
+
+| <img src="https://github.com/user-attachments/assets/29ded5f0-12cb-4345-bf90-1d40328cfade" alt="chatbot" width="200"/> |
+|:----------------------------------------------------------------------------------------------------------------------:|
+|                                        Naver Maps를 이용하여<br>현재 위치 주변 병원을 조회합니다.                                         |
 
 ### 7. 질병, 약 검색
 
